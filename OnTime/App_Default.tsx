@@ -6,11 +6,7 @@
  */
 
 import React from 'react';
-import 'react-native-gesture-handler';
-import { NavigationContainer } from '@react-navigation/native';
 import type {PropsWithChildren} from 'react';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { useWindowDimensions } from 'react-native';
 import {
   SafeAreaView,
   ScrollView,
@@ -28,9 +24,6 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-
-import HomeScreen from './screens/HomeScreen.js'
-import SettingsScreen from './screens/SettingsScreen.js'
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -62,23 +55,6 @@ function Section({children, title}: SectionProps): React.JSX.Element {
   );
 }
 
-const Drawer = createDrawerNavigator();
-
-function SideDrawer() {
-  const dimensions = useWindowDimensions();
-
-  return (
-    <Drawer.Navigator
-      screenOptions={{
-        drawerType: dimensions.width >= 768 ? 'permanent' : 'front',
-      }}
-    >
-      <Drawer.Screen name="Home" component={HomeScreen} />
-      <Drawer.Screen name="Settings" component={SettingsScreen} />
-    </Drawer.Navigator>
-  );
-}
-
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -87,9 +63,36 @@ function App(): React.JSX.Element {
   };
 
   return (
-    <NavigationContainer>
-      <SideDrawer/>
-    </NavigationContainer>
+    <SafeAreaView style={backgroundStyle}>
+      <StatusBar
+        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+        backgroundColor={backgroundStyle.backgroundColor}
+      />
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        style={backgroundStyle}>
+        <Header />
+        <View
+          style={{
+            backgroundColor: isDarkMode ? Colors.black : Colors.white,
+          }}>
+          <Section title="Step One">
+            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
+            screen and then come back to see your edits.
+          </Section>
+          <Section title="See Your Changes">
+            <ReloadInstructions />
+          </Section>
+          <Section title="Debug">
+            <DebugInstructions />
+          </Section>
+          <Section title="Learn More">
+            Read the docs to discover what to do next:
+          </Section>
+          <LearnMoreLinks />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
