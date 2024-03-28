@@ -2,32 +2,10 @@ import React from 'react';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {lightTheme, darkTheme} from './theme/Colors';
-import {createDrawerNavigator} from '@react-navigation/drawer';
-import {useWindowDimensions, useColorScheme} from 'react-native';
 import {LogLevel, OneSignal} from 'react-native-onesignal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import HomeScreen from './screens/HomeScreen.tsx';
-import SettingsScreen from './screens/SettingsScreen.tsx';
-import LoginScreen from './screens/LoginScreen.tsx';
-
-const Drawer = createDrawerNavigator();
-
-// Based off of https://reactnavigation.org/docs/drawer-navigator/#example
-function SideDrawer() {
-  const dimensions = useWindowDimensions();
-
-  return (
-    <Drawer.Navigator
-      screenOptions={{
-        drawerType: dimensions.width >= 768 ? 'permanent' : 'front',
-      }}>
-      <Drawer.Screen name="Home" component={HomeScreen} />
-      <Drawer.Screen name="Settings" component={SettingsScreen} />
-      <Drawer.Screen name="Login" component={LoginScreen} />
-    </Drawer.Navigator>
-  );
-}
+import SideDrawer from './SideDrawer';
 
 function App(): React.JSX.Element {
   // OneSignal for Push Notifications
@@ -57,7 +35,6 @@ function App(): React.JSX.Element {
       if (storedTheme === 'dark') {
         setIsDarkMode(true);
       }
-      // Handle other cases (e.g., default to light theme)
     });
   }, []);
 
@@ -73,7 +50,7 @@ function App(): React.JSX.Element {
 
   return (
     <NavigationContainer theme={isDarkMode ? darkTheme : lightTheme}>
-      <SideDrawer />
+      <SideDrawer isDarkMode={isDarkMode} />
     </NavigationContainer>
   );
 }
