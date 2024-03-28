@@ -1,13 +1,14 @@
 import React from 'react';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
+import {lightTheme, darkTheme} from './theme/Colors';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import {useWindowDimensions} from 'react-native';
-import { LogLevel, OneSignal } from 'react-native-onesignal';
+import {useWindowDimensions, useColorScheme} from 'react-native';
+import {LogLevel, OneSignal} from 'react-native-onesignal';
 
-import HomeScreen from './screens/HomeScreen.js';
-import SettingsScreen from './screens/SettingsScreen.js';
-import LoginScreen from './screens/LoginScreen.js';
+import HomeScreen from './screens/HomeScreen.tsx';
+import SettingsScreen from './screens/SettingsScreen.tsx';
+import LoginScreen from './screens/LoginScreen.tsx';
 
 const Drawer = createDrawerNavigator();
 
@@ -37,15 +38,18 @@ function App(): React.JSX.Element {
 
   // requestPermission will show the native iOS or Android notification permission prompt.
   // We recommend removing the following code and instead using an In-App Message to prompt for notification permission
-  OneSignal.Notifications.requestPermission(true);
+  // OneSignal.Notifications.requestPermission(true);
+  // In-App Message setup at OneSignal.com / Messages / In-App
 
   // Method for listening for notification clicks
   OneSignal.Notifications.addEventListener('click', event => {
     console.log('OneSignal: notification clicked:', event);
   });
 
+  const theme = useColorScheme();
+
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={theme === 'dark' ? darkTheme : lightTheme}>
       <SideDrawer />
     </NavigationContainer>
   );
