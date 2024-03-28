@@ -5,6 +5,7 @@ import {lightTheme, darkTheme} from './theme/Colors';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {useWindowDimensions, useColorScheme} from 'react-native';
 import {LogLevel, OneSignal} from 'react-native-onesignal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import HomeScreen from './screens/HomeScreen.tsx';
 import SettingsScreen from './screens/SettingsScreen.tsx';
@@ -46,10 +47,32 @@ function App(): React.JSX.Element {
     console.log('OneSignal: notification clicked:', event);
   });
 
-  const theme = useColorScheme();
+  // const theme = useColorScheme();
+
+  const [isDarkMode, setIsDarkMode] = React.useState(false);
+
+  React.useEffect(() => {
+    // Load theme preference from AsyncStorage
+    AsyncStorage.getItem('theme').then(storedTheme => {
+      if (storedTheme === 'dark') {
+        setIsDarkMode(true);
+      }
+      // Handle other cases (e.g., default to light theme)
+    });
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
+
+    // Save the theme preference to AsyncStorage
+    AsyncStorage.setItem('theme', newTheme ? 'dark' : 'light');
+  };
+
+  // toggleTheme();
 
   return (
-    <NavigationContainer theme={theme === 'dark' ? darkTheme : lightTheme}>
+    <NavigationContainer theme={isDarkMode ? darkTheme : lightTheme}>
       <SideDrawer />
     </NavigationContainer>
   );
