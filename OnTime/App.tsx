@@ -46,11 +46,9 @@ function App(): React.JSX.Element {
     AsyncStorage.setItem('theme', newTheme ? 'dark' : 'light');
   };
 
-  // toggleTheme();
-
   return (
     <NavigationContainer theme={isDarkMode ? darkTheme : lightTheme}>
-      <SideDrawer isDarkMode={isDarkMode} />
+      <SideDrawer isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
     </NavigationContainer>
   );
 }

@@ -11,9 +11,13 @@ const Drawer = createDrawerNavigator();
 
 interface SideDrawerProps {
   isDarkMode: boolean;
+  toggleTheme: () => void;
 }
 
-function SideDrawer({isDarkMode}: SideDrawerProps): React.ReactElement {
+function SideDrawer({
+  isDarkMode,
+  toggleTheme,
+}: SideDrawerProps): React.ReactElement {
   const dimensions = useWindowDimensions();
 
   const drawerStyles = {
@@ -40,7 +44,11 @@ function SideDrawer({isDarkMode}: SideDrawerProps): React.ReactElement {
         drawerInactiveTintColor: screenStyles.drawerInactiveTintColor,
       }}>
       <Drawer.Screen name="Home" component={HomeScreen} />
-      <Drawer.Screen name="Settings" component={SettingsScreen} />
+      <Drawer.Screen name="Settings">
+        {() => (
+          <SettingsScreen isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+        )}
+      </Drawer.Screen>
       <Drawer.Screen name="Login" component={LoginScreen} />
     </Drawer.Navigator>
   );
