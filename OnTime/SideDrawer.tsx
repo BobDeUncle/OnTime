@@ -33,6 +33,12 @@ function SideDrawer({
     drawerInactiveTintColor: isDarkMode
       ? darkTheme.colors.primary
       : lightTheme.colors.primary,
+    drawerActiveBackgroundColor: isDarkMode
+      ? darkTheme.colors.card
+      : lightTheme.colors.card,
+    drawerInactiveBackgroundColor: isDarkMode
+      ? darkTheme.colors.background
+      : lightTheme.colors.background,
   };
 
   return (
@@ -40,8 +46,7 @@ function SideDrawer({
       screenOptions={{
         drawerType: dimensions.width >= 768 ? 'permanent' : 'front',
         drawerStyle: drawerStyles,
-        drawerActiveTintColor: screenStyles.drawerActiveTintColor,
-        drawerInactiveTintColor: screenStyles.drawerInactiveTintColor,
+        ...screenStyles,
       }}>
       <Drawer.Screen name="Home" component={HomeScreen} />
       <Drawer.Screen name="Settings">
