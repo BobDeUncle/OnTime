@@ -1,6 +1,8 @@
+/* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {useWindowDimensions} from 'react-native';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 
 import HomeScreen from './screens/HomeScreen.tsx';
 import SettingsScreen from './screens/SettingsScreen.tsx';
@@ -48,13 +50,29 @@ function SideDrawer({
         drawerStyle: drawerStyles,
         ...screenStyles,
       }}>
-      <Drawer.Screen name="Home" component={HomeScreen} />
-      <Drawer.Screen name="Settings">
+      <Drawer.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          drawerIcon: () => <FontAwesomeIcon icon="house" />,
+        }}
+      />
+      <Drawer.Screen
+        name="Settings"
+        options={{
+          drawerIcon: () => <FontAwesomeIcon icon="gear" />,
+        }}>
         {() => (
           <SettingsScreen isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
         )}
       </Drawer.Screen>
-      <Drawer.Screen name="Login" component={LoginScreen} />
+      <Drawer.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{
+          drawerIcon: () => <FontAwesomeIcon icon="arrow-right-from-bracket" />,
+        }}
+      />
     </Drawer.Navigator>
   );
 }

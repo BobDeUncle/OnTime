@@ -33,6 +33,12 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Material.ttf</string>
+		<string>FontAwesome.ttf</string>
+		<!-- Add other icon fonts if needed -->
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>

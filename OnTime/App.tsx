@@ -7,6 +7,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import SideDrawer from './SideDrawer';
 
+import {library} from '@fortawesome/fontawesome-svg-core';
+import {fab} from '@fortawesome/free-brands-svg-icons';
+import {faArrowRightFromBracket} from '@fortawesome/free-solid-svg-icons';
+
+library.add(fab, faArrowRightFromBracket);
+
 function App(): React.JSX.Element {
   // OneSignal for Push Notifications
   // Remove this method to stop OneSignal Debugging
