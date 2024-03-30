@@ -16,9 +16,9 @@ function SettingsScreen({
 
   return (
     <View style={{backgroundColor: colors.card}}>
-      <Text style={styles.text}>This is Settings Screen</Text>
+      <Text style={{color: colors.text}}>This is Settings Screen</Text>
       <View style={styles.leftContainer}>
-        <Text style={styles.text}>Dark Mode</Text>
+        <Text style={{color: colors.text}}>Dark Mode</Text>
         <Switch value={isDarkMode} onValueChange={toggleTheme} />
       </View>
     </View>

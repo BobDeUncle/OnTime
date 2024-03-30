@@ -9,9 +9,11 @@ import SideDrawer from './SideDrawer';
 
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {fab} from '@fortawesome/free-brands-svg-icons';
+import {faHouse} from '@fortawesome/free-solid-svg-icons/faHouse';
+import {faGear} from '@fortawesome/free-solid-svg-icons/faGear';
 import {faArrowRightFromBracket} from '@fortawesome/free-solid-svg-icons';
 
-library.add(fab, faArrowRightFromBracket);
+library.add(fab, faHouse, faGear, faArrowRightFromBracket);
 
 function App(): React.JSX.Element {
   // OneSignal for Push Notifications
@@ -30,8 +32,6 @@ function App(): React.JSX.Element {
   OneSignal.Notifications.addEventListener('click', event => {
     console.log('OneSignal: notification clicked:', event);
   });
-
-  // const theme = useColorScheme();
 
   const [isDarkMode, setIsDarkMode] = React.useState(false);
 
