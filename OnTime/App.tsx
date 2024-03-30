@@ -17,6 +17,8 @@ library.add(fab, faHouse, faGear, faArrowRightFromBracket);
 
 function App(): React.JSX.Element {
   // OneSignal for Push Notifications
+  // For when we get back-end connected
+  // https://medium.com/tribalscale/mobile-push-notifications-implementation-in-react-native-with-one-signal-4e810dddd350
   // Remove this method to stop OneSignal Debugging
   OneSignal.Debug.setLogLevel(LogLevel.Verbose);
 
