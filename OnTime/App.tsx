@@ -12,6 +12,7 @@ import {fab} from '@fortawesome/free-brands-svg-icons';
 import {faHouse} from '@fortawesome/free-solid-svg-icons/faHouse';
 import {faGear} from '@fortawesome/free-solid-svg-icons/faGear';
 import {faArrowRightFromBracket} from '@fortawesome/free-solid-svg-icons';
+import NewTimeRecordButton from './components/time-record/time-record-modal-button';
 
 library.add(fab, faHouse, faGear, faArrowRightFromBracket);
 
@@ -55,6 +56,7 @@ function App(): React.JSX.Element {
   return (
     <NavigationContainer theme={isDarkMode ? darkTheme : lightTheme}>
       <SideDrawer isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+      <NewTimeRecordButton />
     </NavigationContainer>
   );
 }
