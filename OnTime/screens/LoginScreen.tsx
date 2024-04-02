@@ -5,16 +5,18 @@ import {
   Alert,
   Image,
   Pressable,
-  SafeAreaView,
   StyleSheet,
   Switch,
   Text,
   TextInput,
   View,
 } from 'react-native';
-const logo = require('../assets/pacbuild-square-blue.jpg');
+import {useTheme} from '.././theme/Colors';
 
-export default function LoginForm() {
+const LoginScreen = () => {
+  const logo = require('../assets/pacbuild-square-blue.jpg');
+  const {colors} = useTheme();
+
   const [click, setClick] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -28,122 +30,160 @@ export default function LoginForm() {
     Alert.alert('You forgot your password.');
   };
 
+  const styles = StyleSheet.create({
+    mainContainer: {
+      paddingTop: 0,
+      backgroundColor: colors.primary,
+      flex: 1,
+    },
+    topContainer: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: colors.primary,
+      flex: 1,
+    },
+    bottomContainer: {
+      alignItems: 'center',
+      backgroundColor: colors.background,
+      height: 400,
+      borderTopLeftRadius: 30,
+      borderTopRightRadius: 30,
+    },
+    image: {
+      height: 160,
+      width: 170,
+    },
+    welcome: {
+      fontSize: 30,
+      fontWeight: 'bold',
+      textTransform: 'uppercase',
+      textAlign: 'center',
+      paddingTop: 30,
+      paddingBottom: 5,
+      color: colors.primary,
+    },
+    greenLine: {
+      height: 4,
+      width: '50%',
+      backgroundColor: 'green',
+      marginBottom: 10,
+    },
+    subtext: {
+      marginBottom: 20,
+    },
+    inputView: {
+      gap: 15,
+      width: '100%',
+      paddingHorizontal: 40,
+      marginBottom: 5,
+      paddingBottom: 10,
+    },
+    input: {
+      height: 50,
+      paddingHorizontal: 20,
+      borderColor: colors.primary,
+      borderWidth: 1,
+      borderRadius: 7,
+      paddingLeft: 10,
+    },
+    rememberView: {
+      width: '100%',
+      paddingHorizontal: 50,
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      flexDirection: 'row',
+      marginBottom: 8,
+      paddingBottom: 5,
+    },
+    switch: {
+      flexDirection: 'row',
+      gap: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    rememberText: {
+      paddingLeft: 7,
+      fontSize: 13,
+    },
+    forgetText: {
+      fontSize: 11,
+      color: colors.primary,
+    },
+    button: {
+      backgroundColor: colors.primary,
+      height: 45,
+      borderColor: 'gray',
+      borderWidth: 1,
+      borderRadius: 5,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    buttonText: {
+      color: 'white',
+      fontSize: 18,
+      fontWeight: 'bold',
+    },
+    buttonView: {
+      width: '100%',
+      paddingHorizontal: 50,
+    },
+  });
+
   return (
-    <SafeAreaView style={styles.container}>
-      <Image source={logo} style={styles.image} resizeMode="contain" />
-      <Text style={styles.title}>Login</Text>
-      <View style={styles.inputView}>
-        <TextInput
-          style={styles.input}
-          placeholder="EMAIL OR USERNAME"
-          value={username}
-          onChangeText={setUsername}
-          autoCorrect={false}
-          autoCapitalize="none"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="PASSWORD"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-          autoCorrect={false}
-          autoCapitalize="none"
-        />
+    <View style={styles.mainContainer}>
+      <View style={styles.topContainer}>
+        <Image source={logo} style={styles.image} resizeMode="contain" />
       </View>
-      <View style={styles.rememberView}>
-        <View style={styles.switch}>
-          <Switch
-            value={click}
-            onValueChange={setClick}
-            trackColor={{true: 'blue', false: 'gray'}}
-            thumbColor={'blue'}
+      <View style={styles.bottomContainer}>
+        <Text style={styles.welcome}>Welcome</Text>
+        <View style={styles.greenLine} />
+        <Text style={styles.subtext}>Please login to your account</Text>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            placeholderTextColor={'grey'}
+            value={username}
+            onChangeText={setUsername}
+            autoCorrect={false}
+            autoCapitalize="none"
           />
-          <Text style={styles.rememberText}>Remember Me</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor={'grey'}
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+            autoCorrect={false}
+            autoCapitalize="none"
+          />
         </View>
-        <View>
-          <Pressable onPress={handleForgot}>
-            <Text style={styles.forgetText}>Forgot Password?</Text>
+        <View style={styles.rememberView}>
+          <View style={styles.switch}>
+            <Switch
+              value={click}
+              onValueChange={setClick}
+              trackColor={{true: 'blue', false: 'gray'}}
+              thumbColor={'blue'}
+            />
+            <Text style={styles.rememberText}>Remember Me</Text>
+          </View>
+          <View>
+            <Pressable onPress={handleForgot}>
+              <Text style={styles.forgetText}>Forgot Password?</Text>
+            </Pressable>
+          </View>
+        </View>
+
+        <View style={styles.buttonView}>
+          <Pressable style={styles.button} onPress={handleLogin}>
+            <Text style={styles.buttonText}>LOGIN</Text>
           </Pressable>
         </View>
       </View>
-
-      <View style={styles.buttonView}>
-        <Pressable style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>LOGIN</Text>
-        </Pressable>
-      </View>
-    </SafeAreaView>
+    </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    paddingTop: 70,
-  },
-  image: {
-    height: 160,
-    width: 170,
-  },
-  title: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    textTransform: 'uppercase',
-    textAlign: 'center',
-    paddingVertical: 40,
-    color: '#031f46',
-  },
-  inputView: {
-    gap: 15,
-    width: '100%',
-    paddingHorizontal: 40,
-    marginBottom: 5,
-  },
-  input: {
-    height: 50,
-    paddingHorizontal: 20,
-    borderColor: '#031f46',
-    borderWidth: 1,
-    borderRadius: 7,
-  },
-  rememberView: {
-    width: '100%',
-    paddingHorizontal: 50,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginBottom: 8,
-  },
-  switch: {
-    flexDirection: 'row',
-    gap: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  rememberText: {
-    fontSize: 13,
-  },
-  forgetText: {
-    fontSize: 11,
-    color: '#031f46',
-  },
-  button: {
-    backgroundColor: '#031f46',
-    height: 45,
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  buttonView: {
-    width: '100%',
-    paddingHorizontal: 50,
-  },
-});
+export default LoginScreen;

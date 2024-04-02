@@ -42,7 +42,7 @@ const TimeRecordList: React.FC = () => {
   }
 
   return (
-    <>
+    <View>
       <Text style={{fontSize: 24, marginBottom: 16}}>Time Records</Text>
       <FlatList
         data={timeRecords}
@@ -54,7 +54,7 @@ const TimeRecordList: React.FC = () => {
         )}
         keyExtractor={item => item._id}
       />
-    </>
+    </View>
   );
 };
 

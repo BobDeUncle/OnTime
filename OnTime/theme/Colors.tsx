@@ -18,6 +18,8 @@ enum Colors {
   lightPink = '#E28FC7',
   red = '#FF0000',
   white = '#FFFFFF',
+
+  pacBlue = '#031f46',
 }
 
 export const darkTheme: CustomTheme = {
@@ -37,7 +39,7 @@ export const darkTheme: CustomTheme = {
 export const lightTheme: CustomTheme = {
   dark: false,
   colors: {
-    primary: Colors.pink,
+    primary: Colors.pacBlue,
     background: Colors.white,
     card: Colors.lightGrey,
     text: Colors.darkGrey,
