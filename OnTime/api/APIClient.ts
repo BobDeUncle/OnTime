@@ -3,7 +3,7 @@ class APIClient {
 
   constructor() {
     this.baseURL =
-      'https://ontime-express-ohefur6tx-hannahgmaccas-projects.vercel.app/api/v1';
+      'https://ontime-express-sb8zie7p0-hannahgmaccas-projects.vercel.app/api/v1';
   }
 
   private async request<T>(
@@ -32,6 +32,7 @@ class APIClient {
   }
 
   public async post<T>(url: string, body: any): Promise<T> {
+    console.log(url);
     return await this.request<T>(url, 'POST', body);
   }
 

@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {View, Text, TextInput, Button, StyleSheet, Alert} from 'react-native';
-import TimeRecordAPI from '../../api/TimeRecordAPI'; // Import your TimeRecord API client
+import TimeRecordAPI from '../../api/TimeRecordAPI';
 import APIClient from '../../api/APIClient';
 
 const NewTimeRecordForm: React.FC = () => {
@@ -14,7 +14,7 @@ const NewTimeRecordForm: React.FC = () => {
     },
   };
 
-  // fake types for now - will be typed as employee, dates, jobsite
+  // fake types for now - should be typed as employee, dates, jobsite
   const [employee, setEmployee] = useState<string>();
   const [startDate, setStartDate] = useState<string>();
   const [endDate, setEndDate] = useState<string>();
@@ -25,6 +25,8 @@ const NewTimeRecordForm: React.FC = () => {
     const timeRecordAPI = new TimeRecordAPI(client);
 
     try {
+      // Posting a fake user as an example
+      // We will exentually need to post the information captured by form inputs
       await timeRecordAPI.addTimeRecord({
         ...fakeUser,
       });

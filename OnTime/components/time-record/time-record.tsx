@@ -6,15 +6,22 @@ import APIClient from '../../api/APIClient';
 
 interface TimeRecordProps {
   timeRecord: TimeRecord;
+  fetchTimeRecords: () => Promise<void>;
 }
 
-const TimeRecordItem: React.FC<TimeRecordProps> = ({timeRecord}) => {
+const TimeRecordItem: React.FC<TimeRecordProps> = ({
+  timeRecord,
+  fetchTimeRecords,
+}) => {
   const client = new APIClient();
   const timeRecordAPI = new TimeRecordAPI(client);
 
   const handleDelete = async () => {
     try {
       await timeRecordAPI.deleteTimeRecord(timeRecord._id);
+      Alert.alert('Success!');
+
+      fetchTimeRecords(); // refresh list on success
     } catch (error) {
       console.error('Error deleting time record:', error);
       Alert.alert(
