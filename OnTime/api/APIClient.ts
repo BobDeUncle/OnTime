@@ -1,9 +1,11 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 class APIClient {
   private baseURL: string;
 
   constructor() {
     this.baseURL =
-      'https://ontime-express-sb8zie7p0-hannahgmaccas-projects.vercel.app/api/v1';
+      'https://ontime-express-2i02t60ua-hannahgmaccas-projects.vercel.app';
   }
 
   private async request<T>(
@@ -11,11 +13,14 @@ class APIClient {
     method: string,
     body?: any,
   ): Promise<T> {
+    // Retrieve the userToken from AsyncStorage
+    const userToken = await AsyncStorage.getItem('userToken');
+
     const response = await fetch(`${this.baseURL}${url}`, {
       method,
       headers: {
         'Content-Type': 'application/json',
-        // TODO: Add auth header
+        ...(userToken ? {Authorization: `Bearer ${userToken}`} : {}),
       },
       body: JSON.stringify(body),
     });
