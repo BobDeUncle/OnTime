@@ -9,7 +9,7 @@ class AuthAPI {
   }
 
   public async addAuth(auth: any) {
-    return await this.client.post('/signin', auth);
+    return await this.client.post('/auth/signin', auth);
   }
 }
 
