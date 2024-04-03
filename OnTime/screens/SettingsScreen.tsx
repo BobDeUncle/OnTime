@@ -1,7 +1,8 @@
 import React from 'react';
-import {View, Text, Switch} from 'react-native';
+import {View, Switch} from 'react-native';
 import {useTheme} from '.././theme/Colors';
 import styles from '.././theme/Styles';
+import MyText from '../components/MyText';
 
 interface SideDrawerProps {
   isDarkMode: boolean;
@@ -15,10 +16,10 @@ function SettingsScreen({
   const {colors} = useTheme();
 
   return (
-    <View style={{backgroundColor: colors.card}}>
-      <Text style={{color: colors.text}}>This is Settings Screen</Text>
+    <View style={{backgroundColor: colors.background}}>
+      <MyText style={{color: colors.opText}}>This is Settings Screen</MyText>
       <View style={styles.leftContainer}>
-        <Text style={{color: colors.text}}>Dark Mode</Text>
+        <MyText style={{color: colors.opText}}>Dark Mode</MyText>
         <Switch value={isDarkMode} onValueChange={toggleTheme} />
       </View>
     </View>

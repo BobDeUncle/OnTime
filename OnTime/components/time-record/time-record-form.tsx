@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, Button, StyleSheet, Alert} from 'react-native';
+import {View, TextInput, Button, StyleSheet, Alert} from 'react-native';
+import MyText from '../../components/MyText';
 import TimeRecordAPI from '../../api/TimeRecordAPI';
 import APIClient from '../../api/APIClient';
 
@@ -42,28 +43,28 @@ const NewTimeRecordForm: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Employee:</Text>
+      <MyText style={styles.label}>Employee:</MyText>
       <TextInput
         style={styles.input}
         value={employee}
         onChangeText={setEmployee}
         placeholder="Enter employee ID"
       />
-      <Text style={styles.label}>Start Date:</Text>
+      <MyText style={styles.label}>Start Date:</MyText>
       <TextInput
         style={styles.input}
         value={startDate}
         onChangeText={setStartDate}
         placeholder="Enter start date"
       />
-      <Text style={styles.label}>End Date:</Text>
+      <MyText style={styles.label}>End Date:</MyText>
       <TextInput
         style={styles.input}
         value={endDate}
         onChangeText={setEndDate}
         placeholder="Enter end date"
       />
-      <Text style={styles.label}>Jobsite:</Text>
+      <MyText style={styles.label}>Jobsite:</MyText>
       <TextInput
         style={styles.input}
         value={jobsite}

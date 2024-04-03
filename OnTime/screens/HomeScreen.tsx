@@ -1,5 +1,6 @@
 import React from 'react';
-import {Button, View, Text} from 'react-native';
+import {Button, View} from 'react-native';
+import MyText from '../components/MyText';
 import {useTheme} from '../theme/Colors';
 
 interface HomeScreenProps {
@@ -11,7 +12,7 @@ function HomeScreen({handleLogout}: HomeScreenProps): React.ReactElement {
 
   return (
     <View style={{backgroundColor: colors.background}}>
-      <Text style={{color: colors.text}}>This is Home Screen</Text>
+      <MyText style={{color: colors.opText}}>This is Home Screen</MyText>
 
       <Button title="Logout" onPress={handleLogout} />
     </View>

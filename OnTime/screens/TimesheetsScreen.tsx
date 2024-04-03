@@ -1,5 +1,6 @@
 import React from 'react';
-import {ScrollView, Text} from 'react-native';
+import {ScrollView} from 'react-native';
+import MyText from '../components/MyText';
 import {useTheme} from '../theme/Colors';
 import TimeRecordList from '../components/time-record/time-record-list';
 import NewTimeRecordButton from '../components/time-record/time-record-modal-button';
@@ -9,7 +10,7 @@ const HomeScreen = () => {
 
   return (
     <ScrollView style={{backgroundColor: colors.background}}>
-      <Text style={{color: colors.text}}>This is Home Screen</Text>
+      <MyText style={{color: colors.text}}>This is Home Screen</MyText>
       <TimeRecordList />
       <NewTimeRecordButton />
     </ScrollView>

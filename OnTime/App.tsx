@@ -4,6 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {lightTheme, darkTheme} from './theme/Colors';
 import {LogLevel, OneSignal} from 'react-native-onesignal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {setCustomText} from 'react-native-global-props';
 
 import SideDrawer from './SideDrawer';
 import LoginScreen from './screens/LoginScreen.tsx';
@@ -73,6 +74,15 @@ function App(): React.JSX.Element {
     // Save the theme preference to AsyncStorage
     AsyncStorage.setItem('theme', newTheme ? 'dark' : 'light');
   };
+
+  // Font Theme
+  const customTextProps = {
+    style: {
+      fontFamily: 'Open Sans',
+    },
+  };
+
+  setCustomText(customTextProps);
 
   return (
     <NavigationContainer theme={isDarkMode ? darkTheme : lightTheme}>

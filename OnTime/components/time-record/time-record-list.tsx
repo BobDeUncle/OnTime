@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect, useCallback} from 'react';
-import {View, Text, FlatList, ActivityIndicator} from 'react-native';
+import {View, FlatList, ActivityIndicator} from 'react-native';
+import MyText from '../../components/MyText';
 import APIClient from '../../api/APIClient';
 import TimeRecordAPI from '../../api/TimeRecordAPI';
 import TimeRecord from '../../models/TimeRecord';
@@ -43,7 +44,7 @@ const TimeRecordList: React.FC = () => {
 
   return (
     <View>
-      <Text style={{fontSize: 24, marginBottom: 16}}>Time Records</Text>
+      <MyText style={{fontSize: 24, marginBottom: 16}}>Time Records</MyText>
       <FlatList
         scrollEnabled={false}
         data={timeRecords}

@@ -7,7 +7,6 @@ import {
   Image,
   Pressable,
   StyleSheet,
-  Text,
   TextInput,
   View,
 } from 'react-native';
@@ -15,6 +14,7 @@ import {useTheme} from '../theme/Colors';
 import AuthAPI from '../api/AuthAPI';
 import APIClient from '../api/APIClient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import MyText from '../components/MyText';
 
 interface LoginScreenProps {
   setIsAuthenticated: (value: boolean) => void;
@@ -74,24 +74,24 @@ function LoginScreen({
     topContainer: {
       justifyContent: 'center',
       alignItems: 'center',
+      paddingTop: 30,
       backgroundColor: colors.primary,
       flex: 1,
     },
     bottomContainer: {
       alignItems: 'center',
       backgroundColor: colors.background,
-      height: 400,
+      height: 450,
       borderTopLeftRadius: 30,
       borderTopRightRadius: 30,
     },
     image: {
-      height: 200,
-      width: 200,
+      height: 300,
+      width: 300,
     },
     welcome: {
       fontSize: 30,
       fontWeight: 'bold',
-      textTransform: 'uppercase',
       textAlign: 'center',
       paddingTop: 30,
       paddingBottom: 5,
@@ -101,16 +101,19 @@ function LoginScreen({
       height: 4,
       width: '50%',
       backgroundColor: colors.secondary,
-      marginBottom: 10,
+      marginBottom: 15,
     },
     subtext: {
-      marginBottom: 20,
+      fontSize: 13,
+      marginBottom: 30,
+      fontWeight: 'bold',
+      color: 'grey',
     },
     inputView: {
       gap: 15,
       width: '100%',
       paddingHorizontal: 40,
-      marginBottom: 5,
+      marginBottom: 10,
       paddingBottom: 10,
     },
     input: {
@@ -121,15 +124,6 @@ function LoginScreen({
       borderRadius: 7,
       paddingLeft: 10,
     },
-    rememberView: {
-      width: '100%',
-      paddingHorizontal: 50,
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      flexDirection: 'row',
-      marginBottom: 8,
-      paddingBottom: 5,
-    },
     switch: {
       flexDirection: 'row',
       gap: 1,
@@ -139,7 +133,7 @@ function LoginScreen({
     button: {
       backgroundColor: colors.primary,
       height: 45,
-      borderColor: 'gray',
+      borderColor: colors.primary,
       borderWidth: 1,
       borderRadius: 5,
       alignItems: 'center',
@@ -152,11 +146,11 @@ function LoginScreen({
     },
     buttonView: {
       width: '100%',
-      paddingHorizontal: 50,
+      paddingHorizontal: 40,
     },
     forgotPasswordView: {
       width: '100%',
-      paddingHorizontal: 50,
+      paddingHorizontal: 40,
       paddingTop: 20,
     },
     forgetText: {
@@ -172,9 +166,9 @@ function LoginScreen({
         <Image source={logo} style={styles.image} resizeMode="contain" />
       </View>
       <View style={styles.bottomContainer}>
-        <Text style={styles.welcome}>Welcome</Text>
+        <MyText style={styles.welcome}>Welcome</MyText>
         <View style={styles.greenLine} />
-        <Text style={styles.subtext}>Please login to your account</Text>
+        <MyText style={styles.subtext}>Please login to your account</MyText>
         <View style={styles.inputView}>
           <TextInput
             style={styles.input}
@@ -204,13 +198,13 @@ function LoginScreen({
             {isLoading ? (
               <ActivityIndicator size="small" color={colors.text} />
             ) : (
-              <Text style={styles.buttonText}>LOGIN</Text>
+              <MyText style={styles.buttonText}>LOGIN</MyText>
             )}
           </Pressable>
         </View>
         <View style={styles.forgotPasswordView}>
           <Pressable onPress={handleForgot}>
-            <Text style={styles.forgetText}>Forgot Password?</Text>
+            <MyText style={styles.forgetText}>Forgot Password?</MyText>
           </Pressable>
         </View>
       </View>

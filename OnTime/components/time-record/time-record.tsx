@@ -1,5 +1,6 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import MyText from '../../components/MyText';
 import TimeRecord from '../../models/TimeRecord';
 import TimeRecordAPI from '../../api/TimeRecordAPI';
 import APIClient from '../../api/APIClient';
@@ -33,13 +34,15 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}> Email: {timeRecord.employee.email}</Text>
-      <Text style={styles.text}>
+      <MyText style={styles.text}> Email: {timeRecord.employee.email}</MyText>
+      <MyText style={styles.text}>
         Start Date: {timeRecord.startDate.toString()}
-      </Text>
-      <Text style={styles.text}>End Date: {timeRecord.endDate.toString()}</Text>
+      </MyText>
+      <MyText style={styles.text}>
+        End Date: {timeRecord.endDate.toString()}
+      </MyText>
       <TouchableOpacity style={styles.button} onPress={handleDelete}>
-        <Text style={styles.buttonText}>Delete</Text>
+        <MyText style={styles.buttonText}>Delete</MyText>
       </TouchableOpacity>
     </View>
   );

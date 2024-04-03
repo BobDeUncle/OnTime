@@ -2,7 +2,7 @@ import {Theme} from '@react-navigation/native';
 import {useTheme as useReactNavigationTheme} from '@react-navigation/native';
 
 export type CustomTheme = Theme & {
-  colors: Record<'focus' | 'warning' | 'secondary', string>;
+  colors: Record<'focus' | 'warning' | 'secondary' | 'opText', string>;
 };
 
 export type ColorNames = keyof Theme['colors'];
@@ -31,6 +31,7 @@ export const lightTheme: CustomTheme = {
     background: Colors.white,
     card: Colors.pacBlue,
     text: Colors.white,
+    opText: Colors.black,
     border: Colors.midGrey,
     notification: Colors.pink,
     focus: Colors.white,
@@ -45,7 +46,8 @@ export const darkTheme: CustomTheme = {
     secondary: Colors.pacGreen,
     background: Colors.darkGrey,
     card: Colors.midGrey,
-    text: Colors.white,
+    text: Colors.black,
+    opText: Colors.white,
     border: Colors.lightGrey,
     notification: Colors.lightPink,
     focus: Colors.blue,
