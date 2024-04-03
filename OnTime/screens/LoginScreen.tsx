@@ -2,6 +2,7 @@
 
 import React, {useState} from 'react';
 import {
+  ActivityIndicator,
   Alert,
   Image,
   Pressable,
@@ -14,40 +15,51 @@ import {
 import {useTheme} from '../theme/Colors';
 import AuthAPI from '../api/AuthAPI';
 import APIClient from '../api/APIClient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const LoginScreen = () => {
+interface LoginScreenProps {
+  setIsAuthenticated: (value: boolean) => void;
+}
+
+interface AuthData {
+  token: string;
+}
+
+function LoginScreen({
+  setIsAuthenticated,
+}: LoginScreenProps): React.ReactElement {
   const logo = require('../assets/pacbuild-square-blue.jpg');
   const {colors} = useTheme();
 
   const [click, setClick] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const client = new APIClient();
   const authAPI = new AuthAPI(client);
 
   const handleLogin = async () => {
-    // Alert.alert('Email Entered', `You entered: ${email}`);
-    // Alert.alert('Password Entered', `You entered: ${password}`);
-
+    setIsLoading(true);
     try {
       // const authData = await authAPI.addAuth({
       //   email: email,
       //   password: password,
       // });
 
-      const authData = await authAPI.addAuth({
+      const authData: AuthData = await authAPI.addAuth({
         email: 'hannahgmacca@gmail.com',
         password: '123345678',
       });
 
       console.log('Success:', authData);
-      // handle successful login here
-      // you might want to navigate to another screen here
+      await AsyncStorage.setItem('userToken', authData.token);
+      setIsAuthenticated(true);
     } catch (error) {
       console.error('Error:', error);
       // handle login error here
-      // you might want to show an error message to the user
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -202,13 +214,20 @@ const LoginScreen = () => {
         </View>
 
         <View style={styles.buttonView}>
-          <Pressable style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>LOGIN</Text>
+          <Pressable
+            style={styles.button}
+            onPress={handleLogin}
+            disabled={isLoading}>
+            {isLoading ? (
+              <ActivityIndicator size="small" color={colors.text} />
+            ) : (
+              <Text style={styles.buttonText}>LOGIN</Text>
+            )}
           </Pressable>
         </View>
       </View>
     </View>
   );
-};
+}
 
 export default LoginScreen;

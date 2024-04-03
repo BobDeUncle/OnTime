@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {lightTheme, darkTheme} from './theme/Colors';
@@ -6,6 +6,7 @@ import {LogLevel, OneSignal} from 'react-native-onesignal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import SideDrawer from './SideDrawer';
+import LoginScreen from './screens/LoginScreen.tsx';
 
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {fab} from '@fortawesome/free-brands-svg-icons';
@@ -36,7 +37,22 @@ function App(): React.JSX.Element {
     console.log('OneSignal: notification clicked:', event);
   });
 
-  const [isDarkMode, setIsDarkMode] = React.useState(false);
+  // AUTHENITCATION using userToken
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    // Check if the user is authenticated when the app loads
+    AsyncStorage.getItem('userToken').then(token => {
+      if (token) {
+        setIsAuthenticated(true);
+      }
+    });
+  }, []);
+
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('userToken');
+    setIsAuthenticated(false);
+  };
 
   React.useEffect(() => {
     // Load theme preference from AsyncStorage
@@ -46,6 +62,9 @@ function App(): React.JSX.Element {
       }
     });
   }, []);
+
+  // THEMING
+  const [isDarkMode, setIsDarkMode] = React.useState(false);
 
   const toggleTheme = () => {
     const newTheme = !isDarkMode;
@@ -57,7 +76,15 @@ function App(): React.JSX.Element {
 
   return (
     <NavigationContainer theme={isDarkMode ? darkTheme : lightTheme}>
-      <SideDrawer isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+      {isAuthenticated ? (
+        <SideDrawer
+          isDarkMode={isDarkMode}
+          toggleTheme={toggleTheme}
+          handleLogout={handleLogout}
+        />
+      ) : (
+        <LoginScreen setIsAuthenticated={setIsAuthenticated} />
+      )}
     </NavigationContainer>
   );
 }

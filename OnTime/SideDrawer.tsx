@@ -7,7 +7,6 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import HomeScreen from './screens/HomeScreen.tsx';
 import SettingsScreen from './screens/SettingsScreen.tsx';
 import TimesheetsScreen from './screens/TimesheetsScreen.tsx';
-import LoginScreen from './screens/LoginScreen.tsx';
 import {lightTheme, darkTheme} from './theme/Colors.tsx';
 
 const Drawer = createDrawerNavigator();
@@ -15,11 +14,13 @@ const Drawer = createDrawerNavigator();
 interface SideDrawerProps {
   isDarkMode: boolean;
   toggleTheme: () => void;
+  handleLogout: () => void;
 }
 
 function SideDrawer({
   isDarkMode,
   toggleTheme,
+  handleLogout,
 }: SideDrawerProps): React.ReactElement {
   const dimensions = useWindowDimensions();
 
@@ -53,7 +54,9 @@ function SideDrawer({
       }}>
       <Drawer.Screen
         name="Home"
-        component={HomeScreen}
+        children={props => (
+          <HomeScreen {...props} handleLogout={handleLogout} />
+        )}
         options={{
           drawerIcon: ({color}) => (
             <FontAwesomeIcon icon="house" color={color} />
@@ -80,15 +83,6 @@ function SideDrawer({
           <SettingsScreen isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
         )}
       </Drawer.Screen>
-      <Drawer.Screen
-        name="Login"
-        component={LoginScreen}
-        options={{
-          drawerIcon: ({color}) => (
-            <FontAwesomeIcon icon="arrow-right-from-bracket" color={color} />
-          ),
-        }}
-      />
     </Drawer.Navigator>
   );
 }
