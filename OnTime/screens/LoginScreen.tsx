@@ -12,18 +12,38 @@ import {
   View,
 } from 'react-native';
 import {useTheme} from '../theme/Colors';
+import AuthAPI from '../api/AuthAPI';
+import APIClient from '../api/APIClient';
 
 const LoginScreen = () => {
   const logo = require('../assets/pacbuild-square-blue.jpg');
   const {colors} = useTheme();
 
   const [click, setClick] = useState(false);
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    Alert.alert('Username Entered', `You entered: ${username}`);
+  const client = new APIClient();
+  const authAPI = new AuthAPI(client);
+
+  const handleLogin = async () => {
+    // Alert.alert('Email Entered', `You entered: ${email}`);
     // Alert.alert('Password Entered', `You entered: ${password}`);
+
+    try {
+      const authData = await authAPI.addAuth({
+        email: email,
+        password: password,
+      });
+
+      console.log('Success:', authData);
+      // handle successful login here
+      // you might want to navigate to another screen here
+    } catch (error) {
+      console.error('Error:', error);
+      // handle login error here
+      // you might want to show an error message to the user
+    }
   };
 
   const handleForgot = () => {
@@ -143,8 +163,8 @@ const LoginScreen = () => {
             style={styles.input}
             placeholder="Email"
             placeholderTextColor={'grey'}
-            value={username}
-            onChangeText={setUsername}
+            value={email}
+            onChangeText={setEmail}
             autoCorrect={false}
             autoCapitalize="none"
           />

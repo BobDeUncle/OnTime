@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, ScrollView, Text} from 'react-native';
+import {ScrollView, Text} from 'react-native';
 import {useTheme} from '../theme/Colors';
 import TimeRecordList from '../components/time-record/time-record-list';
 import NewTimeRecordButton from '../components/time-record/time-record-modal-button';
