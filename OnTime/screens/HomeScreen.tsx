@@ -1,17 +1,13 @@
 import React from 'react';
 import {View, Text} from 'react-native';
-import {useTheme} from '.././theme/Colors';
-import TimeRecordList from '../components/time-record/time-record-list';
-import NewTimeRecordButton from '../components/time-record/time-record-modal-button';
+import {useTheme} from '../theme/Colors';
 
 const HomeScreen = () => {
   const {colors} = useTheme();
 
   return (
-    <View style={{backgroundColor: colors.card}}>
+    <View style={{backgroundColor: colors.background}}>
       <Text style={{color: colors.text}}>This is Home Screen</Text>
-      <TimeRecordList />
-      <NewTimeRecordButton />
     </View>
   );
 };

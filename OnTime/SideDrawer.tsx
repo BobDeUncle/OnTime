@@ -6,6 +6,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 
 import HomeScreen from './screens/HomeScreen.tsx';
 import SettingsScreen from './screens/SettingsScreen.tsx';
+import TimesheetsScreen from './screens/TimesheetsScreen.tsx';
 import LoginScreen from './screens/LoginScreen.tsx';
 import {lightTheme, darkTheme} from './theme/Colors.tsx';
 
@@ -54,13 +55,26 @@ function SideDrawer({
         name="Home"
         component={HomeScreen}
         options={{
-          drawerIcon: () => <FontAwesomeIcon icon="house" />,
+          drawerIcon: ({color}) => (
+            <FontAwesomeIcon icon="house" color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Timesheets"
+        component={TimesheetsScreen}
+        options={{
+          drawerIcon: ({color}) => (
+            <FontAwesomeIcon icon="clock" color={color} />
+          ),
         }}
       />
       <Drawer.Screen
         name="Settings"
         options={{
-          drawerIcon: () => <FontAwesomeIcon icon="gear" />,
+          drawerIcon: ({color}) => (
+            <FontAwesomeIcon icon="gear" color={color} />
+          ),
         }}>
         {() => (
           <SettingsScreen isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
@@ -70,7 +84,9 @@ function SideDrawer({
         name="Login"
         component={LoginScreen}
         options={{
-          drawerIcon: () => <FontAwesomeIcon icon="arrow-right-from-bracket" />,
+          drawerIcon: ({color}) => (
+            <FontAwesomeIcon icon="arrow-right-from-bracket" color={color} />
+          ),
         }}
       />
     </Drawer.Navigator>

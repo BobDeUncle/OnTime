@@ -11,7 +11,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import {useTheme} from '.././theme/Colors';
+import {useTheme} from '../theme/Colors';
 
 const LoginScreen = () => {
   const logo = require('../assets/pacbuild-square-blue.jpg');
@@ -65,7 +65,7 @@ const LoginScreen = () => {
     greenLine: {
       height: 4,
       width: '50%',
-      backgroundColor: 'green',
+      backgroundColor: colors.secondary,
       marginBottom: 10,
     },
     subtext: {
