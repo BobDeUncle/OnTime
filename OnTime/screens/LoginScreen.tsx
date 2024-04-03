@@ -31,9 +31,14 @@ const LoginScreen = () => {
     // Alert.alert('Password Entered', `You entered: ${password}`);
 
     try {
+      // const authData = await authAPI.addAuth({
+      //   email: email,
+      //   password: password,
+      // });
+
       const authData = await authAPI.addAuth({
-        email: email,
-        password: password,
+        email: 'hannahgmacca@gmail.com',
+        password: '123345678',
       });
 
       console.log('Success:', authData);
