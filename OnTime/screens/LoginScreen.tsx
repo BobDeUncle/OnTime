@@ -7,7 +7,6 @@ import {
   Image,
   Pressable,
   StyleSheet,
-  Switch,
   Text,
   TextInput,
   View,
@@ -31,7 +30,6 @@ function LoginScreen({
   const logo = require('../assets/pacbuild-square-blue.jpg');
   const {colors} = useTheme();
 
-  const [click, setClick] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -87,8 +85,8 @@ function LoginScreen({
       borderTopRightRadius: 30,
     },
     image: {
-      height: 160,
-      width: 170,
+      height: 200,
+      width: 200,
     },
     welcome: {
       fontSize: 30,
@@ -138,14 +136,6 @@ function LoginScreen({
       justifyContent: 'center',
       alignItems: 'center',
     },
-    rememberText: {
-      paddingLeft: 7,
-      fontSize: 13,
-    },
-    forgetText: {
-      fontSize: 11,
-      color: colors.primary,
-    },
     button: {
       backgroundColor: colors.primary,
       height: 45,
@@ -163,6 +153,16 @@ function LoginScreen({
     buttonView: {
       width: '100%',
       paddingHorizontal: 50,
+    },
+    forgotPasswordView: {
+      width: '100%',
+      paddingHorizontal: 50,
+      paddingTop: 20,
+    },
+    forgetText: {
+      fontSize: 11,
+      color: colors.primary,
+      textAlign: 'right',
     },
   });
 
@@ -196,23 +196,6 @@ function LoginScreen({
             autoCapitalize="none"
           />
         </View>
-        <View style={styles.rememberView}>
-          <View style={styles.switch}>
-            <Switch
-              value={click}
-              onValueChange={setClick}
-              trackColor={{true: 'blue', false: 'gray'}}
-              thumbColor={'blue'}
-            />
-            <Text style={styles.rememberText}>Remember Me</Text>
-          </View>
-          <View>
-            <Pressable onPress={handleForgot}>
-              <Text style={styles.forgetText}>Forgot Password?</Text>
-            </Pressable>
-          </View>
-        </View>
-
         <View style={styles.buttonView}>
           <Pressable
             style={styles.button}
@@ -223,6 +206,11 @@ function LoginScreen({
             ) : (
               <Text style={styles.buttonText}>LOGIN</Text>
             )}
+          </Pressable>
+        </View>
+        <View style={styles.forgotPasswordView}>
+          <Pressable onPress={handleForgot}>
+            <Text style={styles.forgetText}>Forgot Password?</Text>
           </Pressable>
         </View>
       </View>
