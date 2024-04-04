@@ -1,16 +1,18 @@
 import React, {useState} from 'react';
-import {Button, StyleSheet, TextInput, View} from 'react-native';
+import {Button, Platform, StyleSheet, TextInput, View} from 'react-native';
 import MyText from '../components/MyText';
 import RNPickerSelect from 'react-native-picker-select';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {useTheme} from '../theme/Colors';
 
-function HomeScreen({}): React.ReactElement {
+function DashboardScreen({}): React.ReactElement {
   const {colors} = useTheme();
   const user = 'user';
 
   const [jobsite, setJobsite] = useState(null);
-  const [date, setDate] = useState('');
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [notes, setNotes] = useState('');
@@ -92,12 +94,19 @@ function HomeScreen({}): React.ReactElement {
             iconContainer: styles.dropdownIcon,
           }}
         />
-        <TextInput
-          value={date}
-          onChangeText={setDate}
-          placeholder="Date"
-          style={styles.textInput}
-        />
+        <View style={{...styles.textInput, flexDirection: 'row', alignItems: 'center'}}>
+          <MyText>Date: </MyText>
+          <DateTimePicker
+            value={new Date(date)}
+            mode="date"
+            display="default"
+            maximumDate={new Date()}
+            onChange={(event, selectedDate) => {
+              const currentDate = selectedDate || new Date(date);
+              setDate(currentDate.toISOString().split('T')[0]);
+            }}
+          />
+        </View>
         <TextInput
           value={startTime}
           onChangeText={setStartTime}
@@ -130,4 +139,4 @@ function HomeScreen({}): React.ReactElement {
   );
 }
 
-export default HomeScreen;
+export default DashboardScreen;
