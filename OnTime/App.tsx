@@ -16,8 +16,9 @@ import {faHouse} from '@fortawesome/free-solid-svg-icons/faHouse';
 import {faClock} from '@fortawesome/free-solid-svg-icons/faClock';
 import {faGear} from '@fortawesome/free-solid-svg-icons/faGear';
 import {faArrowRightFromBracket} from '@fortawesome/free-solid-svg-icons/faArrowRightFromBracket';
+import {faChevronDown} from '@fortawesome/free-solid-svg-icons/faChevronDown';
 
-library.add(fab, faHouse, faClock, faGear, faArrowRightFromBracket);
+library.add(fab, faHouse, faClock, faGear, faArrowRightFromBracket, faChevronDown);
 
 function App(): React.JSX.Element {
   // OneSignal for Push Notifications
