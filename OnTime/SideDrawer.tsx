@@ -1,13 +1,55 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
-import {createDrawerNavigator} from '@react-navigation/drawer';
-import {useWindowDimensions} from 'react-native';
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItem,
+  DrawerItemList,
+  DrawerContentComponentProps,
+} from '@react-navigation/drawer';
+import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 
 import HomeScreen from './screens/HomeScreen.tsx';
 import SettingsScreen from './screens/SettingsScreen.tsx';
 import TimesheetsScreen from './screens/TimesheetsScreen.tsx';
-import {lightTheme, darkTheme} from './theme/Colors.tsx';
+import {lightTheme, darkTheme, useTheme} from './theme/Colors.tsx';
+
+const styles = StyleSheet.create({
+  mainContainer: {
+    paddingTop: 0,
+    flex: 1,
+  },
+});
+
+interface CustomDrawerContentProps extends DrawerContentComponentProps {
+  handleLogout: () => void;
+}
+
+function CustomDrawerContent(props: CustomDrawerContentProps) {
+  const {colors} = useTheme();
+  const {handleLogout} = props;
+
+  return (
+    <View style={styles.mainContainer}>
+      <DrawerContentScrollView>
+        <DrawerItemList {...props} />
+      </DrawerContentScrollView>
+
+      <DrawerItem
+        label="Logout"
+        onPress={handleLogout}
+        labelStyle={{color: colors.primary}}
+        icon={() => (
+          <FontAwesomeIcon
+            icon="arrow-right-from-bracket"
+            color={colors.primary}
+          />
+        )}
+      />
+    </View>
+  );
+}
 
 const Drawer = createDrawerNavigator();
 
@@ -51,12 +93,13 @@ function SideDrawer({
         drawerType: dimensions.width >= 768 ? 'permanent' : 'front',
         drawerStyle: drawerStyles,
         ...screenStyles,
-      }}>
+      }}
+      drawerContent={props => (
+        <CustomDrawerContent {...props} handleLogout={handleLogout} />
+      )}>
       <Drawer.Screen
         name="Home"
-        children={props => (
-          <HomeScreen {...props} handleLogout={handleLogout} />
-        )}
+        component={HomeScreen}
         options={{
           drawerIcon: ({color}) => (
             <FontAwesomeIcon icon="house" color={color} />

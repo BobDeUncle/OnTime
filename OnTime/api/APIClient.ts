@@ -5,7 +5,7 @@ class APIClient {
 
   constructor() {
     this.baseURL =
-      'https://ontime-express-2i02t60ua-hannahgmaccas-projects.vercel.app';
+      'https://ontime-express-2i02t60ua-hannahgmaccas-projects.vercel.app/api/v1';
   }
 
   private async request<T>(
