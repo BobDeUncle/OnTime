@@ -5,6 +5,7 @@ import {lightTheme, darkTheme} from './theme/Colors';
 import {LogLevel, OneSignal} from 'react-native-onesignal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {setCustomText} from 'react-native-global-props';
+import SplashScreen from 'react-native-splash-screen';
 
 import SideDrawer from './SideDrawer';
 import LoginScreen from './screens/LoginScreen.tsx';
@@ -38,22 +39,8 @@ function App(): React.JSX.Element {
     console.log('OneSignal: notification clicked:', event);
   });
 
-  // AUTHENITCATION using userToken
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    // Check if the user is authenticated when the app loads
-    AsyncStorage.getItem('userToken').then(token => {
-      if (token) {
-        setIsAuthenticated(true);
-      }
-    });
-  }, []);
-
-  const handleLogout = async () => {
-    await AsyncStorage.removeItem('userToken');
-    setIsAuthenticated(false);
-  };
+  // THEMING
+  const [isDarkMode, setIsDarkMode] = React.useState(false);
 
   React.useEffect(() => {
     // Load theme preference from AsyncStorage
@@ -63,9 +50,6 @@ function App(): React.JSX.Element {
       }
     });
   }, []);
-
-  // THEMING
-  const [isDarkMode, setIsDarkMode] = React.useState(false);
 
   const toggleTheme = () => {
     const newTheme = !isDarkMode;
@@ -83,6 +67,24 @@ function App(): React.JSX.Element {
   };
 
   setCustomText(customTextProps);
+
+  // AUTHENITCATION using userToken
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    // Check if the user is authenticated when the app loads
+    AsyncStorage.getItem('userToken').then(token => {
+      if (token) {
+        setIsAuthenticated(true);
+      }
+      SplashScreen.hide();
+    });
+  }, []);
+
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('userToken');
+    setIsAuthenticated(false);
+  };
 
   return (
     <NavigationContainer theme={isDarkMode ? darkTheme : lightTheme}>
