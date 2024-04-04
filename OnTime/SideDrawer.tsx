@@ -10,7 +10,7 @@ import {
 import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 
-import HomeScreen from './screens/HomeScreen.tsx';
+import DashboardScreen from './screens/DashboardScreen.tsx';
 import SettingsScreen from './screens/SettingsScreen.tsx';
 import TimesheetsScreen from './screens/TimesheetsScreen.tsx';
 import {lightTheme, darkTheme, useTheme} from './theme/Colors.tsx';
@@ -98,8 +98,8 @@ function SideDrawer({
         <CustomDrawerContent {...props} handleLogout={handleLogout} />
       )}>
       <Drawer.Screen
-        name="Home"
-        component={HomeScreen}
+        name="Dashboard"
+        component={DashboardScreen}
         options={{
           drawerIcon: ({color}) => (
             <FontAwesomeIcon icon="house" color={color} />
