@@ -46,7 +46,7 @@ function LoginScreen({
       // });
 
       const authData: AuthData = await authAPI.addAuth({
-        email: 'hannahgmacca@gmail.com',
+        email: 'admin@test.com.au',
         password: '123345678',
       });
 

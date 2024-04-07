@@ -20,7 +20,7 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
   const handleDelete = async () => {
     try {
       await timeRecordAPI.deleteTimeRecord(timeRecord._id);
-      Alert.alert('Success!');
+      // Alert.alert('Success!');
 
       fetchTimeRecords(); // refresh list on success
     } catch (error) {
@@ -36,10 +36,7 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
     <View style={styles.container}>
       <MyText style={styles.text}> Email: {timeRecord.employee.email}</MyText>
       <MyText style={styles.text}>
-        Start Date: {timeRecord.startDate.toString()}
-      </MyText>
-      <MyText style={styles.text}>
-        End Date: {timeRecord.endDate.toString()}
+        Date: {timeRecord.date.toString()}
       </MyText>
       <TouchableOpacity style={styles.button} onPress={handleDelete}>
         <MyText style={styles.buttonText}>Delete</MyText>

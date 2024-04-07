@@ -5,16 +5,16 @@ import {useTheme} from '../theme/Colors';
 import TimeRecordList from '../components/time-record/time-record-list';
 import NewTimeRecordButton from '../components/time-record/time-record-modal-button';
 
-const HomeScreen = () => {
+const TimesheetsScreen = () => {
   const {colors} = useTheme();
 
   return (
     <ScrollView style={{backgroundColor: colors.background}}>
-      <MyText style={{color: colors.text}}>This is Home Screen</MyText>
+      <MyText style={{color: colors.text}}>This is Timesheets Screen</MyText>
       <TimeRecordList />
       <NewTimeRecordButton />
     </ScrollView>
   );
 };
 
-export default HomeScreen;
+export default TimesheetsScreen;
