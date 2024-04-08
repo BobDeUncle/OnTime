@@ -65,7 +65,6 @@ const TimeRecordList: React.FC = () => {
         renderItem={({item}) => (
           <TimeRecordItem
             timeRecord={item}
-            fetchTimeRecords={fetchTimeRecords}
             refreshList={refreshList}
           />
         )}

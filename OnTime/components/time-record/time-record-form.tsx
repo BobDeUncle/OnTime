@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Alert, View, StyleSheet, TextInput, Button } from 'react-native';
 import MyText from '../../components/MyText';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -9,6 +9,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {useTheme} from '../../theme/Colors';
 import TimeRecordAPI from '../../api/TimeRecordAPI';
+import JobsiteAPI from '../../api/JobsiteAPI';
+import Jobsite from '../../models/Jobsite';
 import APIClient from '../../api/APIClient';
 
 interface TimesheetRecordFormProps {
@@ -21,9 +23,11 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles }) => {
 
   const client = new APIClient();
   const timeRecordAPI = new TimeRecordAPI(client);
+  const jobsiteAPI = new JobsiteAPI(client);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [jobsite, setJobsite] = useState(null);
+  const [jobsites, setJobsites] = useState<Jobsite[]>([]);
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [startTime, setStartTime] = useState(() => {
     const now = new Date();
@@ -38,6 +42,18 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles }) => {
     return now;
   });  
   const [notes, setNotes] = useState('');
+
+  const getJobsites = async () => {
+    setLoading(true);
+    try {
+      const jobsitesData = await jobsiteAPI.getAllJobsites();
+      setJobsites(jobsitesData);
+    } catch (error) {
+      console.error('Error fetching jobsites:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -71,6 +87,10 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles }) => {
   const saveTimeRecord = async () => {
     storageEmitter.emit('timeRecordsUpdated');
   };
+
+  useEffect(() => {
+    getJobsites();
+  }, []);
 
   const localStyles = StyleSheet.create({
     timesheetView: {},
@@ -128,10 +148,7 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles }) => {
       <MyText style={styles.sectionTitle}>New Timesheet</MyText>
       <RNPickerSelect
         onValueChange={value => setJobsite(value)}
-        items={[
-          {label: 'Jobsite 1', value: 'jobsite1'},
-          {label: 'Jobsite 2', value: 'jobsite2'},
-        ]}
+        items={jobsites.map(jobsite => ({ label: jobsite.name, value: jobsite._id }))}
         placeholder={{label: 'Select Jobsite', value: null}}
         Icon={() => {
           return <FontAwesomeIcon icon='chevron-down' size={24} color={colors.border} />;
