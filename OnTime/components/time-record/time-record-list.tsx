@@ -14,7 +14,12 @@ const TimeRecordList: React.FC = () => {
   const client = new APIClient();
   const timeRecordAPI = new TimeRecordAPI(client);
 
+  const refreshList = () => {
+    fetchTimeRecords();
+  }
+
   const fetchTimeRecords = useCallback(async () => {
+    setLoading(true);
     try {
       const timeRecordsData: TimeRecord[] =
         await timeRecordAPI.getAllTimeRecords();
@@ -27,12 +32,10 @@ const TimeRecordList: React.FC = () => {
     }
   }, [timeRecordAPI]);
 
-  // use effect is a react hook which runs on component load
-  // really helpful for using it to trigger data fetching when a component enters the screen
   useEffect(() => {
     fetchTimeRecords();
     return () => {};
-  }, [fetchTimeRecords]);
+  }, []);
 
   if (loading) {
     return (
@@ -52,6 +55,7 @@ const TimeRecordList: React.FC = () => {
           <TimeRecordItem
             timeRecord={item}
             fetchTimeRecords={fetchTimeRecords}
+            refreshList={refreshList}
           />
         )}
         keyExtractor={item => item._id}

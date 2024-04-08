@@ -33,12 +33,12 @@ class APIClient {
   }
 
   public async get<T>(url: string): Promise<T> {
-    console.log(url);
+    console.log('GET: ', url);
     return await this.request<T>(url, 'GET');
   }
 
   public async post<T>(url: string, body: any): Promise<T> {
-    console.log(url);
+    console.log('POST: ', url);
     return await this.request<T>(url, 'POST', body);
   }
 
@@ -47,6 +47,7 @@ class APIClient {
   }
 
   public async delete<T>(url: string): Promise<T> {
+    console.log('DELETE: ', url);
     return await this.request<T>(url, 'DELETE');
   }
 }

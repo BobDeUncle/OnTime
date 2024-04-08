@@ -7,11 +7,13 @@ import APIClient from '../../api/APIClient';
 
 interface TimeRecordProps {
   timeRecord: TimeRecord;
+  refreshList: () => void;
   fetchTimeRecords: () => Promise<void>;
 }
 
 const TimeRecordItem: React.FC<TimeRecordProps> = ({
   timeRecord,
+  refreshList,
   fetchTimeRecords,
 }) => {
   const client = new APIClient();
@@ -20,8 +22,10 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
   const handleDelete = async () => {
     try {
       await timeRecordAPI.deleteTimeRecord(timeRecord._id);
-      // Alert.alert('Success!');
 
+      refreshList();
+      
+      // Alert.alert('Success!');
       fetchTimeRecords(); // refresh list on success
     } catch (error) {
       console.error('Error deleting time record:', error);
@@ -35,9 +39,10 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
   return (
     <View style={styles.container}>
       <MyText style={styles.text}> Email: {timeRecord.employee.email}</MyText>
-      <MyText style={styles.text}>
+      {/* <MyText style={styles.text}>
         Date: {timeRecord.date.toString()}
-      </MyText>
+      </MyText> */}
+      <MyText style={styles.text}> ID: {timeRecord.employee._id}</MyText>
       <TouchableOpacity style={styles.button} onPress={handleDelete}>
         <MyText style={styles.buttonText}>Delete</MyText>
       </TouchableOpacity>
