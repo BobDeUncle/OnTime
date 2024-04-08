@@ -2,6 +2,8 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import {View, FlatList, ActivityIndicator} from 'react-native';
 import MyText from '../../components/MyText';
+import { storageEmitter } from '../storageEmitter';
+
 import APIClient from '../../api/APIClient';
 import TimeRecordAPI from '../../api/TimeRecordAPI';
 import TimeRecord from '../../models/TimeRecord';
@@ -33,8 +35,17 @@ const TimeRecordList: React.FC = () => {
   }, [timeRecordAPI]);
 
   useEffect(() => {
+    // Fetch time records when the component mounts
     fetchTimeRecords();
-    return () => {};
+
+    // Listen for the 'timeRecordsUpdated' event
+    storageEmitter.on('timeRecordsUpdated', refreshList);
+
+    // Cleanup function
+    return () => {
+      // Remove the event listener when the component unmounts
+      storageEmitter.off('timeRecordsUpdated', refreshList);
+    };
   }, []);
 
   if (loading) {

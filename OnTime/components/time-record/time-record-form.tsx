@@ -4,6 +4,9 @@ import MyText from '../../components/MyText';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from 'react-native-picker-select';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { storageEmitter } from '../storageEmitter';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import {useTheme} from '../../theme/Colors';
 import TimeRecordAPI from '../../api/TimeRecordAPI';
 import APIClient from '../../api/APIClient';
@@ -15,6 +18,9 @@ interface TimesheetRecordFormProps {
 const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles }) => {  
   const {colors} = useTheme();
   const user = 'user';
+
+  const client = new APIClient();
+  const timeRecordAPI = new TimeRecordAPI(client);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [jobsite, setJobsite] = useState(null);
@@ -34,9 +40,6 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles }) => {
   const [notes, setNotes] = useState('');
 
   const handleSubmit = async () => {
-    const client = new APIClient();
-    const timeRecordAPI = new TimeRecordAPI(client);
-
     setLoading(true);
 
     try {
@@ -53,7 +56,7 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles }) => {
         isApproved: false,
       });
 
-      // refreshList();
+      saveTimeRecord();
     } catch (error) {
       console.error('Error creating time record:', error);
       Alert.alert(
@@ -63,6 +66,10 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const saveTimeRecord = async () => {
+    storageEmitter.emit('timeRecordsUpdated');
   };
 
   const localStyles = StyleSheet.create({
