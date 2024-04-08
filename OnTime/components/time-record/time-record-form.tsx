@@ -42,13 +42,13 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles }) => {
     try {
       await timeRecordAPI.addTimeRecord({
         employee: '660e6d7413463bb6826432f1',
-        date: date,
-        startTime: startTime, 
-        endTime: endTime,
+        // date: date,
+        startTime: startTime.toISOString(), 
+        endTime: endTime.toISOString(),
         jobsite: {
-          _id: '',
-          name: jobsite,
-          city: '',
+          _id: '66063a1864983a0fb7bb32db',
+          name: 'Project Y',
+          city: 'Coffs Harbour',
         },
         isApproved: false,
       });
@@ -63,20 +63,6 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles }) => {
     } finally {
       setLoading(false);
     }
-
-    console.log('handleSubmit, sending: ');
-    console.log({
-      employee: '660e6d7413463bb6826432f1',
-      // date: date,
-      startTime: startTime.toISOString(), 
-      endTime: endTime.toISOString(),
-      jobsite: {
-        _id: '66063a1864983a0fb7bb32db',
-        name: 'Project Y',
-        city: 'Coffs Harbour',
-      },
-      isApproved: false,
-    });
   };
 
   const localStyles = StyleSheet.create({

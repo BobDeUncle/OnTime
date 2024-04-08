@@ -40,22 +40,29 @@ function LoginScreen({
   const handleLogin = async () => {
     setIsLoading(true);
     try {
-      // const authData = await authAPI.addAuth({
-      //   email: email,
-      //   password: password,
-      // });
-
-      const authData: AuthData = await authAPI.addAuth({
-        email: 'admin@test.com.au',
-        password: '123345678',
+      const authData = await authAPI.addAuth({
+        email: email,
+        password: password,
       });
+
+      // const authData: AuthData = await authAPI.addAuth({
+      //   email: 'admin@test.com.au',
+      //   password: '123345678',
+      // });
 
       console.log('Success:', authData);
       await AsyncStorage.setItem('userToken', authData.token);
       setIsAuthenticated(true);
     } catch (error) {
       console.error('Error:', error);
-      // handle login error here
+      Alert.alert(
+        'Error',
+        'Incorrect email or password. Please try again.',
+        [
+          {text: 'OK', onPress: () => console.log('OK Pressed')}
+        ],
+        { cancelable: false }
+      );
     } finally {
       setIsLoading(false);
     }
