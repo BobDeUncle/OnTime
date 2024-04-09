@@ -3,6 +3,7 @@ import React, {useState, useEffect, useCallback} from 'react';
 import {ActivityIndicator, Alert, FlatList, Modal, StyleSheet, TextInput, TouchableHighlight, View} from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import MyText from '../../components/MyText';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { storageEmitter } from '../storageEmitter';
 
 import {useTheme} from '../../theme/Colors';
@@ -12,8 +13,11 @@ import TimeRecord from '../../models/TimeRecord';
 import TimeRecordItem from './time-record';
 import JobsiteAPI from '../../api/JobsiteAPI';
 import Jobsite from '../../models/Jobsite';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const TimeRecordList: React.FC = () => {
+  const {colors} = useTheme();
+
   const [timeRecords, setTimeRecords] = useState<TimeRecord[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -87,6 +91,34 @@ const TimeRecordList: React.FC = () => {
       alignItems: "center",
       marginTop: 22
     },
+    row: {
+      flexDirection: 'row',
+    },
+    searchBar: {
+      flexDirection: 'row',
+      flex: 0.85,
+      alignItems: 'center',
+      backgroundColor: colors.background,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 5,
+      margin: 10,
+      padding: 10,
+    },
+    searchInput: {
+      flex: 1,
+      color: colors.opText,
+    },
+    placeholderText: {
+      color: colors.border,
+      fontSize: 14,
+    },
+    filterView: {
+      flex: 0.15,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingRight: 5,
+    },
     modalView: {
       width: '100%',
       backgroundColor: "white",
@@ -122,19 +154,28 @@ const TimeRecordList: React.FC = () => {
 
   return (
     <View>
-      <TextInput
-        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-        onChangeText={text => setSearchQuery(text)}
-        value={searchQuery}
-        placeholder="Search"
-      />
-      <TouchableHighlight
-        onPress={() => {
-          setModalVisible(true);
-        }}
-      >
-        <MyText>Show Modal</MyText>
-      </TouchableHighlight>
+      <View style={styles.row}>
+        <View style={styles.searchBar}>
+          <TextInput
+            onChangeText={text => setSearchQuery(text)}
+            value={searchQuery}
+            placeholder="Search"
+            placeholderTextColor={styles.placeholderText.color}
+            style={styles.searchInput}
+          />
+          <FontAwesomeIcon icon='search' size={20} color={colors.border} />
+        </View>
+        <View style={styles.filterView}>
+          <TouchableHighlight
+            underlayColor='transparent'
+            onPress={() => {
+              setModalVisible(true);
+            }}
+          >
+            <FontAwesomeIcon icon='sliders' size={26} color={colors.opText}/>
+          </TouchableHighlight>
+        </View>
+      </View>
       <Modal
         animationType="slide"
         transparent={true}
