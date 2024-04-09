@@ -1,12 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {StyleSheet, View} from 'react-native';
+import APIClient from '../api/APIClient';
+import UserAPI from '../api/UserAPI';
 import MyText from '../components/MyText';
 import TimeRecordForm from '../components/time-record/time-record-form'
 import {useTheme} from '../theme/Colors';
+import User from '../models/User';
 
 function DashboardScreen({}): React.ReactElement {
   const {colors} = useTheme();
-  const user = 'user';
+  const [user, setUser] = useState<User>();
+
+  const client = new APIClient();
+  const userAPI = new UserAPI(client);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const userData = await userAPI.getUserMe();
+      setUser(userData);
+    };
+
+    fetchUser();
+  }, []);
 
   const styles = StyleSheet.create({
     container: {
@@ -36,7 +51,7 @@ function DashboardScreen({}): React.ReactElement {
 
   return (
     <View style={styles.container}>
-      <MyText style={styles.welcome}>Welcome, {user}</MyText>
+      <MyText style={styles.welcome}>Welcome{user ? ', ' + user.firstName : ''}</MyText>
       <TimeRecordForm styles={styles}/>
       <View style={styles.section}>
         <MyText style={styles.sectionTitle}>Monthly Activity</MyText>
