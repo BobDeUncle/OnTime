@@ -43,6 +43,10 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles }) => {
   });  
   const [notes, setNotes] = useState('');
 
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [jobsiteValid, setJobsiteValid] = useState(true);
+  const [endTimeValid, setEndTimeValid] = useState(true); 
+
   const getJobsites = async () => {
     setLoading(true);
     try {
@@ -57,6 +61,21 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles }) => {
 
   const handleSubmit = async () => {
     setLoading(true);
+    setFormSubmitted(true);
+    const selectedJobsite = jobsites.find(js => js._id === jobsite);
+
+    // Validate inputs
+    const isJobsiteValid = !!jobsite;
+    const isEndTimeValid = !!endTime && endTime > startTime;
+
+    // Update validation status
+    setJobsiteValid(isJobsiteValid);
+    setEndTimeValid(isEndTimeValid);
+
+    // If any input is invalid, return early
+    if (!isJobsiteValid || !isEndTimeValid) {
+      return;
+    }
 
     try {
       await timeRecordAPI.addTimeRecord({
@@ -64,11 +83,7 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles }) => {
         // date: date,
         startTime: startTime.toISOString(), 
         endTime: endTime.toISOString(),
-        jobsite: {
-          _id: '66063a1864983a0fb7bb32db',
-          name: 'Project Y',
-          city: 'Coffs Harbour',
-        },
+        jobsite: selectedJobsite,
         isApproved: false,
       });
 
@@ -94,9 +109,16 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles }) => {
 
   const localStyles = StyleSheet.create({
     timesheetView: {},
+    invalidForm: {
+      color: colors.warning,
+      paddingBottom: 10,
+    },
+    invalidFormIcon: {
+      color: colors.warning,
+    },
     placeholderText: {
       color: colors.border,
-      fontSize: 16,
+      fontSize: 14,
     },
     dropdownInputIOS: {
       color: colors.text,
@@ -104,17 +126,15 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles }) => {
       paddingHorizontal: 10,
       paddingBottom: 10,
       borderWidth: 1,
-      borderColor: colors.border,
       borderRadius: 4,
     },
     dropdownInputAndroid: {
       color: colors.text,
       borderWidth: 1,
-      borderColor: colors.border,
       borderRadius: 4,
     },
     dropdownIcon: {
-      top: 8,
+      top: 6,
       right: 10,
     },
     dateTimeInput: {
@@ -140,24 +160,50 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles }) => {
     },
     text: {
       color: colors.border,
+      fontSize: 14,
     },
   });
 
   return (
     <View style={styles.section}>
-      <MyText style={styles.sectionTitle}>New Timesheet</MyText>
+      <MyText style={styles.sectionTitle}>New Time Record</MyText>
+      {!jobsiteValid && (
+        <MyText style={localStyles.invalidForm}>
+          <FontAwesomeIcon icon='exclamation' style={localStyles.invalidFormIcon}/> Please pick a jobsite
+        </MyText>
+      )}
+
+      {!endTimeValid && (
+        <MyText style={localStyles.invalidForm}>
+          <FontAwesomeIcon icon='exclamation' style={localStyles.invalidFormIcon}/> End Time must be after the Start Time
+        </MyText>
+      )}
       <RNPickerSelect
-        onValueChange={value => setJobsite(value)}
+        onValueChange={value => {
+          setJobsite(value);
+          if (formSubmitted) {
+            setJobsiteValid(!!value);
+          }
+        }}
         items={jobsites.map(jobsite => ({ label: jobsite.name, value: jobsite._id }))}
         placeholder={{label: 'Select Jobsite', value: null}}
         Icon={() => {
-          return <FontAwesomeIcon icon='chevron-down' size={24} color={colors.border} />;
+          return <FontAwesomeIcon icon='chevron-down' size={24} color={jobsiteValid ? colors.border : colors.warning} />;
         }}
         style={{
-          inputIOS: localStyles.dropdownInputIOS,
-          inputAndroid: localStyles.dropdownInputAndroid,
+          inputIOS: {
+            ...localStyles.dropdownInputIOS,
+            borderColor: jobsiteValid ? colors.border : colors.warning,
+          },
+          inputAndroid: {
+            ...localStyles.dropdownInputAndroid,
+            borderColor: jobsiteValid ? colors.border : colors.warning,
+          },
           iconContainer: localStyles.dropdownIcon,
-          placeholder: localStyles.placeholderText,
+          placeholder: {
+            ...localStyles.placeholderText,
+            color: jobsiteValid ? colors.border : colors.warning,
+          },
         }}
       />
       <View style={localStyles.dateTimeInput}>
@@ -185,8 +231,14 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles }) => {
           }}
         />
       </View>
-      <View style={localStyles.dateTimeInput}>
-        <MyText style={localStyles.text}>End Time: </MyText>
+      <View style={{
+        ...localStyles.dateTimeInput,
+        borderColor: endTimeValid ? colors.border : colors.warning,
+      }}>
+        <MyText style={{
+          ...localStyles.text,
+          color: endTimeValid ? colors.border : colors.warning,
+        }}>End Time: </MyText>
         <DateTimePicker
           value={endTime}
           mode="time"
@@ -194,6 +246,7 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles }) => {
           onChange={(event, selectedTime) => {
             const currentTime = selectedTime || endTime;
             setEndTime(currentTime);
+            setEndTimeValid(true);
           }}
         />
       </View>

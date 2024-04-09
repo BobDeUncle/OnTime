@@ -30,7 +30,7 @@ function DashboardScreen({}): React.ReactElement {
       color: colors.text,
       fontSize: 18,
       fontWeight: 'bold',
-      paddingBottom: 10,
+      paddingBottom: 15,
     },
   });
 
