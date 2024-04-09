@@ -1,6 +1,5 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect, useCallback} from 'react';
-import {ActivityIndicator, Alert, FlatList, Modal, StyleSheet, TextInput, TouchableHighlight, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, Animated, FlatList, Modal, StyleSheet, TextInput, TouchableHighlight, TouchableOpacity, View} from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import MyText from '../../components/MyText';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -11,8 +10,7 @@ import APIClient from '../../api/APIClient';
 import TimeRecordAPI from '../../api/TimeRecordAPI';
 import TimeRecord from '../../models/TimeRecord';
 import TimeRecordItem from './time-record';
-import JobsiteAPI from '../../api/JobsiteAPI';
-import Jobsite from '../../models/Jobsite';
+import TimeRecordFilter from './time-record-filter';
 
 const TimeRecordList: React.FC = () => {
   const {colors} = useTheme();
@@ -20,28 +18,23 @@ const TimeRecordList: React.FC = () => {
   const [timeRecords, setTimeRecords] = useState<TimeRecord[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [modalVisible, setModalVisible] = useState(false);
-  const [jobsites, setJobsites] = useState<Jobsite[]>([]);
-  const [selectedJobsite, setSelectedJobsite] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('');
-  const [selectedDate, setSelectedDate] = useState('');
-  const [selectedSortOrder, setSelectedSortOrder] = useState('asc');
 
   const client = new APIClient();
   const timeRecordAPI = new TimeRecordAPI(client);
-  const jobsiteAPI = new JobsiteAPI(client);
 
-  const getJobsites = async () => {
-    setLoading(true);
-    try {
-      const jobsitesData = await jobsiteAPI.getAllJobsites();
-      setJobsites(jobsitesData);
-    } catch (error) {
-      console.error('Error fetching jobsites:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    // Fetch data when the component mounts
+    fetchTimeRecords();
+
+    // Listen for the 'timeRecordsUpdated' event
+    storageEmitter.on('timeRecordsUpdated', refreshList);
+
+    // Cleanup function
+    return () => {
+      // Remove the event listener when the component unmounts
+      storageEmitter.off('timeRecordsUpdated', refreshList);
+    };
+  }, []);
 
   const refreshList = () => {
     fetchTimeRecords();
@@ -61,21 +54,6 @@ const TimeRecordList: React.FC = () => {
     }
   }, [timeRecordAPI]);
 
-  useEffect(() => {
-    // Fetch data when the component mounts
-    getJobsites();
-    fetchTimeRecords();
-
-    // Listen for the 'timeRecordsUpdated' event
-    storageEmitter.on('timeRecordsUpdated', refreshList);
-
-    // Cleanup function
-    return () => {
-      // Remove the event listener when the component unmounts
-      storageEmitter.off('timeRecordsUpdated', refreshList);
-    };
-  }, []);
-
   if (loading) {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -84,8 +62,9 @@ const TimeRecordList: React.FC = () => {
     );
   };
 
-  const applyFiltering = () => {
-    console.log('applyfiltering');
+  const handleApplyFilter = (selectedJobsite: string, selectedStatus: string, selectedDate: string, selectedSortOrder: string) => {
+    // Update the `timeRecords` state variable based on the selected filter values.
+    console.log('apply filtering');
   };
 
   const styles = StyleSheet.create({
@@ -100,7 +79,7 @@ const TimeRecordList: React.FC = () => {
     },
     searchBar: {
       flexDirection: 'row',
-      flex: 0.85,
+      flex: 0.7,
       alignItems: 'center',
       backgroundColor: colors.background,
       borderWidth: 1,
@@ -225,145 +204,9 @@ const TimeRecordList: React.FC = () => {
           <FontAwesomeIcon icon='search' size={20} color={colors.border} />
         </View>
         <View style={styles.filterView}>
-          <TouchableHighlight
-            underlayColor='transparent'
-            onPress={() => {
-              setModalVisible(true);
-            }}
-          >
-            <FontAwesomeIcon icon='sliders' size={26} color={colors.opText}/>
-          </TouchableHighlight>
+          <TimeRecordFilter onApply={handleApplyFilter} />
         </View>
       </View>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalBackdrop} />
-          <View style={styles.modalView}>
-            <View style={styles.modalHeader}>
-              <TouchableHighlight
-                onPress={() => {
-                  setModalVisible(!modalVisible);
-                }}
-                underlayColor='transparent'
-              >
-                <MyText style={styles.modalButtons}>Cancel</MyText>
-              </TouchableHighlight>
-              <MyText style={styles.modalTitle}>Filter Timesheets</MyText>
-              <TouchableHighlight
-                onPress={() => {
-                  setSelectedJobsite('');
-                  setSelectedStatus('');
-                  setSelectedDate('');
-                  setSelectedSortOrder('asc');
-                }}
-                underlayColor='transparent'
-              >
-                <MyText style={styles.modalButtons}>Reset</MyText>
-              </TouchableHighlight>
-            </View>
-
-            <View style={styles.modalSectionTitleView}>
-              <MyText style={styles.modalSectionTitle}>Sort By</MyText>
-            </View>
-
-            <RNPickerSelect
-              value={selectedJobsite}
-              onValueChange={(value) => setSelectedJobsite(value)}
-              items={jobsites.map(jobsite => ({ label: jobsite.name, value: jobsite._id }))}
-              placeholder={{label: 'Select Jobsite', value: null}}
-              Icon={() => {
-                return <FontAwesomeIcon icon='chevron-down' size={24} color={colors.border} />;
-              }}
-              style={{
-                inputIOS: styles.dropdownInputIOS,
-                inputAndroid: styles.dropdownInputAndroid,
-                iconContainer: styles.dropdownIcon,
-                placeholder: styles.placeholderText,
-              }}
-            />
-
-            <RNPickerSelect
-              value={selectedStatus}
-              onValueChange={(value) => setSelectedStatus(value)}
-              items={[
-                { label: 'Approved', value: 'approved' },
-                { label: 'Pending', value: 'pending' },
-                { label: 'Denied', value: 'denied' },
-                // Add more status options as needed
-              ]}
-              placeholder={{label: 'Select Status', value: null}}
-              Icon={() => {
-                return <FontAwesomeIcon icon='chevron-down' size={24} color={colors.border} />;
-              }}
-              style={{
-                inputIOS: styles.dropdownInputIOS,
-                inputAndroid: styles.dropdownInputAndroid,
-                iconContainer: styles.dropdownIcon,
-                placeholder: styles.placeholderText,
-              }}
-            />
-
-            <RNPickerSelect
-              value={selectedDate}
-              onValueChange={(value) => setSelectedDate(value)}
-              items={[
-                { label: 'Today', value: new Date().toISOString() },
-                // Add more date options as needed
-              ]}
-              placeholder={{label: 'Select Date', value: null}}
-              Icon={() => {
-                return <FontAwesomeIcon icon='chevron-down' size={24} color={colors.border} />;
-              }}
-              style={{
-                inputIOS: styles.dropdownInputIOS,
-                inputAndroid: styles.dropdownInputAndroid,
-                iconContainer: styles.dropdownIcon,
-                placeholder: styles.placeholderText,
-              }}
-            />
-
-            <View style={styles.modalSectionTitleView}>
-              <MyText style={styles.modalSectionTitle}>Order</MyText>
-            </View>
-
-            <RNPickerSelect
-              value={selectedSortOrder}
-              placeholder={{}}
-              onValueChange={(value) => setSelectedSortOrder(value)}
-              items={[
-                { label: 'Ascending', value: 'asc' },
-                { label: 'Descending', value: 'desc' },
-              ]}
-              Icon={() => {
-                return <FontAwesomeIcon icon='chevron-down' size={24} color={colors.border} />;
-              }}
-              style={{
-                inputIOS: styles.dropdownInputIOS,
-                inputAndroid: styles.dropdownInputAndroid,
-                iconContainer: styles.dropdownIcon,
-              }}
-            />
-
-            <View style={styles.applyButtonContainer}>
-              <TouchableOpacity
-                style={styles.applyButton}
-                onPress={() => {
-                  applyFiltering();
-                }}
-              >
-                <MyText style={styles.applyButtonText}>Apply</MyText>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
 
       <FlatList
         scrollEnabled={false}
