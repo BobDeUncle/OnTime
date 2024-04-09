@@ -14,6 +14,7 @@ import {useTheme} from '../theme/Colors';
 import AuthAPI from '../api/AuthAPI';
 import APIClient from '../api/APIClient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import MyText from '../components/MyText';
 
 interface LoginScreenProps {
@@ -36,6 +37,7 @@ function LoginScreen({
 
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
+  const [isEmailPasswordValid, setIsEmailPasswordValid] = useState(true);
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
@@ -46,6 +48,7 @@ function LoginScreen({
     setIsLoading(true);
 
     // Form Validation
+    setIsEmailPasswordValid(true);
     if (email !== '') {
       setIsEmailValid(true);
     } else {
@@ -80,14 +83,15 @@ function LoginScreen({
       setIsAuthenticated(true);
     } catch (error) {
       console.error('Error:', error);
-      Alert.alert(
-        'Error',
-        'Incorrect email or password. Please try again.',
-        [
-          {text: 'OK', onPress: () => console.log('OK Pressed')}
-        ],
-        { cancelable: false }
-      );
+      setIsEmailPasswordValid(false);
+      // Alert.alert(
+      //   'Error',
+      //   'Incorrect email or password. Please try again.',
+      //   [
+      //     {text: 'OK', onPress: () => console.log('OK Pressed')}
+      //   ],
+      //   { cancelable: false }
+      // );
     } finally {
       setIsLoading(false);
     }
@@ -141,6 +145,13 @@ function LoginScreen({
       fontWeight: 'bold',
       color: 'grey',
     },
+    invalidForm: {
+      color: colors.warning,
+      paddingBottom: 10,
+    },
+    invalidFormIcon: {
+      color: colors.warning,
+    },
     inputView: {
       gap: 15,
       width: '100%',
@@ -155,12 +166,6 @@ function LoginScreen({
       borderWidth: 1,
       borderRadius: 7,
       paddingLeft: 10,
-    },
-    errorText: {
-      color: colors.warning,
-      fontSize: 12,
-      marginLeft: 5,
-      margin: 0,
     },
     switch: {
       flexDirection: 'row',
@@ -207,6 +212,21 @@ function LoginScreen({
         <MyText style={styles.welcome}>Welcome</MyText>
         <View style={styles.greenLine} />
         <MyText style={styles.subtext}>Please login to your account</MyText>
+        {!isEmailValid && (
+          <MyText style={styles.invalidForm}>
+            <FontAwesomeIcon icon='exclamation' style={styles.invalidFormIcon}/> Invalid Email
+          </MyText>
+        )}
+        {!isPasswordValid && (
+          <MyText style={styles.invalidForm}>
+            <FontAwesomeIcon icon='exclamation' style={styles.invalidFormIcon}/> Invalid Password
+          </MyText>
+        )}
+        {!isEmailPasswordValid && (
+          <MyText style={styles.invalidForm}>
+            <FontAwesomeIcon icon='exclamation' style={styles.invalidFormIcon}/> Invalid Email or Password
+          </MyText>
+        )}
         <View style={styles.inputView}>
           <TextInput
             style={{
@@ -229,7 +249,6 @@ function LoginScreen({
             autoCorrect={false}
             autoCapitalize="none"
           />
-          {emailError ? <MyText style={styles.errorText}>{emailError}</MyText> : null}
           <TextInput
             style={{
               ...styles.input,
@@ -252,7 +271,6 @@ function LoginScreen({
             autoCorrect={false}
             autoCapitalize="none"
           />
-          {passwordError ? <MyText style={styles.errorText}>{passwordError}</MyText> : null}
         </View>
         <View style={styles.buttonView}>
           <Pressable

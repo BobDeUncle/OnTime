@@ -5,7 +5,6 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from 'react-native-picker-select';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { storageEmitter } from '../storageEmitter';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {useTheme} from '../../theme/Colors';
 import TimeRecordAPI from '../../api/TimeRecordAPI';
