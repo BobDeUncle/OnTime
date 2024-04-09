@@ -65,7 +65,7 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles }) => {
     const selectedJobsite = jobsites.find(js => js._id === jobsite);
 
     // Validate inputs
-    const isJobsiteValid = !!jobsite;
+    const isJobsiteValid = jobsite !== null && jobsite !== 'null';
     const isEndTimeValid = !!endTime && endTime > startTime;
 
     // Update validation status
@@ -77,26 +77,46 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles }) => {
       return;
     }
 
-    try {
-      await timeRecordAPI.addTimeRecord({
-        employee: '660e6d7413463bb6826432f1',
-        // date: date,
-        startTime: startTime.toISOString(), 
-        endTime: endTime.toISOString(),
-        jobsite: selectedJobsite,
-        isApproved: false,
-      });
+    const totalHours = (endTime.getTime() - startTime.getTime()) / (1000 * 60 * 60);
 
-      saveTimeRecord();
-    } catch (error) {
-      console.error('Error creating time record:', error);
-      Alert.alert(
-        'Error',
-        'Failed to create time record. Please try again later.',
-      );
-    } finally {
-      setLoading(false);
-    }
+    // Show a confirmation popup
+    Alert.alert(
+      'Submit Time Record',
+      `You worked at ${selectedJobsite?.name ?? 'ERROR'} for ${totalHours.toFixed(2)} hours. Do you wish to submit this record? `, // Message
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Submission cancelled'),
+          style: 'cancel',
+        },
+        {
+          text: 'Submit',
+          onPress: async () => {
+            try {
+              await timeRecordAPI.addTimeRecord({
+                employee: '660e6d7413463bb6826432f1',
+                // date: date,
+                startTime: startTime.toISOString(), 
+                endTime: endTime.toISOString(),
+                jobsite: selectedJobsite,
+                isApproved: false,
+              });
+        
+              saveTimeRecord();
+            } catch (error) {
+              console.error('Error creating time record:', error);
+              Alert.alert(
+                'Error',
+                'Failed to create time record. Please try again later.',
+              );
+            } finally {
+              setLoading(false);
+            }
+          },
+        },
+      ],
+      { cancelable: false },
+    );
   };
 
   const saveTimeRecord = async () => {

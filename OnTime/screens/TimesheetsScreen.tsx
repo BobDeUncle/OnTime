@@ -10,9 +10,8 @@ const TimesheetsScreen = () => {
 
   return (
     <ScrollView style={{backgroundColor: colors.background}}>
-      <MyText style={{color: colors.text}}>This is Timesheets Screen</MyText>
-      <TimeRecordList />
       <NewTimeRecordButton />
+      <TimeRecordList />
     </ScrollView>
   );
 };

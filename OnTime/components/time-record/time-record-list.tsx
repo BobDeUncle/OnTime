@@ -58,7 +58,6 @@ const TimeRecordList: React.FC = () => {
 
   return (
     <View>
-      <MyText style={{fontSize: 24, marginBottom: 16}}>Time Records</MyText>
       <FlatList
         scrollEnabled={false}
         data={timeRecords}
