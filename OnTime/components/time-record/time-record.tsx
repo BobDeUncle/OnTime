@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import {useTheme} from '../../theme/Colors';
 import MyText from '../../components/MyText';
 import TimeRecord from '../../models/TimeRecord';
 import TimeRecordAPI from '../../api/TimeRecordAPI';
@@ -14,8 +15,16 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
   timeRecord,
   refreshList,
 }) => {
+  const {colors} = useTheme();
+
   const client = new APIClient();
   const timeRecordAPI = new TimeRecordAPI(client);
+
+  timeRecord.startTime = new Date(timeRecord.startTime);
+  timeRecord.endTime = new Date(timeRecord.endTime);
+
+  // FIX ONCE APPROVAL STATUS IS IMPLEMENTED
+  timeRecord.approvalStatus = 'Approved';
 
   const handleDelete = async () => {
     try {
@@ -31,42 +40,117 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
     }
   };
 
+  const getApprovalColor = (status: string) => {
+    switch (status) {
+      case 'Approved':
+        return 'rgba(0, 128, 0, 0.5)'; // Semi-transparent green
+      case 'Pending':
+        return 'rgba(255, 165, 0, 0.5)'; // Semi-transparent orange
+      case 'Denied':
+        return 'rgba(255, 0, 0, 0.5)'; // Semi-transparent red
+      default:
+        return 'rgba(0, 0, 0, 0.5)'; // Semi-transparent black
+    }
+  };
+
+  const styles = StyleSheet.create({
+    container: {
+      margin: 10,
+      borderRadius: 20,
+      borderWidth: 2,
+      borderColor: colors.border,
+    },
+    line: {
+      height: 1.3,
+      backgroundColor: 'black',
+      padding: 0,
+    },
+    verticalLine: {
+      width: 1.3,
+      backgroundColor: 'black',
+    },
+    row: {
+      flexDirection: 'row',
+    },
+    column: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    text: {
+      fontSize: 14,
+      paddingHorizontal: 12,
+      paddingTop: 0,
+      paddingBottom: 4,
+    },
+    secondText: {
+      fontSize: 14,
+      // fontWeight: 'bold',
+      paddingHorizontal: 12,
+      paddingTop: 4,
+      paddingBottom: 5,
+      textAlign: 'center',
+    },
+    approvalText: {
+      fontSize: 14,
+      fontWeight: 'bold',
+      paddingHorizontal: 12,
+      paddingTop: 1,
+      paddingBottom: 1,
+      textAlign: 'center',
+    },
+    statusBackground: {
+      paddingHorizontal: 6,
+      marginBottom: 10,
+    },
+    button: {
+      backgroundColor: 'red',
+      padding: 10,
+      borderRadius: 5,
+      alignItems: 'center',
+    },
+    buttonText: {
+      color: 'white',
+      fontWeight: 'bold',
+    },
+  });
+
   return (
     <View style={styles.container}>
-      <MyText style={styles.text}> Email: {timeRecord.employee.email}</MyText>
-      {/* <MyText style={styles.text}>
-        Date: {timeRecord.date.toString()}
-      </MyText> */}
-      <MyText style={styles.text}> ID: {timeRecord.employee._id}</MyText>
-      <MyText style={styles.text}> Jobsite Name: {timeRecord.jobsite.name}</MyText>
-      <MyText style={styles.text}> Jobsite City: {timeRecord.jobsite.city}</MyText>
-      <TouchableOpacity style={styles.button} onPress={handleDelete}>
+      <MyText style={{
+        ...styles.text,
+        paddingTop: 12,
+      }}>
+        Date: {/* {timeRecord.date.toString()} */}
+      </MyText>
+      <MyText style={styles.text}>Jobsite: {timeRecord.jobsite.name}, {timeRecord.jobsite.city}</MyText>
+      <MyText style={styles.text}>
+        Time: {timeRecord.startTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', second: undefined, hour12: true })} - {timeRecord.endTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', second: undefined, hour12: true })}
+      </MyText>
+      {/* <TouchableOpacity style={styles.button} onPress={handleDelete}>
         <MyText style={styles.buttonText}>Delete</MyText>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+      <View style={styles.line} />
+      <View style={styles.row}>
+        <View style={styles.column}>
+          <MyText style={styles.secondText}>
+            Total Hours: {/* Calculate total hours here */}
+          </MyText>
+        </View>
+        <View style={styles.verticalLine} />
+        <View style={styles.column}>
+          <MyText style={styles.secondText}>
+            Approval status:
+          </MyText>
+          <View style={[styles.statusBackground, {backgroundColor: getApprovalColor(timeRecord.approvalStatus)}]}>
+            <MyText style={styles.approvalText}>
+              {timeRecord.approvalStatus}
+            </MyText>
+          </View>
+        </View>
+      </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  text: {
-    fontSize: 16,
-    marginBottom: 8,
-  },
-  button: {
-    backgroundColor: 'red',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-});
 
 export default TimeRecordItem;
