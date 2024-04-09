@@ -34,11 +34,36 @@ function LoginScreen({
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  const [isEmailValid, setIsEmailValid] = useState(true);
+  const [isPasswordValid, setIsPasswordValid] = useState(true);
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
   const client = new APIClient();
   const authAPI = new AuthAPI(client);
 
   const handleLogin = async () => {
     setIsLoading(true);
+
+    // Form Validation
+    if (email !== '') {
+      setIsEmailValid(true);
+    } else {
+      setIsEmailValid(false);
+      setEmailError('Email is invalid');
+      setIsLoading(false);
+      return;
+    }
+  
+    if (password !== '') {
+      setIsPasswordValid(true);
+    } else {
+      setIsPasswordValid(false);
+      setPasswordError('Password is invalid');
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const authData = await authAPI.addAuth({
         email: email,
@@ -131,6 +156,12 @@ function LoginScreen({
       borderRadius: 7,
       paddingLeft: 10,
     },
+    errorText: {
+      color: colors.warning,
+      fontSize: 12,
+      marginLeft: 5,
+      margin: 0,
+    },
     switch: {
       flexDirection: 'row',
       gap: 1,
@@ -178,24 +209,50 @@ function LoginScreen({
         <MyText style={styles.subtext}>Please login to your account</MyText>
         <View style={styles.inputView}>
           <TextInput
-            style={styles.input}
+            style={{
+              ...styles.input,
+              borderColor: isEmailValid ? colors.border : colors.warning,
+            }}
             placeholder="Email"
-            placeholderTextColor={'grey'}
+            placeholderTextColor={isEmailValid ? colors.border : colors.warning}
             value={email}
-            onChangeText={setEmail}
+            onChangeText={(text) => {
+              setEmail(text);
+              if (text !== '') {
+                setIsEmailValid(true);
+                setEmailError('');
+              } else {
+                setIsEmailValid(false);
+                setEmailError('Email is invalid');
+              }
+            }}
             autoCorrect={false}
             autoCapitalize="none"
           />
+          {emailError ? <MyText style={styles.errorText}>{emailError}</MyText> : null}
           <TextInput
-            style={styles.input}
+            style={{
+              ...styles.input,
+              borderColor: isPasswordValid ? colors.border : colors.warning,
+            }}
             placeholder="Password"
-            placeholderTextColor={'grey'}
+            placeholderTextColor={isPasswordValid ? colors.border : colors.warning}
             secureTextEntry
             value={password}
-            onChangeText={setPassword}
+            onChangeText={(text) => {
+              setPassword(text);
+              if (text !== '') {
+                setIsPasswordValid(true);
+                setPasswordError('');
+              } else {
+                setIsPasswordValid(false);
+                setPasswordError('Password is invalid');
+              }
+            }}
             autoCorrect={false}
             autoCapitalize="none"
           />
+          {passwordError ? <MyText style={styles.errorText}>{passwordError}</MyText> : null}
         </View>
         <View style={styles.buttonView}>
           <Pressable
