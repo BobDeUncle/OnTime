@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect, useCallback} from 'react';
-import {ActivityIndicator, Alert, FlatList, Modal, StyleSheet, TextInput, TouchableHighlight, View} from 'react-native';
+import {ActivityIndicator, Alert, FlatList, Modal, StyleSheet, TextInput, TouchableHighlight, TouchableOpacity, View} from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import MyText from '../../components/MyText';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -13,7 +13,6 @@ import TimeRecord from '../../models/TimeRecord';
 import TimeRecordItem from './time-record';
 import JobsiteAPI from '../../api/JobsiteAPI';
 import Jobsite from '../../models/Jobsite';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const TimeRecordList: React.FC = () => {
   const {colors} = useTheme();
@@ -26,6 +25,7 @@ const TimeRecordList: React.FC = () => {
   const [selectedJobsite, setSelectedJobsite] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
+  const [selectedSortOrder, setSelectedSortOrder] = useState('asc');
 
   const client = new APIClient();
   const timeRecordAPI = new TimeRecordAPI(client);
@@ -84,6 +84,10 @@ const TimeRecordList: React.FC = () => {
     );
   };
 
+  const applyFiltering = () => {
+    console.log('applyfiltering');
+  };
+
   const styles = StyleSheet.create({
     centeredView: {
       flex: 1,
@@ -119,14 +123,22 @@ const TimeRecordList: React.FC = () => {
       alignItems: 'center',
       paddingRight: 5,
     },
+    modalBackdrop: {
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
     modalView: {
       width: '100%',
-      backgroundColor: "white",
+      backgroundColor: colors.background,
       borderTopLeftRadius: 30,
       borderTopRightRadius: 30,
       padding: 35,
-      alignItems: "center",
-      shadowColor: "#000",
+      alignItems: 'center',
+      shadowColor: 'black',
       shadowOffset: {
         width: 0,
         height: 2
@@ -135,21 +147,68 @@ const TimeRecordList: React.FC = () => {
       shadowRadius: 4,
       elevation: 5,
     },
-    openButton: {
-      backgroundColor: "#F194FF",
-      borderRadius: 20,
-      padding: 10,
-      elevation: 2
+    modalHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 20,
     },
-    textStyle: {
-      color: "white",
-      fontWeight: "bold",
-      textAlign: "center"
+    modalTitle: {
+      fontWeight: 'bold',
+      fontSize: 20,
+      paddingHorizontal: 30,
+    },
+    modalSectionTitleView: {
+      textAlign: 'left',
+      paddingHorizontal: 0,
+      paddingBottom: 10,
+      alignSelf: 'stretch',
+    },
+    modalSectionTitle: {
+      fontWeight: 'bold',
+      fontSize: 16,
+    },
+    modalButtons: {
+      color: colors.warning,
     },
     modalText: {
       marginBottom: 15,
-      textAlign: "center"
-    }
+      textAlign: 'center',
+    },
+    dropdownInputIOS: {
+      color: colors.opText,
+      borderColor: colors.border,
+      paddingTop: 10,
+      paddingHorizontal: 10,
+      paddingBottom: 10,
+      marginBottom: 10,
+      borderWidth: 1,
+      borderRadius: 4,
+    },
+    dropdownInputAndroid: {
+      color: colors.opText,
+      borderColor: colors.border,
+      borderWidth: 1,
+      borderRadius: 4,
+    },
+    dropdownIcon: {
+      color: colors.border,
+      top: 6,
+      right: 10,
+    },
+    applyButtonContainer: {
+      alignSelf: 'stretch',
+      alignItems: 'flex-end',
+    },
+    applyButton: {
+      backgroundColor: colors.primary,
+      padding: 10,
+      borderRadius: 5,
+      marginTop: 5,
+    },
+    applyButtonText: {
+      color: colors.text,
+    },
   });
 
   return (
@@ -181,22 +240,57 @@ const TimeRecordList: React.FC = () => {
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
           setModalVisible(!modalVisible);
         }}
       >
         <View style={styles.centeredView}>
+          <View style={styles.modalBackdrop} />
           <View style={styles.modalView}>
-            <MyText style={styles.modalText}>Filter Timesheets</MyText>
+            <View style={styles.modalHeader}>
+              <TouchableHighlight
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                }}
+                underlayColor='transparent'
+              >
+                <MyText style={styles.modalButtons}>Cancel</MyText>
+              </TouchableHighlight>
+              <MyText style={styles.modalTitle}>Filter Timesheets</MyText>
+              <TouchableHighlight
+                onPress={() => {
+                  setSelectedJobsite('');
+                  setSelectedStatus('');
+                  setSelectedDate('');
+                  setSelectedSortOrder('asc');
+                }}
+                underlayColor='transparent'
+              >
+                <MyText style={styles.modalButtons}>Reset</MyText>
+              </TouchableHighlight>
+            </View>
 
-            <MyText>Jobsite</MyText>
+            <View style={styles.modalSectionTitleView}>
+              <MyText style={styles.modalSectionTitle}>Sort By</MyText>
+            </View>
+
             <RNPickerSelect
+              value={selectedJobsite}
               onValueChange={(value) => setSelectedJobsite(value)}
               items={jobsites.map(jobsite => ({ label: jobsite.name, value: jobsite._id }))}
+              placeholder={{label: 'Select Jobsite', value: null}}
+              Icon={() => {
+                return <FontAwesomeIcon icon='chevron-down' size={24} color={colors.border} />;
+              }}
+              style={{
+                inputIOS: styles.dropdownInputIOS,
+                inputAndroid: styles.dropdownInputAndroid,
+                iconContainer: styles.dropdownIcon,
+                placeholder: styles.placeholderText,
+              }}
             />
 
-            <MyText>Status</MyText>
             <RNPickerSelect
+              value={selectedStatus}
               onValueChange={(value) => setSelectedStatus(value)}
               items={[
                 { label: 'Approved', value: 'approved' },
@@ -204,25 +298,69 @@ const TimeRecordList: React.FC = () => {
                 { label: 'Denied', value: 'denied' },
                 // Add more status options as needed
               ]}
+              placeholder={{label: 'Select Status', value: null}}
+              Icon={() => {
+                return <FontAwesomeIcon icon='chevron-down' size={24} color={colors.border} />;
+              }}
+              style={{
+                inputIOS: styles.dropdownInputIOS,
+                inputAndroid: styles.dropdownInputAndroid,
+                iconContainer: styles.dropdownIcon,
+                placeholder: styles.placeholderText,
+              }}
             />
 
-            <MyText>Date</MyText>
             <RNPickerSelect
+              value={selectedDate}
               onValueChange={(value) => setSelectedDate(value)}
               items={[
                 { label: 'Today', value: new Date().toISOString() },
                 // Add more date options as needed
               ]}
+              placeholder={{label: 'Select Date', value: null}}
+              Icon={() => {
+                return <FontAwesomeIcon icon='chevron-down' size={24} color={colors.border} />;
+              }}
+              style={{
+                inputIOS: styles.dropdownInputIOS,
+                inputAndroid: styles.dropdownInputAndroid,
+                iconContainer: styles.dropdownIcon,
+                placeholder: styles.placeholderText,
+              }}
             />
 
-            <TouchableHighlight
-              style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
-              onPress={() => {
-                setModalVisible(!modalVisible);
+            <View style={styles.modalSectionTitleView}>
+              <MyText style={styles.modalSectionTitle}>Order</MyText>
+            </View>
+
+            <RNPickerSelect
+              value={selectedSortOrder}
+              placeholder={{}}
+              onValueChange={(value) => setSelectedSortOrder(value)}
+              items={[
+                { label: 'Ascending', value: 'asc' },
+                { label: 'Descending', value: 'desc' },
+              ]}
+              Icon={() => {
+                return <FontAwesomeIcon icon='chevron-down' size={24} color={colors.border} />;
               }}
-            >
-              <MyText style={styles.textStyle}>Hide Modal</MyText>
-            </TouchableHighlight>
+              style={{
+                inputIOS: styles.dropdownInputIOS,
+                inputAndroid: styles.dropdownInputAndroid,
+                iconContainer: styles.dropdownIcon,
+              }}
+            />
+
+            <View style={styles.applyButtonContainer}>
+              <TouchableOpacity
+                style={styles.applyButton}
+                onPress={() => {
+                  applyFiltering();
+                }}
+              >
+                <MyText style={styles.applyButtonText}>Apply</MyText>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
