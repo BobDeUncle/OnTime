@@ -46,35 +46,41 @@ const TimesheetsScreen: React.FC = () => {
     }).start();
   }, [overlayVisible]);
 
-  const refreshList = () => {
-    fetchTimeRecords();
+  const refreshList = (params?: any) => {
+    fetchTimeRecords(params);
   }
 
-  const fetchTimeRecords = useCallback(async () => {
+  const fetchTimeRecords = useCallback(async (params = {}) => {
     setLoading(true);
     try {
       const timeRecordsData: TimeRecord[] =
-        await timeRecordAPI.getAllTimeRecords();
-
+        await timeRecordAPI.getAllTimeRecords(params);
+  
       setTimeRecords(timeRecordsData);
     } catch (error) {
       console.error('Error fetching time records:', error);
     } finally {
       setLoading(false);
     }
-  }, [timeRecordAPI]);
+  }, [timeRecordAPI]);  
 
   if (loading) {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   };
 
   const handleApplyFilter = (selectedJobsite: string, selectedStatus: string, selectedDate: string, selectedSortOrder: string) => {
-    // Update the `timeRecords` state variable based on the selected filter values.
-    console.log('apply filtering');
+    const params = {
+      jobsites: [selectedJobsite],
+      status: [selectedStatus],
+      date: [selectedDate],
+      sortOrder: [selectedSortOrder]
+    };
+  
+    refreshList(params);
   };
 
   const styles = StyleSheet.create({

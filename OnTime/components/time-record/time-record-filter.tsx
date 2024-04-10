@@ -50,8 +50,9 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply, onModalVis
   };
 
   const applyFiltering = () => {
-    onApply(selectedJobsite, selectedStatus, selectedDate, selectedSortOrder);
     setModalVisible(false);
+    onModalVisibleChange(false);
+    onApply(selectedJobsite, selectedStatus, selectedDate, selectedSortOrder);
   };
 
   const styles = StyleSheet.create({

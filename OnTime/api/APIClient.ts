@@ -1,5 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+function objectToQueryString(obj: any) {
+  return Object.keys(obj)
+    .map(key => Array.isArray(obj[key])
+      ? obj[key].map((value: string | number | boolean) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join('&')
+      : `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`)
+    .join('&');
+}
+
 class APIClient {
   private baseURL: string;
 
@@ -12,11 +20,17 @@ class APIClient {
     url: string,
     method: string,
     body?: any,
+    params?: any,
   ): Promise<T> {
+    // Convert params object to query string
+    const queryString = params ? '?' + objectToQueryString(params.params) : '';
+
+    if (params) console.log('queryString: ', queryString);
+
     // Retrieve the userToken from AsyncStorage
     const userToken = await AsyncStorage.getItem('userToken');
 
-    const response = await fetch(`${this.baseURL}${url}`, {
+    const response = await fetch(`${this.baseURL}${url}${queryString}`, {
       method,
       headers: {
         'Content-Type': 'application/json',
@@ -32,9 +46,9 @@ class APIClient {
     return await response.json();
   }
 
-  public async get<T>(url: string): Promise<T> {
+  public async get<T>(url: string, params?: any): Promise<T> {
     console.log('GET: ', url);
-    return await this.request<T>(url, 'GET');
+    return await this.request<T>(url, 'GET', undefined, params);
   }
 
   public async post<T>(url: string, body: any): Promise<T> {
