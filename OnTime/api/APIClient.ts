@@ -25,7 +25,7 @@ class APIClient {
     // Convert params object to query string
     const queryString = params ? '?' + objectToQueryString(params.params) : '';
 
-    if (params) console.log('queryString: ', queryString);
+    if (params) console.log('url: ', `${this.baseURL}${url}${queryString}`);
 
     // Retrieve the userToken from AsyncStorage
     const userToken = await AsyncStorage.getItem('userToken');
