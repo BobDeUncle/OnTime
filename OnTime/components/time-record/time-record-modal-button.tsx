@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
-import {View, Button, Modal, StyleSheet} from 'react-native';
+import {View, Button, Modal, Pressable, StyleSheet} from 'react-native';
 import TimeRecordForm from './time-record-form';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {useTheme} from '../../theme/Colors';
 
 const NewTimeRecordButton: React.FC = () => {
@@ -49,7 +50,9 @@ const NewTimeRecordButton: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Button title="Add Time Record" onPress={() => setModalVisible(true)} />
+      <Pressable onPress={() => setModalVisible(true)}>
+        <FontAwesomeIcon icon='plus' size={26} color={colors.opText}/>
+      </Pressable>
       <Modal
         animationType="slide"
         transparent={true}

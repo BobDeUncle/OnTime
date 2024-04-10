@@ -60,33 +60,9 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply }) => {
       alignItems: "center",
       marginTop: 22
     },
-    row: {
-      flexDirection: 'row',
-    },
-    searchBar: {
-      flexDirection: 'row',
-      flex: 0.7,
-      alignItems: 'center',
-      backgroundColor: colors.background,
-      borderWidth: 1,
-      borderColor: colors.border,
-      borderRadius: 5,
-      margin: 10,
-      padding: 10,
-    },
-    searchInput: {
-      flex: 1,
-      color: colors.opText,
-    },
     placeholderText: {
       color: colors.border,
       fontSize: 14,
-    },
-    filterView: {
-      flex: 0.15,
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingRight: 5,
     },
     modalBackdrop: {
       position: 'absolute',
@@ -135,10 +111,6 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply }) => {
     },
     modalButtons: {
       color: colors.warning,
-    },
-    modalText: {
-      marginBottom: 15,
-      textAlign: 'center',
     },
     dropdownInputIOS: {
       color: colors.opText,
