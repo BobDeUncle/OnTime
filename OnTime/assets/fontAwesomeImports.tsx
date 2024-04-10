@@ -9,5 +9,6 @@ import {faExclamation} from '@fortawesome/free-solid-svg-icons/faExclamation';
 import {faSearch} from '@fortawesome/free-solid-svg-icons/faSearch';
 import {faSliders} from '@fortawesome/free-solid-svg-icons/faSliders';
 import {faPlus} from '@fortawesome/free-solid-svg-icons/faPlus';
+import {faTimes} from '@fortawesome/free-solid-svg-icons/faTimes';
 
-library.add(fab, faHouse, faClock, faGear, faArrowRightFromBracket, faChevronDown, faExclamation, faSearch, faSliders, faPlus);
+library.add(fab, faHouse, faClock, faGear, faArrowRightFromBracket, faChevronDown, faExclamation, faSearch, faSliders, faPlus, faTimes);

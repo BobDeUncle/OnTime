@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {ActivityIndicator, FlatList, ScrollView, StyleSheet, TextInput, View} from 'react-native';
+import {ActivityIndicator, Animated, FlatList, ScrollView, StyleSheet, TextInput, View} from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { storageEmitter } from '../components/storageEmitter';
 
@@ -18,6 +18,8 @@ const TimesheetsScreen: React.FC = () => {
   const [timeRecords, setTimeRecords] = useState<TimeRecord[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [overlayVisible, setOverlayVisible] = useState(false);
+  const [overlayOpacity, setOverlayOpacity] = useState(new Animated.Value(0.5));
 
   const client = new APIClient();
   const timeRecordAPI = new TimeRecordAPI(client);
@@ -35,6 +37,14 @@ const TimesheetsScreen: React.FC = () => {
       storageEmitter.off('timeRecordsUpdated', refreshList);
     };
   }, []);
+
+  useEffect(() => {
+    Animated.timing(overlayOpacity, {
+      toValue: overlayVisible ? 0.5 : 0,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  }, [overlayVisible]);
 
   const refreshList = () => {
     fetchTimeRecords();
@@ -99,38 +109,52 @@ const TimesheetsScreen: React.FC = () => {
   });
 
   return (
-    <ScrollView style={{backgroundColor: colors.background}}>
-      <View style={styles.row}>
-        <View style={styles.searchBar}>
-          <TextInput
-            onChangeText={text => setSearchQuery(text)}
-            value={searchQuery}
-            placeholder="Search"
-            placeholderTextColor={styles.placeholderText.color}
-            style={styles.searchInput}
-          />
-          <FontAwesomeIcon icon='search' size={20} color={colors.border} />
+    <View style={{flex: 1}}>
+      <ScrollView style={{backgroundColor: colors.background}}>
+        <View style={styles.row}>
+          <View style={styles.searchBar}>
+            <TextInput
+              onChangeText={text => setSearchQuery(text)}
+              value={searchQuery}
+              placeholder="Search"
+              placeholderTextColor={styles.placeholderText.color}
+              style={styles.searchInput}
+            />
+            <FontAwesomeIcon icon='search' size={20} color={colors.border} />
+          </View>
+          <View style={styles.filterView}>
+            <NewTimeRecordButton onModalVisibleChange={setOverlayVisible} />
+          </View>
+          <View style={styles.filterView}>
+            <TimeRecordFilter onApply={handleApplyFilter} onModalVisibleChange={setOverlayVisible} />
+          </View>
         </View>
-        <View style={styles.filterView}>
-          <NewTimeRecordButton />
-        </View>
-        <View style={styles.filterView}>
-          <TimeRecordFilter onApply={handleApplyFilter} />
-        </View>
-      </View>
 
-      <FlatList
-        scrollEnabled={false}
-        data={timeRecords}
-        renderItem={({item}) => (
-          <TimeRecordItem
-            timeRecord={item}
-            refreshList={refreshList}
-          />
-        )}
-        keyExtractor={item => item._id}
+        <FlatList
+          scrollEnabled={false}
+          data={timeRecords}
+          renderItem={({item}) => (
+            <TimeRecordItem
+              timeRecord={item}
+              refreshList={refreshList}
+            />
+          )}
+          keyExtractor={item => item._id}
+        />
+      </ScrollView>
+      <Animated.View
+        style={{
+          position: 'absolute',
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: 'black',
+          opacity: overlayOpacity,
+        }}
+        pointerEvents={overlayVisible ? 'auto' : 'none'}
       />
-    </ScrollView>
+    </View>
   );
 };
 

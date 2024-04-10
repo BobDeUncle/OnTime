@@ -11,9 +11,10 @@ import Jobsite from '../../models/Jobsite';
 
 type TimeRecordFilterProps = {
   onApply: (selectedJobsite: string, selectedStatus: string, selectedDate: string, selectedSortOrder: string) => void;
+  onModalVisibleChange: (visible: boolean) => void;
 };
 
-const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply }) => {
+const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply, onModalVisibleChange }) => {
   const {colors} = useTheme();
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -63,14 +64,6 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply }) => {
     placeholderText: {
       color: colors.border,
       fontSize: 14,
-    },
-    modalBackdrop: {
-      position: 'absolute',
-      top: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalView: {
       width: '100%',
@@ -154,21 +147,19 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply }) => {
         <Pressable
           onPress={() => {
             setModalVisible(true);
+            onModalVisibleChange(true);
           }}
         >
           <FontAwesomeIcon icon='sliders' size={26} color={colors.opText}/>
         </Pressable>
       </View>
-      <Animated.View 
-        style={{ ...styles.modalBackdrop, opacity: modalBackdropOpacity }} 
-        pointerEvents={modalVisible ? 'auto' : 'none'}
-      />
       <Modal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          setModalVisible(!modalVisible);
+          onModalVisibleChange(false);
+          setModalVisible(false);
         }}
       >
         <View style={styles.centeredView}>
@@ -176,7 +167,8 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply }) => {
             <View style={styles.modalHeader}>
               <TouchableHighlight
                 onPress={() => {
-                  setModalVisible(!modalVisible);
+                  onModalVisibleChange(false);
+                  setModalVisible(false);
                 }}
                 underlayColor='transparent'
               >

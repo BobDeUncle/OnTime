@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Alert, View, StyleSheet, TextInput, Button } from 'react-native';
+import { Alert, View, Pressable, StyleSheet, TextInput, Button } from 'react-native';
 import MyText from '../../components/MyText';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from 'react-native-picker-select';
@@ -14,9 +14,11 @@ import APIClient from '../../api/APIClient';
 
 interface TimesheetRecordFormProps {
   styles: any;
+  showCloseButton: boolean,
+  onClose?: () => void;
 }
 
-const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles }) => {  
+const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseButton, onClose }) => {  
   const {colors} = useTheme();
   const user = 'user';
 
@@ -135,6 +137,16 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles }) => {
     invalidFormIcon: {
       color: colors.warning,
     },
+    row: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    closeButton: { 
+      padding: 10,
+      paddingTop: 0,
+      paddingRight: 0,
+    },
     placeholderText: {
       color: colors.border,
       fontSize: 14,
@@ -185,7 +197,14 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles }) => {
 
   return (
     <View style={styles.section}>
-      <MyText style={styles.sectionTitle}>New Time Record</MyText>
+      <View style={localStyles.row}>
+        <MyText style={styles.sectionTitle}>New Time Record</MyText>
+        {showCloseButton && (
+          <Pressable onPress={onClose} style={localStyles.closeButton}>
+            <FontAwesomeIcon icon='times' size={26} color={colors.text}/>
+          </Pressable>
+        )}
+      </View>
       {!jobsiteValid && (
         <MyText style={localStyles.invalidForm}>
           <FontAwesomeIcon icon='exclamation' style={localStyles.invalidFormIcon}/> Please pick a jobsite

@@ -1,10 +1,14 @@
 import React, {useState} from 'react';
-import {View, Button, Modal, Pressable, StyleSheet} from 'react-native';
+import {View, Modal, Pressable, StyleSheet} from 'react-native';
 import TimeRecordForm from './time-record-form';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {useTheme} from '../../theme/Colors';
 
-const NewTimeRecordButton: React.FC = () => {
+type NewTimeRecordButtonProps = {
+  onModalVisibleChange: (visible: boolean) => void;
+}
+
+const NewTimeRecordButton: React.FC<NewTimeRecordButtonProps> = ({ onModalVisibleChange }) => {
   const {colors} = useTheme();
 
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -39,18 +43,14 @@ const NewTimeRecordButton: React.FC = () => {
       alignItems: 'center',
       marginTop: 22,
     },
-    modalView: {
-      backgroundColor: 'white',
-      borderRadius: 20,
-      padding: 35,
-      alignItems: 'center',
-      elevation: 5,
-    },
   });
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={() => setModalVisible(true)}>
+      <Pressable onPress={() => {
+        setModalVisible(true);
+        onModalVisibleChange(true);
+      }}>
         <FontAwesomeIcon icon='plus' size={26} color={colors.opText}/>
       </Pressable>
       <Modal
@@ -59,10 +59,10 @@ const NewTimeRecordButton: React.FC = () => {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}>
         <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <TimeRecordForm styles={styles}/>
-            <Button title="Close" onPress={() => setModalVisible(false)} />
-          </View>
+          <TimeRecordForm styles={styles} showCloseButton={true} onClose={() => {
+            setModalVisible(false);
+            onModalVisibleChange(false);
+          }}/>
         </View>
       </Modal>
     </View>

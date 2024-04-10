@@ -52,7 +52,7 @@ function DashboardScreen({}): React.ReactElement {
   return (
     <View style={styles.container}>
       <MyText style={styles.welcome}>Welcome{user ? ', ' + user.firstName : ''}</MyText>
-      <TimeRecordForm styles={styles}/>
+      <TimeRecordForm styles={styles} showCloseButton={false}/>
       <View style={styles.section}>
         <MyText style={styles.sectionTitle}>Monthly Activity</MyText>
         {/* Add your status indicators here */}
