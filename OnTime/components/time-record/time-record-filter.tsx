@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import {ActivityIndicator, Animated, FlatList, Modal, Pressable, StyleSheet, TextInput, TouchableHighlight, TouchableOpacity, View} from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import MyText from '../../components/MyText';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 
@@ -10,7 +11,7 @@ import JobsiteAPI from '../../api/JobsiteAPI';
 import Jobsite from '../../models/Jobsite';
 
 type TimeRecordFilterProps = {
-  onApply: (selectedJobsite: string, selectedStatus: string, selectedDate: string, selectedSortOrder: string) => void;
+  onApply: (selectedJobsite: string, selectedStatus: string, selectedStartDate: string, selectedEndDate: string, selectedSortOrder: string) => void;
   onModalVisibleChange: (visible: boolean) => void;
 };
 
@@ -21,7 +22,10 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply, onModalVis
   const [jobsites, setJobsites] = useState<Jobsite[]>([]);
   const [selectedJobsite, setSelectedJobsite] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
-  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedStartDate, setSelectedStartDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedEndDate, setSelectedEndDate] = useState(new Date().toISOString().split('T')[0]);
+  const [showStartPicker, setShowStartPicker] = useState(false);
+  const [showEndPicker, setShowEndPicker] = useState(false);
   const [selectedSortOrder, setSelectedSortOrder] = useState('asc');
   const [modalBackdropOpacity, setModalBackdropOpacity] = useState(new Animated.Value(0));
 
@@ -52,7 +56,11 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply, onModalVis
   const applyFiltering = () => {
     setModalVisible(false);
     onModalVisibleChange(false);
-    onApply(selectedJobsite, selectedStatus, selectedDate, selectedSortOrder);
+
+    const selectedStartDateTemp = showStartPicker ? selectedStartDate : '';
+    const selectedEndDateTemp = showEndPicker ? selectedEndDate : '';
+
+    onApply(selectedJobsite, selectedStatus, selectedStartDateTemp, selectedEndDateTemp, selectedSortOrder);
   };
 
   const styles = StyleSheet.create({
@@ -127,6 +135,30 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply, onModalVis
       top: 6,
       right: 10,
     },
+    dateTimeInput: {
+      height: 40,
+      borderColor: colors.border,
+      borderWidth: 1,
+      borderRadius: 4,
+      paddingTop: 10,      
+      paddingBottom: 10,
+      paddingRight: 0,
+      paddingLeft: 10,
+      marginBottom: 10,
+      color: colors.text,
+      flexDirection: 'row', 
+      alignItems: 'center', 
+      justifyContent: 'space-between',
+      width: '100%',
+    },
+    text: {
+      color: colors.border,
+      fontSize: 14,
+    },
+    calIcon: {
+      color: colors.border,
+      marginRight: 8,
+    },
     applyButtonContainer: {
       alignSelf: 'stretch',
       alignItems: 'flex-end',
@@ -180,7 +212,10 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply, onModalVis
                 onPress={() => {
                   setSelectedJobsite('');
                   setSelectedStatus('');
-                  setSelectedDate('');
+                  setSelectedStartDate(new Date().toISOString().split('T')[0]);
+                  setSelectedEndDate(new Date().toISOString().split('T')[0]);
+                  setShowStartPicker(false);
+                  setShowEndPicker(false);
                   setSelectedSortOrder('asc');
                 }}
                 underlayColor='transparent'
@@ -230,24 +265,39 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply, onModalVis
               }}
             />
 
-            <RNPickerSelect
-              value={selectedDate}
-              onValueChange={(value) => setSelectedDate(value)}
-              items={[
-                { label: 'Today', value: new Date().toISOString() },
-                // Add more date options as needed
-              ]}
-              placeholder={{label: 'Select Date', value: null}}
-              Icon={() => {
-                return <FontAwesomeIcon icon='chevron-down' size={24} color={colors.border} />;
-              }}
-              style={{
-                inputIOS: styles.dropdownInputIOS,
-                inputAndroid: styles.dropdownInputAndroid,
-                iconContainer: styles.dropdownIcon,
-                placeholder: styles.placeholderText,
-              }}
-            />
+            <View style={styles.dateTimeInput}>
+              <MyText style={styles.text}>Start Date: </MyText>
+              {!showStartPicker && (
+                <TouchableOpacity onPress={() => setShowStartPicker(true)}>
+                  <FontAwesomeIcon icon="calendar" size={24} style={styles.calIcon} />
+                </TouchableOpacity>
+              )}
+              {showStartPicker && (
+                <DateTimePicker
+                  value={new Date(selectedStartDate) || new Date()}
+                  mode="date"
+                  display="default"
+                  onChange={(event, selectedDate) => setSelectedStartDate(selectedDate ? selectedDate.toISOString().split('T')[0] : '')}
+                />
+              )}
+            </View>
+
+            <View style={styles.dateTimeInput}>
+              <MyText style={styles.text}>End Date: </MyText>
+              {!showEndPicker && (
+                <TouchableOpacity onPress={() => setShowEndPicker(true)}>
+                  <FontAwesomeIcon icon="calendar" size={24} style={styles.calIcon} />
+                </TouchableOpacity>
+              )}
+              {showEndPicker && (
+                <DateTimePicker
+                  value={new Date(selectedEndDate) || new Date()}
+                  mode="date"
+                  display="default"
+                  onChange={(event, selectedDate) => setSelectedEndDate(selectedDate ? selectedDate.toISOString().split('T')[0] : '')}
+                />
+              )}
+            </View>
 
             <View style={styles.modalSectionTitleView}>
               <MyText style={styles.modalSectionTitle}>Order</MyText>

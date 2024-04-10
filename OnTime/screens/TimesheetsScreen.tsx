@@ -72,11 +72,12 @@ const TimesheetsScreen: React.FC = () => {
     );
   };
 
-  const handleApplyFilter = (selectedJobsite: string, selectedStatus: string, selectedDate: string, selectedSortOrder: string) => {
+  const handleApplyFilter = (selectedJobsite: string, selectedStatus: string, selectedStartDate: string, selectedEndDate: string, selectedSortOrder: string) => {
     const params = {
       jobsites: [selectedJobsite],
       status: [selectedStatus],
-      date: [selectedDate],
+      startDate: [selectedStartDate],
+      endDate: [selectedEndDate],
       sortOrder: [selectedSortOrder]
     };
   
