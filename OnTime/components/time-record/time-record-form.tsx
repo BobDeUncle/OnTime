@@ -39,7 +39,7 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
   const [endTime, setEndTime] = useState(() => {
     const now = new Date();
     now.setHours(15);
-    now.setMinutes(0);
+    now.setMinutes(30);
     return now;
   });  
   const [notes, setNotes] = useState('');
