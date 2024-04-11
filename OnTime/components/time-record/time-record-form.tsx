@@ -96,7 +96,7 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
             try {
               await timeRecordAPI.addTimeRecord({
                 employee: '660e6d7413463bb6826432f1',
-                // date: date,
+                date: date,
                 startTime: startTime.toISOString(), 
                 endTime: endTime.toISOString(),
                 jobsite: selectedJobsite,
@@ -104,6 +104,7 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
               });
         
               saveTimeRecord();
+              if (onClose) onClose();
             } catch (error) {
               console.error('Error creating time record:', error);
               Alert.alert(

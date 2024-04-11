@@ -58,7 +58,10 @@ const NewTimeRecordButton: React.FC<NewTimeRecordButtonProps> = ({ onModalVisibl
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}>
+        onRequestClose={() => {
+          setModalVisible(false);
+          onModalVisibleChange(false);
+        }}>
         <View style={styles.centeredView}>
           <TimeRecordForm styles={styles} showCloseButton={true} onClose={() => {
             setModalVisible(false);

@@ -121,7 +121,7 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
         ...styles.text,
         paddingTop: 12,
       }}>
-        Date: {/* {timeRecord.date.toString()} */}
+        Date: {new Date(timeRecord.date.toString()).toLocaleDateString()}
       </MyText>
       <MyText style={styles.text}>Jobsite: {timeRecord.jobsite.name}, {timeRecord.jobsite.city}</MyText>
       <MyText style={styles.text}>
