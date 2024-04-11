@@ -2,6 +2,7 @@ import React, {useState, useEffect, useCallback} from 'react';
 import {ActivityIndicator, Animated, FlatList, ScrollView, StyleSheet, TextInput, View} from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { storageEmitter } from '../components/storageEmitter';
+import { debounce } from 'lodash';
 
 import NewTimeRecordButton from '../components/time-record/time-record-modal-button';
 
@@ -46,12 +47,23 @@ const TimesheetsScreen: React.FC = () => {
     }).start();
   }, [overlayVisible]);
 
+  useEffect(() => {
+    const searchTimerId = setTimeout(() => {
+      refreshList();
+    }, 500);
+  
+    return () => {
+      clearTimeout(searchTimerId);
+    };
+  }, [searchQuery]);
+
   const refreshList = (params?: any) => {
     fetchTimeRecords(params);
   }
 
-  const fetchTimeRecords = useCallback(async (params = {}) => {
+  const fetchTimeRecords = useCallback(async (params: {[key: string]: any} = {}) => {
     setLoading(true);
+    params.search = searchQuery;
     try {
       const timeRecordsData: TimeRecord[] =
         await timeRecordAPI.getAllTimeRecords(params);
@@ -63,14 +75,6 @@ const TimesheetsScreen: React.FC = () => {
       setLoading(false);
     }
   }, [timeRecordAPI]);  
-
-  if (loading) {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </View>
-    );
-  };
 
   const handleApplyFilter = (selectedJobsite: string, selectedStatus: string, selectedStartDate: string, selectedEndDate: string, selectedSortOrder: string) => {
     const params = {
@@ -137,6 +141,11 @@ const TimesheetsScreen: React.FC = () => {
           </View>
         </View>
 
+        {loading ? (
+          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <ActivityIndicator size="large" color={colors.primary} />
+          </View>
+        ) : (
         <FlatList
           scrollEnabled={false}
           data={timeRecords}
@@ -148,6 +157,7 @@ const TimesheetsScreen: React.FC = () => {
           )}
           keyExtractor={item => item._id}
         />
+      )}
       </ScrollView>
       <Animated.View
         style={{
