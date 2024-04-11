@@ -30,6 +30,7 @@ const NewTimeRecordButton: React.FC<NewTimeRecordButtonProps> = ({ onModalVisibl
       padding: 16,
       borderRadius: 8,
       marginVertical: 8,
+      width: '80%',
     },
     sectionTitle: {
       color: colors.text,

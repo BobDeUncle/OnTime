@@ -53,6 +53,7 @@ class APIClient {
 
   public async post<T>(url: string, body: any): Promise<T> {
     console.log('POST: ', url);
+    console.log('Body: ', body);
     return await this.request<T>(url, 'POST', body);
   }
 

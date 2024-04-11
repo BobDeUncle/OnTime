@@ -212,21 +212,6 @@ function LoginScreen({
         <MyText style={styles.welcome}>Welcome</MyText>
         <View style={styles.greenLine} />
         <MyText style={styles.subtext}>Please login to your account</MyText>
-        {!isEmailValid && (
-          <MyText style={styles.invalidForm}>
-            <FontAwesomeIcon icon='exclamation' style={styles.invalidFormIcon}/> Invalid Email
-          </MyText>
-        )}
-        {!isPasswordValid && (
-          <MyText style={styles.invalidForm}>
-            <FontAwesomeIcon icon='exclamation' style={styles.invalidFormIcon}/> Invalid Password
-          </MyText>
-        )}
-        {!isEmailPasswordValid && (
-          <MyText style={styles.invalidForm}>
-            <FontAwesomeIcon icon='exclamation' style={styles.invalidFormIcon}/> Invalid Email or Password
-          </MyText>
-        )}
         <View style={styles.inputView}>
           <TextInput
             style={{
@@ -272,6 +257,21 @@ function LoginScreen({
             autoCapitalize="none"
           />
         </View>
+        {!isEmailValid && (
+          <MyText style={styles.invalidForm}>
+            <FontAwesomeIcon icon='exclamation' style={styles.invalidFormIcon}/> Invalid Email
+          </MyText>
+        )}
+        {!isPasswordValid && (
+          <MyText style={styles.invalidForm}>
+            <FontAwesomeIcon icon='exclamation' style={styles.invalidFormIcon}/> Invalid Password
+          </MyText>
+        )}
+        {!isEmailPasswordValid && (
+          <MyText style={styles.invalidForm}>
+            <FontAwesomeIcon icon='exclamation' style={styles.invalidFormIcon}/> Invalid Email or Password
+          </MyText>
+        )}
         <View style={styles.buttonView}>
           <Pressable
             style={styles.button}
