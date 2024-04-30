@@ -18,7 +18,7 @@ class MainActivity : ReactActivity() {
   // From React Navigation (https://reactnavigation.org/docs/getting-started/)
   override fun onCreate(savedInstanceState: Bundle?) {
     SplashScreen.show(this);
-    super.onCreate(null)
+    super.onCreate(savedInstanceState)
   }
 
   /**
