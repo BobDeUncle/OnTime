@@ -26,23 +26,39 @@ const MyTimePicker: React.FC<MyTimePickerProps> = ({ time, onChange }) => {
   const openPicker = () => {
     setShowPicker(true);
     if (Platform.OS === 'ios') {
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true
-      }).start();
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true
+        })
+      ]).start();
     }
   };
 
   const closePicker = () => {
     if (Platform.OS === 'ios') {
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true
-      }).start(() => {
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 500,
+          duration: 300,
+          useNativeDriver: true
+        })
+      ]).start(() => {
         setShowPicker(false);
       });
+    } else {
+      setShowPicker(false);
     }
   };
 
@@ -86,7 +102,7 @@ const MyTimePicker: React.FC<MyTimePickerProps> = ({ time, onChange }) => {
       </TouchableOpacity>
       {showPicker && (
         Platform.OS === 'ios' ? (
-          <Modal
+        <Modal
           transparent={true}
           animationType="none"
           visible={showPicker}
