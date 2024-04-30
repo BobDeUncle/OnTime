@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import { Alert, View, Pressable, StyleSheet, TextInput, Button } from 'react-native';
 import MyText from '../../components/MyText';
-import MyDateTimePicker from '../../components/MyDateTimePicker';
+import MyDatePicker from '../../components/MyDatePicker';
+import MyTimePicker from '../../components/MyTimePicker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from 'react-native-picker-select';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -46,20 +47,6 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
     return now;
   });  
   const [notes, setNotes] = useState('');
-
-  // Function to handle date change, preserving Date object type
-  const handleDateChange = (selectedDate: Date) => {
-    setDate(new Date(selectedDate)); // Preserving Date type
-  };
-
-  // Function to handle time changes, ensuring Date object type
-  const handleTimeChange = (type: 'start' | 'end') => (newTime: Date) => {
-    if (type === 'start') {
-      setStartTime(new Date(newTime));
-    } else {
-      setEndTime(new Date(newTime));
-    }
-  };
 
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [jobsiteValid, setJobsiteValid] = useState(true);
@@ -262,23 +249,17 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
           },
         }}
       />
-      <MyDateTimePicker
-        label="Select Date"
+      <MyDatePicker
         date={date}
-        mode="date"
-        onChange={handleDateChange}
+        onChange={(newDate: Date) => setDate(newDate)}
       />
-      <MyDateTimePicker
-        label="Start Time"
-        date={startTime}
-        mode="time"
-        onChange={handleTimeChange('start')}
+      <MyTimePicker
+        time={startTime}
+        onChange={(newStartTime: Date) => setStartTime(newStartTime)}
       />
-      <MyDateTimePicker
-        label="End Time"
-        date={endTime}
-        mode="time"
-        onChange={handleTimeChange('end')}
+      <MyTimePicker
+        time={endTime}
+        onChange={(newEndTime: Date) => setEndTime(newEndTime)}
       />
       <TextInput
         value={notes}
