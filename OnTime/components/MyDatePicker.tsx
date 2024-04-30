@@ -18,39 +18,48 @@ const MyDatePicker: React.FC<MyDatePickerProps> = ({ date, onChange }) => {
   const handleChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     const currentDate = selectedDate || date;
     onChange(currentDate);
+    if (Platform.OS === 'android') {
+      setShowPicker(false);
+    }
   };
 
   const openPicker = () => {
     setShowPicker(true);
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true
-      }),
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true
-      })
-    ]).start();
+    if (Platform.OS === 'ios') {
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true
+        })
+      ]).start();
+    }
   };
 
   const closePicker = () => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true
-      }),
-      Animated.timing(slideAnim, {
-        toValue: 500, 
-        duration: 300,
-        useNativeDriver: true
-      })
-    ]).start(() => {
+    if (Platform.OS === 'ios') {
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 500,
+          duration: 300,
+          useNativeDriver: true
+        })
+      ]).start(() => {
+        setShowPicker(false);
+      });
+    } else {
       setShowPicker(false);
-    });
+    }
   };
 
   const styles = StyleSheet.create({

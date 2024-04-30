@@ -18,39 +18,32 @@ const MyTimePicker: React.FC<MyTimePickerProps> = ({ time, onChange }) => {
   const handleChange = (event: DateTimePickerEvent, selectedTime?: Date) => {
     const currentTime = selectedTime || time;
     onChange(currentTime);
+    if (Platform.OS === 'android') {
+      setShowPicker(false);
+    }
   };
 
   const openPicker = () => {
     setShowPicker(true);
-    Animated.parallel([
+    if (Platform.OS === 'ios') {
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 300,
         useNativeDriver: true
-      }),
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true
-      })
-    ]).start();
+      }).start();
+    }
   };
 
   const closePicker = () => {
-    Animated.parallel([
+    if (Platform.OS === 'ios') {
       Animated.timing(fadeAnim, {
         toValue: 0,
         duration: 300,
         useNativeDriver: true
-      }),
-      Animated.timing(slideAnim, {
-        toValue: 500, 
-        duration: 300,
-        useNativeDriver: true
-      })
-    ]).start(() => {
-      setShowPicker(false);
-    });
+      }).start(() => {
+        setShowPicker(false);
+      });
+    }
   };
 
   const formatTime = (time: Date) => {
