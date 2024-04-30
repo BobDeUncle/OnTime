@@ -13,4 +13,4 @@ Elijah Yeaman, 0424 296 968, e.yeaman.10@student.scu.edu.au
 
 # Troubleshooting Development
 Q. I'm running the app on a real iPhone, but it won't connect to the server?
-A. Shake the phone and open the 'Configure Bundler', set the address as 127.0.0.1 and apply changes. This should reconnect the application to the server. 
+A. Firstly, make sure both the PC and iPhone you are using are connected to the same internet. Secondly, Shake the phone and open the 'Configure Bundler', set the address as 127.0.0.1 and apply changes. This should reconnect the application to the server. 
