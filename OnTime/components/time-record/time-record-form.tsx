@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { Alert, View, Pressable, StyleSheet, TextInput, Button } from 'react-native';
 import MyText from '../../components/MyText';
+import MyDateTimePicker from '../../components/MyDateTimePicker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from 'react-native-picker-select';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -29,20 +30,36 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
   const [loading, setLoading] = useState<boolean>(true);
   const [jobsite, setJobsite] = useState(null);
   const [jobsites, setJobsites] = useState<Jobsite[]>([]);
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [date, setDate] = useState(new Date());
   const [startTime, setStartTime] = useState(() => {
     const now = new Date();
     now.setHours(7);
     now.setMinutes(0);
+    now.setSeconds(0);
     return now;
   });  
   const [endTime, setEndTime] = useState(() => {
     const now = new Date();
     now.setHours(15);
     now.setMinutes(30);
+    now.setSeconds(0);
     return now;
   });  
   const [notes, setNotes] = useState('');
+
+  // Function to handle date change, preserving Date object type
+  const handleDateChange = (selectedDate: Date) => {
+    setDate(new Date(selectedDate)); // Preserving Date type
+  };
+
+  // Function to handle time changes, ensuring Date object type
+  const handleTimeChange = (type: 'start' | 'end') => (newTime: Date) => {
+    if (type === 'start') {
+      setStartTime(new Date(newTime));
+    } else {
+      setEndTime(new Date(newTime));
+    }
+  };
 
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [jobsiteValid, setJobsiteValid] = useState(true);
@@ -245,50 +262,24 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
           },
         }}
       />
-      <View style={localStyles.dateTimeInput}>
-        <MyText style={localStyles.text}>Date: </MyText>
-        <DateTimePicker
-          value={new Date(date)}
-          mode="date"
-          display="default"
-          maximumDate={new Date()}
-          onChange={(event, selectedDate) => {
-            const currentDate = selectedDate || new Date(date);
-            setDate(currentDate.toISOString().split('T')[0]);
-          }}
-        />
-      </View>
-      <View style={localStyles.dateTimeInput}>
-        <MyText style={localStyles.text}>Start Time: </MyText>
-        <DateTimePicker
-          value={startTime}
-          mode="time"
-          display="default"
-          onChange={(event, selectedTime) => {
-            const currentTime = selectedTime || startTime;
-            setStartTime(currentTime);
-          }}
-        />
-      </View>
-      <View style={{
-        ...localStyles.dateTimeInput,
-        borderColor: endTimeValid ? colors.border : colors.warning,
-      }}>
-        <MyText style={{
-          ...localStyles.text,
-          color: endTimeValid ? colors.border : colors.warning,
-        }}>End Time: </MyText>
-        <DateTimePicker
-          value={endTime}
-          mode="time"
-          display="default"
-          onChange={(event, selectedTime) => {
-            const currentTime = selectedTime || endTime;
-            setEndTime(currentTime);
-            setEndTimeValid(true);
-          }}
-        />
-      </View>
+      <MyDateTimePicker
+        label="Select Date"
+        date={date}
+        mode="date"
+        onChange={handleDateChange}
+      />
+      <MyDateTimePicker
+        label="Start Time"
+        date={startTime}
+        mode="time"
+        onChange={handleTimeChange('start')}
+      />
+      <MyDateTimePicker
+        label="End Time"
+        date={endTime}
+        mode="time"
+        onChange={handleTimeChange('end')}
+      />
       <TextInput
         value={notes}
         onChangeText={setNotes}
