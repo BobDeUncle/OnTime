@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, Button, Modal, StyleSheet, TouchableOpacity, Animated } from 'react-native';
+import { View, Button, Platform, Modal, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import MyText from '../components/MyText';
 import { useTheme } from '../theme/Colors';
@@ -92,7 +92,8 @@ const MyTimePicker: React.FC<MyTimePickerProps> = ({ time, onChange }) => {
         <MyText style={styles.timeText}>{formatTime(time)}</MyText>
       </TouchableOpacity>
       {showPicker && (
-        <Modal
+        Platform.OS === 'ios' ? (
+          <Modal
           transparent={true}
           animationType="none"
           visible={showPicker}
@@ -111,6 +112,15 @@ const MyTimePicker: React.FC<MyTimePickerProps> = ({ time, onChange }) => {
             </Animated.View>
           </Animated.View>
         </Modal>
+        ) : (
+          <DateTimePicker
+            value={time}
+            mode="time"
+            display="default"
+            onChange={handleChange}
+            textColor={colors.opText}
+          />
+        )
       )}
     </View>
   );
