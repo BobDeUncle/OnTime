@@ -20,6 +20,10 @@ class AuthAPI {
   public async forgotPassword(auth: any): Promise<AuthData> {
     return await this.client.post('/auth/forgotpassword', auth);
   }
+
+  public async resetPassword(auth: any): Promise<AuthData> {
+    return await this.client.post('/auth/resetpassword', auth);
+  }
 }
 
 export default AuthAPI;
