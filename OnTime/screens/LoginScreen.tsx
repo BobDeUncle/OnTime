@@ -15,6 +15,8 @@ import AuthAPI from '../api/AuthAPI';
 import APIClient from '../api/APIClient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import isEmail from 'validator/lib/isEmail';
+
 import MyText from '../components/MyText';
 
 interface LoginScreenProps {
@@ -38,8 +40,6 @@ function LoginScreen({
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
   const [isEmailPasswordValid, setIsEmailPasswordValid] = useState(true);
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
 
   const client = new APIClient();
   const authAPI = new AuthAPI(client);
@@ -49,11 +49,10 @@ function LoginScreen({
 
     // Form Validation
     setIsEmailPasswordValid(true);
-    if (email !== '') {
+    if (email !== '' && isEmail(email)) {
       setIsEmailValid(true);
     } else {
       setIsEmailValid(false);
-      setEmailError('Email is invalid');
       setIsLoading(false);
       return;
     }
@@ -62,7 +61,6 @@ function LoginScreen({
       setIsPasswordValid(true);
     } else {
       setIsPasswordValid(false);
-      setPasswordError('Password is invalid');
       setIsLoading(false);
       return;
     }
@@ -87,7 +85,6 @@ function LoginScreen({
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [FPEmail, setFPEmail] = useState('');
   const [isFPEmailValid, setIsFPEmailValid] = useState(true);
-  const [FPEmailError, setFPEmailError] = useState('');
 
   const toggleForgotPassword = () => setShowForgotPassword(!showForgotPassword);
 
@@ -97,11 +94,10 @@ function LoginScreen({
 
     // Form Validation
     setIsFPEmailValid(true);
-    if (FPEmail !== '') {
+    if (FPEmail !== '' && isEmail(FPEmail)) {
       setIsFPEmailValid(true);
     } else {
       setIsFPEmailValid(false);
-      setFPEmailError('Email is invalid');
       setIsLoading(false);
       return;
     }
@@ -263,10 +259,8 @@ function LoginScreen({
                   setEmail(text);
                   if (text !== '') {
                     setIsEmailValid(true);
-                    setEmailError('');
                   } else {
                     setIsEmailValid(false);
-                    setEmailError('Email is invalid');
                   }
                 }}
                 autoCorrect={false}
@@ -285,10 +279,8 @@ function LoginScreen({
                   setPassword(text);
                   if (text !== '') {
                     setIsPasswordValid(true);
-                    setPasswordError('');
                   } else {
                     setIsPasswordValid(false);
-                    setPasswordError('Password is invalid');
                   }
                 }}
                 autoCorrect={false}
@@ -354,10 +346,8 @@ function LoginScreen({
                   setFPEmail(text);
                   if (text !== '') {
                     setIsFPEmailValid(true);
-                    setFPEmailError('');
                   } else {
                     setIsFPEmailValid(false);
-                    setFPEmailError('Email is invalid');
                   }
                 }}
                 autoCorrect={false}
