@@ -103,7 +103,11 @@ function LoginScreen({
     }
 
     try {
-      console.log('ADD IN RESET PASSWORD API HERE')
+      // NEED TO FIX AND FINISH WHEN API CALLS WORKING
+      const FPData = await authAPI.forgotPassword({
+        email: FPEmail,
+      });
+      console.log(FPData);
     } catch (error) {
       console.error('Error:', error);
     } finally {
