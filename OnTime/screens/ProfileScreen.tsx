@@ -30,9 +30,9 @@ function ProfileScreen(): React.ReactElement {
 
   return (
     <View style={{backgroundColor: colors.background}}>
-      <MyText style={{color: colors.opText}}>Name: {user ? ', ' + user.firstName : ''}</MyText>
-      <MyText style={{color: colors.opText}}>Role: </MyText>
-      <MyText style={{color: colors.opText}}>Email: </MyText>
+      <MyText style={{color: colors.opText}}>Name: {user ? user.firstName + ' ' + user.lastName : ''}</MyText>
+      <MyText style={{color: colors.opText}}>Role: {user && user.roles.length > 0 ? user.roles[0].name : ''}</MyText>
+      <MyText style={{color: colors.opText}}>Email: {user ? user.email : ''}</MyText>
     </View>
   );
 }
