@@ -5,6 +5,7 @@ import {faClock} from '@fortawesome/free-solid-svg-icons/faClock';
 import {faGear} from '@fortawesome/free-solid-svg-icons/faGear';
 import {faArrowRightFromBracket} from '@fortawesome/free-solid-svg-icons/faArrowRightFromBracket';
 import {faChevronDown} from '@fortawesome/free-solid-svg-icons/faChevronDown';
+import {faChevronLeft} from '@fortawesome/free-solid-svg-icons/faChevronLeft';
 import {faExclamation} from '@fortawesome/free-solid-svg-icons/faExclamation';
 import {faSearch} from '@fortawesome/free-solid-svg-icons/faSearch';
 import {faSliders} from '@fortawesome/free-solid-svg-icons/faSliders';
@@ -13,4 +14,4 @@ import {faTimes} from '@fortawesome/free-solid-svg-icons/faTimes';
 import {faCalendar} from '@fortawesome/free-solid-svg-icons/faCalendar';
 import {faUser} from '@fortawesome/free-solid-svg-icons/faUser';
 
-library.add(fab, faHouse, faClock, faGear, faArrowRightFromBracket, faChevronDown, faExclamation, faSearch, faSliders, faPlus, faTimes, faCalendar, faUser);
+library.add(fab, faHouse, faClock, faGear, faArrowRightFromBracket, faChevronDown, faChevronLeft, faExclamation, faSearch, faSliders, faPlus, faTimes, faCalendar, faUser);

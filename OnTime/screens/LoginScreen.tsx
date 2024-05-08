@@ -73,32 +73,46 @@ function LoginScreen({
         password: password,
       });
 
-      // const authData: AuthData = await authAPI.addAuth({
-      //   email: 'admin@test.com.au',
-      //   password: '123345678',
-      // });
-
       console.log('Success:', authData);
       await AsyncStorage.setItem('userToken', authData.token);
       setIsAuthenticated(true);
     } catch (error) {
       console.error('Error:', error);
       setIsEmailPasswordValid(false);
-      // Alert.alert(
-      //   'Error',
-      //   'Incorrect email or password. Please try again.',
-      //   [
-      //     {text: 'OK', onPress: () => console.log('OK Pressed')}
-      //   ],
-      //   { cancelable: false }
-      // );
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleForgot = () => {
-    Alert.alert('You forgot your password.');
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [FPEmail, setFPEmail] = useState('');
+  const [isFPEmailValid, setIsFPEmailValid] = useState(true);
+  const [FPEmailError, setFPEmailError] = useState('');
+
+  const toggleForgotPassword = () => setShowForgotPassword(!showForgotPassword);
+
+  const handleForgotPassword = async () => {
+    console.log('handleForgotPassword');
+    setIsLoading(true);
+
+    // Form Validation
+    setIsFPEmailValid(true);
+    if (FPEmail !== '') {
+      setIsFPEmailValid(true);
+    } else {
+      setIsFPEmailValid(false);
+      setFPEmailError('Email is invalid');
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      console.log('ADD IN RESET PASSWORD API HERE')
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const styles = StyleSheet.create({
@@ -133,6 +147,26 @@ function LoginScreen({
       paddingBottom: 5,
       color: colors.primary,
     },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      height: 65,
+      marginTop: 10,
+    },
+    iconContainer: {
+      paddingHorizontal: 30,
+    },
+    iconPlaceholder: {
+      width: 60,  // Ensure this is equal to the total width of the iconContainer including padding
+    },
+    flexContainer: {
+      flex: 1,
+    },
+    forgotPassword: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
     greenLine: {
       height: 4,
       width: '50%',
@@ -142,8 +176,10 @@ function LoginScreen({
     subtext: {
       fontSize: 13,
       marginBottom: 30,
+      paddingHorizontal: 10,
       fontWeight: 'bold',
       color: 'grey',
+      textAlign: 'center',
     },
     invalidForm: {
       color: colors.warning,
@@ -209,86 +245,142 @@ function LoginScreen({
         <Image source={logo} style={styles.image} resizeMode="contain" />
       </View>
       <View style={styles.bottomContainer}>
-        <MyText style={styles.welcome}>Welcome</MyText>
-        <View style={styles.greenLine} />
-        <MyText style={styles.subtext}>Please login to your account</MyText>
-        <View style={styles.inputView}>
-          <TextInput
-            style={{
-              ...styles.input,
-              borderColor: isEmailValid ? colors.border : colors.warning,
-            }}
-            placeholder="Email"
-            placeholderTextColor={isEmailValid ? colors.border : colors.warning}
-            value={email}
-            onChangeText={(text) => {
-              setEmail(text);
-              if (text !== '') {
-                setIsEmailValid(true);
-                setEmailError('');
-              } else {
-                setIsEmailValid(false);
-                setEmailError('Email is invalid');
-              }
-            }}
-            autoCorrect={false}
-            autoCapitalize="none"
-          />
-          <TextInput
-            style={{
-              ...styles.input,
-              borderColor: isPasswordValid ? colors.border : colors.warning,
-            }}
-            placeholder="Password"
-            placeholderTextColor={isPasswordValid ? colors.border : colors.warning}
-            secureTextEntry
-            value={password}
-            onChangeText={(text) => {
-              setPassword(text);
-              if (text !== '') {
-                setIsPasswordValid(true);
-                setPasswordError('');
-              } else {
-                setIsPasswordValid(false);
-                setPasswordError('Password is invalid');
-              }
-            }}
-            autoCorrect={false}
-            autoCapitalize="none"
-          />
-        </View>
-        {!isEmailValid && (
-          <MyText style={styles.invalidForm}>
-            <FontAwesomeIcon icon='exclamation' style={styles.invalidFormIcon}/> Invalid Email
-          </MyText>
-        )}
-        {!isPasswordValid && (
-          <MyText style={styles.invalidForm}>
-            <FontAwesomeIcon icon='exclamation' style={styles.invalidFormIcon}/> Invalid Password
-          </MyText>
-        )}
-        {!isEmailPasswordValid && (
-          <MyText style={styles.invalidForm}>
-            <FontAwesomeIcon icon='exclamation' style={styles.invalidFormIcon}/> Invalid Email or Password
-          </MyText>
-        )}
-        <View style={styles.buttonView}>
-          <Pressable
-            style={styles.button}
-            onPress={handleLogin}
-            disabled={isLoading}>
-            {isLoading ? (
-              <ActivityIndicator size="small" color={colors.text} />
-            ) : (
-              <MyText style={styles.buttonText}>LOGIN</MyText>
+        {!showForgotPassword ? (
+          <>
+            <MyText style={styles.welcome}>Welcome</MyText>
+            <View style={styles.greenLine} />
+            <MyText style={styles.subtext}>Please login to your account</MyText>
+            <View style={styles.inputView}>
+              <TextInput
+                style={{
+                  ...styles.input,
+                  borderColor: isEmailValid ? colors.border : colors.warning,
+                }}
+                placeholder="Email"
+                placeholderTextColor={isEmailValid ? colors.border : colors.warning}
+                value={email}
+                onChangeText={(text) => {
+                  setEmail(text);
+                  if (text !== '') {
+                    setIsEmailValid(true);
+                    setEmailError('');
+                  } else {
+                    setIsEmailValid(false);
+                    setEmailError('Email is invalid');
+                  }
+                }}
+                autoCorrect={false}
+                autoCapitalize="none"
+              />
+              <TextInput
+                style={{
+                  ...styles.input,
+                  borderColor: isPasswordValid ? colors.border : colors.warning,
+                }}
+                placeholder="Password"
+                placeholderTextColor={isPasswordValid ? colors.border : colors.warning}
+                secureTextEntry
+                value={password}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  if (text !== '') {
+                    setIsPasswordValid(true);
+                    setPasswordError('');
+                  } else {
+                    setIsPasswordValid(false);
+                    setPasswordError('Password is invalid');
+                  }
+                }}
+                autoCorrect={false}
+                autoCapitalize="none"
+              />
+            </View>
+            {!isEmailValid && (
+              <MyText style={styles.invalidForm}>
+                <FontAwesomeIcon icon='exclamation' style={styles.invalidFormIcon}/> Invalid Email
+              </MyText>
             )}
-          </Pressable>
-        </View>
-        <View style={styles.forgotPasswordView}>
-          <Pressable onPress={handleForgot}>
-            <MyText style={styles.forgetText}>Forgot Password?</MyText>
-          </Pressable>
-        </View>
+            {!isPasswordValid && (
+              <MyText style={styles.invalidForm}>
+                <FontAwesomeIcon icon='exclamation' style={styles.invalidFormIcon}/> Invalid Password
+              </MyText>
+            )}
+            {!isEmailPasswordValid && (
+              <MyText style={styles.invalidForm}>
+                <FontAwesomeIcon icon='exclamation' style={styles.invalidFormIcon}/> Invalid Email or Password
+              </MyText>
+            )}
+            <View style={styles.buttonView}>
+              <Pressable
+                style={styles.button}
+                onPress={handleLogin}
+                disabled={isLoading}>
+                {isLoading ? (
+                  <ActivityIndicator size="small" color={colors.text} />
+                ) : (
+                  <MyText style={styles.buttonText}>LOGIN</MyText>
+                )}
+              </Pressable>
+            </View>
+            <View style={styles.forgotPasswordView}>
+              <Pressable onPress={toggleForgotPassword}>
+                <MyText style={styles.forgetText}>Forgot Password?</MyText>
+              </Pressable>
+            </View>
+          </>
+        ) : (
+          <>
+            <View style={styles.header}>
+              <Pressable onPress={toggleForgotPassword}>
+                <FontAwesomeIcon icon="chevron-left" size={24} style={styles.iconContainer} />
+              </Pressable>
+              <View style={styles.flexContainer} />
+              <MyText style={styles.forgotPassword}>Forgot Password?</MyText>
+              <View style={styles.flexContainer} />
+              <View style={styles.iconPlaceholder} /> 
+            </View>
+            <View style={styles.greenLine} />
+            <MyText style={styles.subtext}>Enter your work email below and we will send a message to reset your password</MyText>
+            <View style={styles.inputView}>
+              <TextInput
+                style={{
+                  ...styles.input,
+                  borderColor: isFPEmailValid ? colors.border : colors.warning,
+                }}
+                placeholder="Email"
+                placeholderTextColor={isFPEmailValid ? colors.border : colors.warning}
+                value={FPEmail}
+                onChangeText={(text) => {
+                  setFPEmail(text);
+                  if (text !== '') {
+                    setIsFPEmailValid(true);
+                    setFPEmailError('');
+                  } else {
+                    setIsFPEmailValid(false);
+                    setFPEmailError('Email is invalid');
+                  }
+                }}
+                autoCorrect={false}
+                autoCapitalize="none"
+              />
+            {!isFPEmailValid && (
+              <MyText style={styles.invalidForm}>
+                <FontAwesomeIcon icon='exclamation' style={styles.invalidFormIcon}/> Invalid Email
+              </MyText>
+            )}
+            <Pressable 
+              style={styles.button} 
+              onPress={handleForgotPassword}
+              disabled={isLoading}>
+                {isLoading ? (
+                  <ActivityIndicator size="small" color={colors.text} />
+                ) : (
+                  <MyText style={styles.buttonText}>Continue</MyText>
+                )}
+            </Pressable>
+            </View>
+          </>
+        )}
       </View>
     </View>
   );
