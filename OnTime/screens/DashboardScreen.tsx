@@ -16,8 +16,12 @@ function DashboardScreen({}): React.ReactElement {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const userData = await userAPI.getUserMe();
-      setUser(userData);
+      try {
+        const userData = await userAPI.getUserMe();
+        setUser(userData);
+      } catch (error) {
+        console.error('Failed to fetch user: ', error)
+      }
     };
 
     fetchUser();

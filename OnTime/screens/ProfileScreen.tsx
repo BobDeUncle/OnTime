@@ -16,9 +16,13 @@ function ProfileScreen(): React.ReactElement {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const userData = await userAPI.getUserMe();
-      console.log(userData);
-      setUser(userData);
+      try {
+        const userData = await userAPI.getUserMe();
+        console.log(userData);
+        setUser(userData);
+      } catch (error) {
+        console.error('Failed to fetch user: ', error)
+      }
     };
 
     fetchUser();

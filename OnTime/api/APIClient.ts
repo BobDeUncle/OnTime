@@ -44,6 +44,9 @@ class APIClient {
     }
 
     return await response.json();
+  } catch (error: any) {
+    console.error('Error making request: ', error);
+    throw error;
   }
 
   public async get<T>(url: string, params?: any): Promise<T> {
