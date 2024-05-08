@@ -12,6 +12,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 
 import DashboardScreen from './screens/DashboardScreen.tsx';
 import SettingsScreen from './screens/SettingsScreen.tsx';
+import ProfileScreen from './screens/ProfileScreen.tsx';
 import TimesheetsScreen from './screens/TimesheetsScreen.tsx';
 import {lightTheme, darkTheme, useTheme} from './theme/Colors.tsx';
 
@@ -115,6 +116,17 @@ function SideDrawer({
           ),
         }}
       />
+      <Drawer.Screen
+        name="Profile"
+        options={{
+          drawerIcon: ({color}) => (
+            <FontAwesomeIcon icon="user" color={color} />
+          ),
+        }}>
+        {() => (
+          <ProfileScreen />
+        )}
+      </Drawer.Screen>
       <Drawer.Screen
         name="Settings"
         options={{
