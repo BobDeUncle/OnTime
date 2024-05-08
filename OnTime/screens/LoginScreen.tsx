@@ -1,6 +1,6 @@
 // Based on https://medium.com/@mustapha.aitigunaoun/creating-a-stylish-login-form-in-react-native-45e9277f1b9f
 
-import React, {useState} from 'react';
+import React, {createRef, useState, RefObject} from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -33,7 +33,7 @@ function LoginScreen({
   const logo = require('../assets/pacbuild-square-blue.jpg');
   const {colors} = useTheme();
 
-  const [resetStage, setResetStage] = useState('login'); // 'login', 'forgotPassword', 'veriCode'
+  const [resetStage, setResetStage] = useState('login'); // 'login', 'forgotPassword', 'veriCode', 'resetPassword'
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -84,6 +84,7 @@ function LoginScreen({
     }
   };
 
+  // FORGOT PASSWORD
   const [FPEmail, setFPEmail] = useState('');
   const [isFPEmailValid, setIsFPEmailValid] = useState(true);
 
@@ -111,13 +112,55 @@ function LoginScreen({
       console.error('Error:', error);
     } finally {
       setIsLoading(false);
+      // move to try when API working
       setResetStage('veriCode')
     }
   };
 
-  const [verificationCode, setVerificationCode] = useState('');
+  // VERIFICATION CODE
+  const numCodeInputs = 6;
+  const [veriCodeInputs, setVeriCodeInputs] = useState<string[]>(Array(numCodeInputs).fill(''));
+  const veriCodeRefs: RefObject<TextInput>[] = Array.from({ length: numCodeInputs }, () => createRef<TextInput>());
+  const [isVeriCodeValid, setIsVeriCodeValid] = useState(true);
+
+  const handleVeriCodeChange = (text: string, index: number) => {
+    const newInputs = [...veriCodeInputs];
+    newInputs[index] = text;
+    setVeriCodeInputs(newInputs);
+    if (text && index < numCodeInputs - 1) {
+      veriCodeRefs[index + 1].current?.focus();
+    }
+  };
+
+  const handleVeriCode = async () => {
+    console.log('handleVeriCode');
+    console.log(veriCodeInputs.join(''))
+    setIsLoading(true);
+
+    // Form Validation
+    const isEveryInputFilled = veriCodeInputs.every(input => input.trim().length === 1 && /^\d$/.test(input));
+    if (!isEveryInputFilled) {
+      setIsVeriCodeValid(false);
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      // NEED TO FIX AND FINISH WHEN API CALLS WORKING
+
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsLoading(false);
+      setResetStage('resetPassword')
+    }
+  };
+
+  // RESET PASSWORD
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isNewPasswordValid, setIsNewPasswordValid] = useState(true);
+  const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
 
   const handleResetPassword = async () => {
     console.log('handleResetPassword');
@@ -129,7 +172,7 @@ function LoginScreen({
       // NEED TO FIX AND FINISH WHEN API CALLS WORKING
       const FPData = await authAPI.resetPassword({
         email: FPEmail,
-        code: verificationCode,
+        // code: verificationCode,
         password: newPassword,
         confirmationPassword: confirmPassword,
       });
@@ -233,7 +276,7 @@ function LoginScreen({
                 <FontAwesomeIcon icon="chevron-left" size={24} style={styles.iconContainer} />
               </Pressable>
               <View style={styles.flexContainer} />
-              <MyText style={styles.forgotPassword}>Forgot Password?</MyText>
+              <MyText style={styles.subMenuHeaderText}>Forgot Password?</MyText>
               <View style={styles.flexContainer} />
               <View style={styles.iconPlaceholder} /> 
             </View>
@@ -280,27 +323,85 @@ function LoginScreen({
       case 'veriCode':
         return (
           <>
+            <View style={styles.header}>
+              <Pressable onPress={() => setResetStage('forgotPassword')}>
+                <FontAwesomeIcon icon="chevron-left" size={24} style={styles.iconContainer} />
+              </Pressable>
+              <View style={styles.flexContainer} />
+              <MyText style={styles.subMenuHeaderText}>2-Step Verification</MyText>
+              <View style={styles.flexContainer} />
+              <View style={styles.iconPlaceholder} /> 
+            </View>
+            <View style={styles.greenLine} />
+            <MyText style={styles.subtext}>Enter the 6-digit code sent to {FPEmail}</MyText>
+            <View style={styles.inputView}>
+              <View style={styles.veriCodeContainer}>
+                {veriCodeInputs.map((input, index) => (
+                  <TextInput
+                    key={index}
+                    style={{
+                      ...styles.veriCodeInputBox,
+                      borderColor: isVeriCodeValid ? colors.border : colors.warning,
+                    }}
+                    value={input}
+                    onChangeText={(text) => handleVeriCodeChange(text, index)}
+                    keyboardType="number-pad"
+                    maxLength={1}
+                    ref={veriCodeRefs[index]}
+                    textAlign="center"
+                  />
+                ))}
+              </View>
+              {!isVeriCodeValid && (
+                <MyText style={styles.invalidForm}>
+                  <FontAwesomeIcon icon='exclamation' style={styles.invalidFormIcon}/> Invalid Code
+                </MyText>
+              )}
+              <Pressable style={styles.button} onPress={handleVeriCode}>
+                <MyText style={styles.buttonText}>Continue</MyText>
+              </Pressable>
+            </View>
+          </>
+        );
+      case 'resetPassword':
+        return (
+          <>
             <View style={styles.inputView}>
               <TextInput
-                style={styles.input}
-                placeholder="Enter your 6-digit code"
-                value={verificationCode}
-                onChangeText={setVerificationCode}
-                keyboardType="numeric"
-              />
-              <TextInput
-                style={styles.input}
+                style={{
+                  ...styles.input,
+                  borderColor: isNewPasswordValid ? colors.border : colors.warning,
+                }}
                 placeholder="New Password"
+                placeholderTextColor={isNewPasswordValid ? colors.border : colors.warning}
                 secureTextEntry
                 value={newPassword}
-                onChangeText={setNewPassword}
+                onChangeText={(text) => {
+                  setNewPassword(text);
+                  if (text !== '') {
+                    setIsNewPasswordValid(true);
+                  } else {
+                    setIsNewPasswordValid(false);
+                  }
+                }}
               />
               <TextInput
-                style={styles.input}
+                style={{
+                  ...styles.input,
+                  borderColor: isConfirmPasswordValid ? colors.border : colors.warning,
+                }}
                 placeholder="Confirm Password"
+                placeholderTextColor={isConfirmPasswordValid ? colors.border : colors.warning}
                 secureTextEntry
                 value={confirmPassword}
-                onChangeText={setConfirmPassword}
+                onChangeText={(text) => {
+                  setConfirmPassword(text);
+                  if (text !== '') {
+                    setIsConfirmPasswordValid(true);
+                  } else {
+                    setIsConfirmPasswordValid(false);
+                  }
+                }}
               />
               <Pressable style={styles.button} onPress={handleResetPassword}>
                 <MyText style={styles.buttonText}>Reset Password</MyText>
@@ -358,7 +459,7 @@ function LoginScreen({
     flexContainer: {
       flex: 1,
     },
-    forgotPassword: {
+    subMenuHeaderText: {
       fontSize: 24,
       fontWeight: 'bold',
       textAlign: 'center',
@@ -432,6 +533,19 @@ function LoginScreen({
       fontSize: 11,
       color: colors.primary,
       textAlign: 'right',
+    },
+    veriCodeContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      padding: 20,
+    },
+    veriCodeInputBox: {
+      width: 40,
+      height: 40,
+      borderBottomWidth: 2,
+      borderColor: '#333',
+      fontSize: 20,
+      color: 'black',
     },
   });
 
