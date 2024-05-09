@@ -12,7 +12,7 @@ import {useTheme} from '../../theme/Colors';
 import TimeRecordAPI from '../../api/TimeRecordAPI';
 import JobsiteAPI from '../../api/JobsiteAPI';
 import Jobsite from '../../models/Jobsite';
-import APIClient from '../../api/APIClient';
+import { useAPIClient } from '../../api/APIClientContext';
 
 interface TimesheetRecordFormProps {
   styles: any;
@@ -24,9 +24,9 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
   const {colors} = useTheme();
   const user = 'user';
 
-  const client = new APIClient();
-  const timeRecordAPI = new TimeRecordAPI(client);
-  const jobsiteAPI = new JobsiteAPI(client);
+  const { apiClient } = useAPIClient();
+  const timeRecordAPI = new TimeRecordAPI(apiClient);
+  const jobsiteAPI = new JobsiteAPI(apiClient);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [jobsite, setJobsite] = useState(null);

@@ -9,22 +9,18 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import {useTheme} from '../theme/Colors';
+import { useAPIClient } from '../api/APIClientContext';
 import AuthAPI from '../api/AuthAPI';
-import APIClient from '../api/APIClient';
+import {useTheme} from '../theme/Colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import isEmail from 'validator/lib/isEmail';
 
 import MyText from '../components/MyText';
 
-interface LoginScreenProps {
-  setIsAuthenticated: (value: boolean) => void;
-}
-
-function LoginScreen({
-  setIsAuthenticated,
-}: LoginScreenProps): React.ReactElement {
+function LoginScreen(): React.ReactElement {
+  const { apiClient, setIsAuthenticated } = useAPIClient();
+  const authAPI = new AuthAPI(apiClient);
   const logo = require('../assets/pacbuild-square-blue.jpg');
   const {colors} = useTheme();
 
@@ -37,9 +33,6 @@ function LoginScreen({
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
   const [isEmailPasswordValid, setIsEmailPasswordValid] = useState(true);
-
-  const client = new APIClient();
-  const authAPI = new AuthAPI(client);
 
   const handleLogin = async () => {
     setIsLoading(true);
@@ -62,13 +55,8 @@ function LoginScreen({
       return;
     }
 
-    try {
-      const authData = await authAPI.addAuth({
-        email: email,
-        password: password,
-      });
-
-      console.log('Success:', authData);
+   try {
+      const authData = await authAPI.addAuth({ email, password });
       await AsyncStorage.setItem('userToken', authData.token);
       setIsAuthenticated(true);
     } catch (error) {

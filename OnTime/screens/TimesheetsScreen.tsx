@@ -7,7 +7,7 @@ import { debounce } from 'lodash';
 import NewTimeRecordButton from '../components/time-record/time-record-modal-button';
 
 import {useTheme} from '../theme/Colors';
-import APIClient from '../api/APIClient';
+import { useAPIClient } from '../api/APIClientContext';
 import TimeRecordAPI from '../api/TimeRecordAPI';
 import TimeRecord from '../models/TimeRecord';
 import TimeRecordItem from '../components/time-record/time-record';
@@ -22,8 +22,8 @@ const TimesheetsScreen: React.FC = () => {
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [overlayOpacity, setOverlayOpacity] = useState(new Animated.Value(0.5));
 
-  const client = new APIClient();
-  const timeRecordAPI = new TimeRecordAPI(client);
+  const { apiClient } = useAPIClient();
+  const timeRecordAPI = new TimeRecordAPI(apiClient);
 
   useEffect(() => {
     // Fetch data when the component mounts

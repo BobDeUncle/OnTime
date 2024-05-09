@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {StyleSheet, View} from 'react-native';
-import APIClient from '../api/APIClient';
+import { useAPIClient } from '../api/APIClientContext';
 import UserAPI from '../api/UserAPI';
 import MyText from '../components/MyText';
 import TimeRecordForm from '../components/time-record/time-record-form'
@@ -11,8 +11,8 @@ function DashboardScreen({}): React.ReactElement {
   const {colors} = useTheme();
   const [user, setUser] = useState<User>();
 
-  const client = new APIClient();
-  const userAPI = new UserAPI(client);
+  const { apiClient } = useAPIClient();
+  const userAPI = new UserAPI(apiClient);
 
   useEffect(() => {
     const fetchUser = async () => {
