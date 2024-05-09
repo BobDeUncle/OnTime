@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// Helper function to convert an object to a query string
 function objectToQueryString(obj: any) {
   return Object.keys(obj)
     .map(key => Array.isArray(obj[key])
@@ -10,10 +11,11 @@ function objectToQueryString(obj: any) {
 
 class APIClient {
   private baseURL: string;
+  private onAuthFailure: () => void;
 
-  constructor() {
-    this.baseURL =
-      'https://ontime-express.vercel.app/api/v1';
+  constructor(onAuthFailure: () => void) {
+    this.baseURL = 'https://ontime-express.vercel.app/api/v1';
+    this.onAuthFailure = onAuthFailure;
   }
 
   private async request<T>(
@@ -22,10 +24,8 @@ class APIClient {
     body?: any,
     params?: any,
   ): Promise<T> {
-    // Convert params object to query string
-    const queryString = params ? '?' + objectToQueryString(params.params) : '';
-
-    if (params) console.log('url: ', `${this.baseURL}${url}${queryString}`);
+    // Convert params object to a query string
+    const queryString = params ? '?' + objectToQueryString(params) : '';
 
     // Retrieve the userToken from AsyncStorage
     const userToken = await AsyncStorage.getItem('userToken');
@@ -34,10 +34,17 @@ class APIClient {
       method,
       headers: {
         'Content-Type': 'application/json',
-        ...(userToken ? {Authorization: `Bearer ${userToken}`} : {}),
+        ...(userToken ? { Authorization: `Bearer ${userToken}` } : {}),
       },
-      body: JSON.stringify(body),
+      body: method !== 'GET' ? JSON.stringify(body) : undefined,
     });
+
+    // Check if the token is no longer valid and handle it
+    if (response.status === 401) {
+      await AsyncStorage.removeItem('userToken');  // Remove the token
+      this.onAuthFailure();  // Invoke the authentication failure handler
+      throw new Error('Session expired. Please log in again.');
+    }
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -46,14 +53,12 @@ class APIClient {
     return await response.json();
   }
 
+  // Public methods to access the API endpoints
   public async get<T>(url: string, params?: any): Promise<T> {
-    console.log('GET: ', url);
     return await this.request<T>(url, 'GET', undefined, params);
   }
 
   public async post<T>(url: string, body: any): Promise<T> {
-    console.log('POST: ', url);
-    console.log('Body: ', body);
     return await this.request<T>(url, 'POST', body);
   }
 
@@ -62,7 +67,6 @@ class APIClient {
   }
 
   public async delete<T>(url: string): Promise<T> {
-    console.log('DELETE: ', url);
     return await this.request<T>(url, 'DELETE');
   }
 }

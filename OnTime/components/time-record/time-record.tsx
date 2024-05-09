@@ -4,7 +4,7 @@ import {useTheme} from '../../theme/Colors';
 import MyText from '../../components/MyText';
 import TimeRecord from '../../models/TimeRecord';
 import TimeRecordAPI from '../../api/TimeRecordAPI';
-import APIClient from '../../api/APIClient';
+import { useAPIClient } from '../../api/APIClientContext';
 
 interface TimeRecordProps {
   timeRecord: TimeRecord;
@@ -17,8 +17,8 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
 }) => {
   const {colors} = useTheme();
 
-  const client = new APIClient();
-  const timeRecordAPI = new TimeRecordAPI(client);
+  const { apiClient } = useAPIClient();
+  const timeRecordAPI = new TimeRecordAPI(apiClient);
 
   timeRecord.startTime = new Date(timeRecord.startTime);
   timeRecord.endTime = new Date(timeRecord.endTime);

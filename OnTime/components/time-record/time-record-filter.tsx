@@ -6,7 +6,7 @@ import MyText from '../../components/MyText';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 
 import {useTheme} from '../../theme/Colors';
-import APIClient from '../../api/APIClient';
+import { useAPIClient } from '../../api/APIClientContext';
 import JobsiteAPI from '../../api/JobsiteAPI';
 import Jobsite from '../../models/Jobsite';
 
@@ -29,8 +29,8 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply, onModalVis
   const [selectedSortOrder, setSelectedSortOrder] = useState('asc');
   const [modalBackdropOpacity, setModalBackdropOpacity] = useState(new Animated.Value(0));
 
-  const client = new APIClient();
-  const jobsiteAPI = new JobsiteAPI(client);
+  const { apiClient } = useAPIClient();
+  const jobsiteAPI = new JobsiteAPI(apiClient);
 
   useEffect(() => {
     getJobsites();

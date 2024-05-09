@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
+import { APIClientProvider, useAPIClient } from './api/APIClientContext';
 import {lightTheme, darkTheme} from './theme/Colors';
 import {LogLevel, OneSignal} from 'react-native-onesignal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -61,8 +62,8 @@ function App(): React.JSX.Element {
 
   setCustomText(customTextProps);
 
-  // AUTHENITCATION using userToken
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // AUTHENTICATION using userToken
+  const { isAuthenticated, setIsAuthenticated } = useAPIClient();
 
   useEffect(() => {
     // Check if the user is authenticated when the app loads
@@ -88,7 +89,7 @@ function App(): React.JSX.Element {
           handleLogout={handleLogout}
         />
       ) : (
-        <LoginScreen setIsAuthenticated={setIsAuthenticated} />
+        <LoginScreen />
       )}
     </NavigationContainer>
   );

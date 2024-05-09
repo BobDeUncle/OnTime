@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import {StyleSheet, View} from 'react-native';
+import {useTheme} from '../theme/Colors';
+import styles from '../theme/Styles';
 import { useAPIClient } from '../api/APIClientContext';
 import UserAPI from '../api/UserAPI';
 import MyText from '../components/MyText';
-import TimeRecordForm from '../components/time-record/time-record-form'
-import {useTheme} from '../theme/Colors';
 import User from '../models/User';
 
-function DashboardScreen({}): React.ReactElement {
+function ProfileScreen(): React.ReactElement {
   const {colors} = useTheme();
   const [user, setUser] = useState<User>();
 
@@ -18,6 +18,7 @@ function DashboardScreen({}): React.ReactElement {
     const fetchUser = async () => {
       try {
         const userData = await userAPI.getUserMe();
+        console.log(userData);
         setUser(userData);
       } catch (error) {
         console.error('Failed to fetch user: ', error)
@@ -30,43 +31,41 @@ function DashboardScreen({}): React.ReactElement {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      padding: 16,
+      padding: 24,
       backgroundColor: colors.background,
     },
-    welcome: {
+    headingText: {
       color: colors.opText,
       fontSize: 24,
-      marginVertical: 16,
+      paddingBottom: 10,
       fontWeight: 'bold',
     },
-    section: {
-      backgroundColor: colors.card,
-      padding: 16,
-      borderRadius: 8,
-      marginVertical: 8,
+    text: {
+      color: colors.opText,
+      paddingBottom: 10,
     },
-    sectionTitle: {
-      color: colors.text,
-      fontSize: 18,
+    boldText: {
       fontWeight: 'bold',
-      paddingBottom: 15,
     },
   });
 
   return (
     <View style={styles.container}>
-      <MyText style={styles.welcome}>Welcome{user ? ', ' + user.firstName : ''}</MyText>
-      <TimeRecordForm styles={styles} showCloseButton={false}/>
-      <View style={styles.section}>
-        <MyText style={styles.sectionTitle}>Monthly Activity</MyText>
-        {/* Add your status indicators here */}
-      </View>
-      <View style={styles.section}>
-        <MyText style={styles.sectionTitle}>Recent History</MyText>
-        {/* Add your history entries here */}
-      </View>
+      <MyText style={styles.headingText}>User Info</MyText>
+      <MyText style={styles.text}>
+        <MyText style={styles.boldText}>Name:</MyText>
+        {user ? ` ${user.firstName} ${user.lastName}` : ''}
+      </MyText>
+      <MyText style={styles.text}>
+        <MyText style={styles.boldText}>Role:</MyText>
+        {user && user.roles.length > 0 ? ` ${user.roles[0].name}` : ''}
+      </MyText>
+      <MyText style={styles.text}>
+        <MyText style={styles.boldText}>Email:</MyText>
+        {user ? ` ${user.email}` : ''}
+      </MyText>
     </View>
   );
 }
 
-export default DashboardScreen;
+export default ProfileScreen;
