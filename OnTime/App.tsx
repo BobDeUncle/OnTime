@@ -61,7 +61,7 @@ function App(): React.JSX.Element {
 
   setCustomText(customTextProps);
 
-  // AUTHENITCATION using userToken
+  // AUTHENTICATION using userToken
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
