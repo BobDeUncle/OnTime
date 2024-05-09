@@ -6,6 +6,7 @@
 //
 import React, { useState, useEffect } from 'react'
 import { View, Text, FlatList, Button, Alert } from 'react-native'
+import { useAPIClient } from '../api/APIClientContext';
 import UserAPI from '../api/UserAPI'
 import type User from '../models/User'
 
@@ -13,6 +14,9 @@ const UserManagement: React.FC = () => {
   // State for managing users
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState<boolean>(false)
+
+  const { apiClient } = useAPIClient();
+  const userAPI = new UserAPI(apiClient);
 
   useEffect(() => {
     // Fetch users when component mounts
@@ -23,7 +27,7 @@ const UserManagement: React.FC = () => {
   const fetchUsers = async () => {
     setLoading(true)
     try {
-      const usersData = await UserAPI.getAllUsers()
+      const usersData = await userAPI.getAllUsers()
       setUsers(usersData)
     } catch (error) {
       console.error('Error fetching users:', error)
@@ -49,7 +53,7 @@ const UserManagement: React.FC = () => {
           onPress: async () => {
             // Call API to delete user
             try {
-              await UserAPI.deleteUser(userId)
+              await userAPI.deleteUser(userId)
               // Refetch users after deletion
               fetchUsers()
             } catch (error) {
