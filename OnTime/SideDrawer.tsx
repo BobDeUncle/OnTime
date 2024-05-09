@@ -13,6 +13,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import DashboardScreen from './screens/DashboardScreen.tsx';
 import SettingsScreen from './screens/SettingsScreen.tsx';
 import ProfileScreen from './screens/ProfileScreen.tsx';
+import ApprovalScreen from './screens/ApprovalScreen.tsx';
 import TimesheetsScreen from './screens/TimesheetsScreen.tsx';
 import {lightTheme, darkTheme, useTheme} from './theme/Colors.tsx';
 
@@ -125,6 +126,17 @@ function SideDrawer({
         }}>
         {() => (
           <ProfileScreen />
+        )}
+      </Drawer.Screen>
+      <Drawer.Screen
+        name="Time Record Approvals"
+        options={{
+          drawerIcon: ({color}) => (
+            <FontAwesomeIcon icon="clipboard-check" color={color} />
+          ),
+        }}>
+        {() => (
+          <ApprovalScreen />
         )}
       </Drawer.Screen>
       <Drawer.Screen

@@ -16,5 +16,6 @@ import {faUser} from '@fortawesome/free-solid-svg-icons/faUser';
 import {faEye} from '@fortawesome/free-solid-svg-icons/faEye';
 import {faEyeSlash} from '@fortawesome/free-solid-svg-icons/faEyeSlash';
 import {faCircleCheck} from '@fortawesome/free-solid-svg-icons/faCircleCheck';
+import {faClipboardCheck} from '@fortawesome/free-solid-svg-icons/faClipboardCheck';
 
-library.add(fab, faHouse, faClock, faGear, faArrowRightFromBracket, faChevronDown, faChevronLeft, faExclamation, faSearch, faSliders, faPlus, faTimes, faCalendar, faUser, faEye, faEyeSlash, faCircleCheck);
+library.add(fab, faHouse, faClock, faGear, faArrowRightFromBracket, faChevronDown, faChevronLeft, faExclamation, faSearch, faSliders, faPlus, faTimes, faCalendar, faUser, faEye, faEyeSlash, faCircleCheck, faClipboardCheck);
