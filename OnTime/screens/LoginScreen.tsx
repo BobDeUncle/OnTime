@@ -1,9 +1,8 @@
-// Based on https://medium.com/@mustapha.aitigunaoun/creating-a-stylish-login-form-in-react-native-45e9277f1b9f
+// Partly based on https://medium.com/@mustapha.aitigunaoun/creating-a-stylish-login-form-in-react-native-45e9277f1b9f
 
 import React, {createRef, useState, RefObject} from 'react';
 import {
   ActivityIndicator,
-  Alert,
   Image,
   Pressable,
   StyleSheet,
@@ -23,17 +22,13 @@ interface LoginScreenProps {
   setIsAuthenticated: (value: boolean) => void;
 }
 
-interface AuthData {
-  token: string;
-}
-
 function LoginScreen({
   setIsAuthenticated,
 }: LoginScreenProps): React.ReactElement {
   const logo = require('../assets/pacbuild-square-blue.jpg');
   const {colors} = useTheme();
 
-  const [resetStage, setResetStage] = useState('login'); // 'login', 'forgotPassword', 'veriCode', 'resetPassword'
+  const [resetStage, setResetStage] = useState('login'); // 'login', 'forgotPassword', 'veriCode', 'resetPassword', 'success'
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -103,17 +98,15 @@ function LoginScreen({
     }
 
     try {
-      // NEED TO FIX AND FINISH WHEN API CALLS WORKING
       const FPData = await authAPI.forgotPassword({
         email: FPEmail,
       });
-      console.log(FPData);
+      console.log(FPData);  
+      setResetStage('veriCode');
     } catch (error) {
       console.error('Error:', error);
     } finally {
-      setIsLoading(false);
-      // move to try when API working
-      setResetStage('veriCode')
+      setIsLoading(false);      
     }
   };
 
@@ -129,12 +122,13 @@ function LoginScreen({
     setVeriCodeInputs(newInputs);
     if (text && index < numCodeInputs - 1) {
       veriCodeRefs[index + 1].current?.focus();
+    } else if (text) {
+      veriCodeRefs[index].current?.blur();
+      setIsVeriCodeValid(true);
     }
   };
 
   const handleVeriCode = async () => {
-    console.log('handleVeriCode');
-    console.log(veriCodeInputs.join(''))
     setIsLoading(true);
 
     // Form Validation
@@ -145,15 +139,8 @@ function LoginScreen({
       return;
     }
 
-    try {
-      // NEED TO FIX AND FINISH WHEN API CALLS WORKING
-
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setIsLoading(false);
-      setResetStage('resetPassword')
-    }
+    setResetStage('resetPassword');
+    setIsLoading(false);
   };
 
   // RESET PASSWORD
@@ -161,28 +148,56 @@ function LoginScreen({
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isNewPasswordValid, setIsNewPasswordValid] = useState(true);
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
+  const [confirmPasswordMessage, setConfirmPasswordMessage] = useState('');
+  const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
   const handleResetPassword = async () => {
     console.log('handleResetPassword');
     setIsLoading(true);
 
     // Form Validation
+    if (newPassword !== '') {
+      setIsNewPasswordValid(true);
+    } else {
+      setIsNewPasswordValid(false);
+      setIsLoading(false);
+      return;
+    }
+
+    if (confirmPassword == '') {
+      setConfirmPasswordMessage('Invalid Password');
+      setIsConfirmPasswordValid(false);
+      setIsLoading(false);
+      return;
+    } else if (confirmPassword !== newPassword) {
+      setConfirmPasswordMessage('Passwords must be the same');
+      setIsConfirmPasswordValid(false);
+      setIsLoading(false);
+      return;
+    } else {
+      setIsConfirmPasswordValid(true);
+    };
 
     try {
-      // NEED TO FIX AND FINISH WHEN API CALLS WORKING
-      const FPData = await authAPI.resetPassword({
+      const RPData = await authAPI.resetPassword({
         email: FPEmail,
-        // code: verificationCode,
+        code: veriCodeInputs.join(''),
         password: newPassword,
         confirmationPassword: confirmPassword,
       });
-      console.log(FPData);
+      console.log(RPData);
+      setResetStage('success');
     } catch (error) {
       console.error('Error:', error);
     } finally {
       setIsLoading(false);
-      setResetStage('login')
     }
+  };
+
+  // SUCCESS
+  const handleSuccessContinue = () => {
+    setResetStage('login')
   };
 
   const renderBottomContainerContent = () => {
@@ -290,6 +305,7 @@ function LoginScreen({
                 }}
                 placeholder="Email"
                 placeholderTextColor={isFPEmailValid ? colors.border : colors.warning}
+                keyboardType="email-address"
                 value={FPEmail}
                 onChangeText={(text) => {
                   setFPEmail(text);
@@ -341,11 +357,12 @@ function LoginScreen({
                     key={index}
                     style={{
                       ...styles.veriCodeInputBox,
-                      borderColor: isVeriCodeValid ? colors.border : colors.warning,
+                      borderColor: isVeriCodeValid ? colors.secondary : colors.warning,
                     }}
                     value={input}
                     onChangeText={(text) => handleVeriCodeChange(text, index)}
                     keyboardType="number-pad"
+                    returnKeyType={'done'}
                     maxLength={1}
                     ref={veriCodeRefs[index]}
                     textAlign="center"
@@ -357,6 +374,16 @@ function LoginScreen({
                   <FontAwesomeIcon icon='exclamation' style={styles.invalidFormIcon}/> Invalid Code
                 </MyText>
               )}
+              <Pressable onPress={handleForgotPassword} style={({ pressed }) => ({
+                opacity: pressed ? 0.5 : 1,
+              })}>
+                <MyText style={{...styles.subtext, paddingTop: 20, marginBottom: 5, color: colors.opText}}>
+                  Didn't get a code?{' '}
+                  <MyText style={{...styles.subtext, ...styles.hyperlink}}>
+                    Click to resend
+                  </MyText>
+                </MyText>
+              </Pressable>
               <Pressable style={styles.button} onPress={handleVeriCode}>
                 <MyText style={styles.buttonText}>Continue</MyText>
               </Pressable>
@@ -366,49 +393,94 @@ function LoginScreen({
       case 'resetPassword':
         return (
           <>
+            <View style={styles.header}>
+              <MyText style={styles.subMenuHeaderText}>Reset Password</MyText>
+            </View>
+            <View style={styles.greenLine} />
+            <MyText style={{...styles.subtext, color: colors.opText}}>{FPEmail}</MyText>
+            <MyText style={styles.subtext}>Enter a new password and reconfirm</MyText>
             <View style={styles.inputView}>
-              <TextInput
-                style={{
-                  ...styles.input,
-                  borderColor: isNewPasswordValid ? colors.border : colors.warning,
-                }}
-                placeholder="New Password"
-                placeholderTextColor={isNewPasswordValid ? colors.border : colors.warning}
-                secureTextEntry
-                value={newPassword}
-                onChangeText={(text) => {
-                  setNewPassword(text);
-                  if (text !== '') {
-                    setIsNewPasswordValid(true);
-                  } else {
-                    setIsNewPasswordValid(false);
-                  }
-                }}
-              />
-              <TextInput
-                style={{
-                  ...styles.input,
-                  borderColor: isConfirmPasswordValid ? colors.border : colors.warning,
-                }}
-                placeholder="Confirm Password"
-                placeholderTextColor={isConfirmPasswordValid ? colors.border : colors.warning}
-                secureTextEntry
-                value={confirmPassword}
-                onChangeText={(text) => {
-                  setConfirmPassword(text);
-                  if (text !== '') {
-                    setIsConfirmPasswordValid(true);
-                  } else {
-                    setIsConfirmPasswordValid(false);
-                  }
-                }}
-              />
+              <View style={{...styles.passwordView, borderColor: isNewPasswordValid ? colors.border : colors.warning}}>
+                <TextInput
+                  style={{
+                    ...styles.input,
+                    ...styles.passwordInput,
+                    borderColor: isNewPasswordValid ? colors.border : colors.warning,
+                  }}
+                  placeholder="New Password"
+                  placeholderTextColor={isNewPasswordValid ? colors.border : colors.warning}
+                  secureTextEntry={!isNewPasswordVisible}
+                  value={newPassword}
+                  onChangeText={(text) => {
+                    setNewPassword(text);
+                    setIsNewPasswordValid(text !== '');
+                  }}
+                />
+                <Pressable
+                  onPress={() => setIsNewPasswordVisible(!isNewPasswordVisible)}
+                  style={styles.eyeIcon}
+                >
+                  <FontAwesomeIcon icon={isNewPasswordVisible ? 'eye-slash' : 'eye'} color={colors.border} />
+                </Pressable>
+              </View>
+              {!isNewPasswordValid && (
+                <MyText style={styles.invalidForm}>
+                  <FontAwesomeIcon icon='exclamation' style={styles.invalidFormIcon}/> Invalid Password
+                </MyText>
+              )}
+              <View style={{...styles.passwordView, borderColor: isConfirmPasswordValid ? colors.border : colors.warning}}>
+                <TextInput
+                  style={{
+                    ...styles.input,
+                    ...styles.passwordInput,
+                  }}
+                  placeholder="Confirm Password"
+                  placeholderTextColor={isConfirmPasswordValid ? colors.border : colors.warning}
+                  secureTextEntry={!isConfirmPasswordVisible}
+                  value={confirmPassword}
+                  onChangeText={(text) => {
+                    setConfirmPassword(text);
+                    if (text !== '') {
+                      setIsConfirmPasswordValid(true);
+                    } else {
+                      setIsConfirmPasswordValid(false);
+                    }
+                  }}
+                />
+                <Pressable
+                  onPress={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
+                  style={styles.eyeIcon}
+                >
+                  <FontAwesomeIcon icon={isConfirmPasswordVisible ? 'eye-slash' : 'eye'} color={colors.border} />
+                </Pressable>
+              </View>
+              {!isConfirmPasswordValid && (
+                <MyText style={styles.invalidForm}>
+                  <FontAwesomeIcon icon='exclamation' style={styles.invalidFormIcon}/> {confirmPasswordMessage}
+                </MyText>
+              )}
               <Pressable style={styles.button} onPress={handleResetPassword}>
                 <MyText style={styles.buttonText}>Reset Password</MyText>
               </Pressable>
             </View>
           </>
         );
+      case 'success':
+        return (
+          <>
+            <FontAwesomeIcon icon='circle-check' style={styles.successIcon} size={50}/>
+            <View style={{...styles.header, marginTop : 0}}>
+              <MyText style={styles.subMenuHeaderText}>New Password Created</MyText>
+            </View>
+            <View style={styles.greenLine} />
+            <MyText style={styles.subtext}>A new password has been successfully created. Please login using the new password.</MyText>
+            <View style={styles.inputView}>
+              <Pressable style={{...styles.button, marginTop: 30}} onPress={handleSuccessContinue}>
+                <MyText style={styles.buttonText}>LOGIN</MyText>
+              </Pressable>
+            </View>
+          </>
+        )
     };
   };
 
@@ -475,7 +547,7 @@ function LoginScreen({
       marginBottom: 30,
       paddingHorizontal: 10,
       fontWeight: 'bold',
-      color: 'grey',
+      color: colors.border,
       textAlign: 'center',
     },
     invalidForm: {
@@ -516,7 +588,7 @@ function LoginScreen({
       justifyContent: 'center',
     },
     buttonText: {
-      color: 'white',
+      color: colors.text,
       fontSize: 18,
       fontWeight: 'bold',
     },
@@ -537,15 +609,38 @@ function LoginScreen({
     veriCodeContainer: {
       flexDirection: 'row',
       justifyContent: 'space-around',
-      padding: 20,
+      padding: 0,
     },
     veriCodeInputBox: {
-      width: 40,
-      height: 40,
-      borderBottomWidth: 2,
-      borderColor: '#333',
+      width: 45,
+      height: 45,
+      borderWidth: 2,
+      borderRadius: 10,
       fontSize: 20,
-      color: 'black',
+      color: colors.opText,
+    },
+    hyperlink: {
+      textDecorationLine: 'underline',
+      color: colors.opText,
+    },
+    passwordView: {
+      flexDirection: 'row', 
+      alignItems: 'center', 
+      justifyContent: 'center', 
+      borderRadius: 8, 
+      borderWidth: 2,
+      paddingHorizontal: 8, 
+    },
+    passwordInput: {
+      flex: 1, 
+      borderWidth: 0,
+    },
+    eyeIcon: {
+      padding: 10,
+    },
+    successIcon: {
+      marginTop: 25,
+      color: colors.secondary,
     },
   });
 

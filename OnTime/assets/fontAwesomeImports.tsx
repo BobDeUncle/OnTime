@@ -13,5 +13,8 @@ import {faPlus} from '@fortawesome/free-solid-svg-icons/faPlus';
 import {faTimes} from '@fortawesome/free-solid-svg-icons/faTimes';
 import {faCalendar} from '@fortawesome/free-solid-svg-icons/faCalendar';
 import {faUser} from '@fortawesome/free-solid-svg-icons/faUser';
+import {faEye} from '@fortawesome/free-solid-svg-icons/faEye';
+import {faEyeSlash} from '@fortawesome/free-solid-svg-icons/faEyeSlash';
+import {faCircleCheck} from '@fortawesome/free-solid-svg-icons/faCircleCheck';
 
-library.add(fab, faHouse, faClock, faGear, faArrowRightFromBracket, faChevronDown, faChevronLeft, faExclamation, faSearch, faSliders, faPlus, faTimes, faCalendar, faUser);
+library.add(fab, faHouse, faClock, faGear, faArrowRightFromBracket, faChevronDown, faChevronLeft, faExclamation, faSearch, faSliders, faPlus, faTimes, faCalendar, faUser, faEye, faEyeSlash, faCircleCheck);
