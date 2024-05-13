@@ -2,12 +2,13 @@ import React, {useState, useEffect, useCallback} from 'react';
 import {ActivityIndicator, Animated, FlatList, ScrollView, StyleSheet, TextInput, View} from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { storageEmitter } from '../components/storageEmitter';
-import { debounce } from 'lodash';
 
 import NewTimeRecordButton from '../components/time-record/time-record-modal-button';
 
 import {useTheme} from '../theme/Colors';
 import { useAPIClient } from '../api/APIClientContext';
+import UserAPI from '../api/UserAPI';
+import User from '../models/User';
 import TimeRecordAPI from '../api/TimeRecordAPI';
 import TimeRecord from '../models/TimeRecord';
 import TimeRecordItem from '../components/time-record/time-record';
@@ -15,6 +16,23 @@ import TimeRecordFilter from '../components/time-record/time-record-filter';
 
 const TimesheetsScreen: React.FC = () => {
   const {colors} = useTheme();
+  const [user, setUser] = useState<User>();
+
+  const { apiClient } = useAPIClient();
+  const userAPI = new UserAPI(apiClient);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userData = await userAPI.getUserMe();
+        setUser(userData);
+      } catch (error) {
+        console.error('Failed to fetch user: ', error)
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const [timeRecords, setTimeRecords] = useState<TimeRecord[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -22,7 +40,6 @@ const TimesheetsScreen: React.FC = () => {
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [overlayOpacity, setOverlayOpacity] = useState(new Animated.Value(0.5));
 
-  const { apiClient } = useAPIClient();
   const timeRecordAPI = new TimeRecordAPI(apiClient);
 
   useEffect(() => {
@@ -64,6 +81,7 @@ const TimesheetsScreen: React.FC = () => {
   const fetchTimeRecords = useCallback(async (params: {[key: string]: any} = {}) => {
     setLoading(true);
     params.search = searchQuery;
+    params.employees = user?._id;
     try {
       const timeRecordsData: TimeRecord[] =
         await timeRecordAPI.getAllTimeRecords(params);
