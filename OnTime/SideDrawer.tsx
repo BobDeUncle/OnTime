@@ -15,6 +15,7 @@ import SettingsScreen from './screens/SettingsScreen.tsx';
 import ProfileScreen from './screens/ProfileScreen.tsx';
 import ApprovalScreen from './screens/ApprovalScreen.tsx';
 import TimesheetsScreen from './screens/TimesheetsScreen.tsx';
+import UserManagementScreen from './screens/UserManagementScreen.tsx';
 import {lightTheme, darkTheme, useTheme} from './theme/Colors.tsx';
 
 const styles = StyleSheet.create({
@@ -150,6 +151,15 @@ function SideDrawer({
           <SettingsScreen isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
         )}
       </Drawer.Screen>
+      <Drawer.Screen
+        name="User Management"
+        component={UserManagementScreen}
+        options={{
+          drawerIcon: ({ color }) => (
+                <FontAwesomeIcon icon="user" color={color} />
+          )
+        }}
+    />
     </Drawer.Navigator>
   );
 }
