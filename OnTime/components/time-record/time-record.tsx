@@ -1,8 +1,8 @@
 import React from 'react';
-import {View, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import {View, StyleSheet, Alert} from 'react-native';
 import {useTheme} from '../../theme/Colors';
 import MyText from '../../components/MyText';
-import TimeRecord from '../../models/TimeRecord';
+import TimeRecord, { Status } from '../../models/TimeRecord';
 import TimeRecordAPI from '../../api/TimeRecordAPI';
 import { useAPIClient } from '../../api/APIClientContext';
 
@@ -23,9 +23,6 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
   timeRecord.startTime = new Date(timeRecord.startTime);
   timeRecord.endTime = new Date(timeRecord.endTime);
 
-  // FIX ONCE APPROVAL STATUS IS IMPLEMENTED
-  timeRecord.approvalStatus = 'Approved';
-
   const handleDelete = async () => {
     try {
       await timeRecordAPI.deleteTimeRecord(timeRecord._id);
@@ -40,13 +37,13 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
     }
   };
 
-  const getApprovalColor = (status: string) => {
+  const getApprovalColor = (status: Status) => {
     switch (status) {
-      case 'Approved':
+      case Status.approved:
         return 'rgba(0, 128, 0, 0.5)'; // Semi-transparent green
-      case 'Pending':
+      case Status.pending:
         return 'rgba(255, 165, 0, 0.5)'; // Semi-transparent orange
-      case 'Denied':
+      case Status.denied:
         return 'rgba(255, 0, 0, 0.5)'; // Semi-transparent red
       default:
         return 'rgba(0, 0, 0, 0.5)'; // Semi-transparent black
@@ -142,9 +139,9 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
           <MyText style={styles.secondText}>
             Approval status:
           </MyText>
-          <View style={[styles.statusBackground, {backgroundColor: getApprovalColor(timeRecord.approvalStatus)}]}>
+          <View style={[styles.statusBackground, {backgroundColor: getApprovalColor(timeRecord.status)}]}>
             <MyText style={styles.approvalText}>
-              {timeRecord.approvalStatus}
+              {timeRecord.status}
             </MyText>
           </View>
         </View>
