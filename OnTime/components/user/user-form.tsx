@@ -1,5 +1,4 @@
 // TO DO:
-// validation
 // roles?
 // add create users
 
@@ -203,26 +202,59 @@ const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose })
         )}
       </View>
       <TextInput
-        style={localStyles.textInput}
+        style={{
+          ...localStyles.textInput,
+          borderColor: firstNameValid ? colors.border : colors.warning,
+        }}
         placeholder="First Name"
         placeholderTextColor={localStyles.placeholderText.color}
         value={firstName}
-        onChangeText={setFirstName}
+        onChangeText={(text) => {
+          setFirstName(text);
+          setFirstNameValid(text.trim().length > 0);
+        }}
       />
+      {!firstNameValid && (
+        <MyText style={localStyles.invalidForm}>
+          <FontAwesomeIcon icon='exclamation' style={localStyles.invalidFormIcon}/> Invalid First Name
+        </MyText>
+      )}
       <TextInput
-        style={localStyles.textInput}
+        style={{
+          ...localStyles.textInput,
+          borderColor: lastNameValid ? colors.border : colors.warning,
+        }}
         placeholder="Last Name"
         placeholderTextColor={localStyles.placeholderText.color}
         value={lastName}
-        onChangeText={setLastName}
+        onChangeText={(text) => {
+          setLastName(text);
+          setLastNameValid(text.trim().length > 0);
+        }}
       />
+      {!lastNameValid && (
+        <MyText style={localStyles.invalidForm}>
+          <FontAwesomeIcon icon='exclamation' style={localStyles.invalidFormIcon}/> Invalid Last Name
+        </MyText>
+      )}
       <TextInput
-        style={localStyles.textInput}
+        style={{
+          ...localStyles.textInput,
+          borderColor: emailValid ? colors.border : colors.warning,
+        }}
         placeholder="Email"
         placeholderTextColor={localStyles.placeholderText.color}
         value={email}
-        onChangeText={setEmail}
+        onChangeText={(text) => {
+          setEmail(text);
+          setEmailValid(validateEmail(text));
+        }}
       />
+      {!emailValid && (
+        <MyText style={localStyles.invalidForm}>
+          <FontAwesomeIcon icon='exclamation' style={localStyles.invalidFormIcon}/> Invalid Email
+        </MyText>
+      )}
       <TextInput
         style={localStyles.textInput}
         placeholder="Role"
