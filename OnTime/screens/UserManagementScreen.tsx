@@ -1,3 +1,7 @@
+// TO DO
+// Create User edit/delete functionality
+// Implement search
+
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, FlatList, ActivityIndicator, Animated, StyleSheet, TouchableOpacity } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -7,18 +11,33 @@ import UserFilter from '../components/user/user-filter';
 import UserAPI from '../api/UserAPI';
 import { useAPIClient } from '../api/APIClientContext';
 import { useTheme } from '../theme/Colors';
-import User from '../models/User';  // Ensure this import is correct
+import User from '../models/User'; 
+import { storageEmitter } from '../components/storageEmitter';
 
 const UserManagementScreen: React.FC = () => {
   const { colors } = useTheme();
   const { apiClient } = useAPIClient();
   const userAPI = new UserAPI(apiClient);
 
-  const [users, setUsers] = useState<User[]>([]);  // Explicitly type the state
+  const [users, setUsers] = useState<User[]>([]); 
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [overlayOpacity, setOverlayOpacity] = useState(new Animated.Value(0));
+
+  useEffect(() => {
+    // Fetch data when the component mounts
+    fetchUsers();
+
+    // Listen for the 'usersUpdated' event
+    storageEmitter.on('usersUpdated', refreshList);
+
+    // Cleanup function
+    return () => {
+      // Remove the event listener when the component unmounts
+      storageEmitter.off('usersUpdated', refreshList);
+    };
+  }, []);
 
   useEffect(() => {
     fetchUsers();
@@ -27,7 +46,7 @@ const UserManagementScreen: React.FC = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const fetchedUsers = await userAPI.getAllUsers();  // Assuming it takes a query to filter users
+      const fetchedUsers = await userAPI.getAllUsers();
       setUsers(fetchedUsers);
     } catch (error) {
       console.error('Error fetching users:', error);

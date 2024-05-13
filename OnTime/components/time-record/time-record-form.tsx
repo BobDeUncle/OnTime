@@ -3,7 +3,6 @@ import { Alert, View, Pressable, StyleSheet, TextInput, Button } from 'react-nat
 import MyText from '../../components/MyText';
 import MyDatePicker from '../../components/MyDatePicker';
 import MyTimePicker from '../../components/MyTimePicker';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from 'react-native-picker-select';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { storageEmitter } from '../storageEmitter';

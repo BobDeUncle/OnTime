@@ -1,79 +1,232 @@
-import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert } from 'react-native';
+// TO DO:
+// validation
+// roles?
+// add create users
+
+import React, { useState, useEffect } from 'react';
+import { View, TextInput, Button, StyleSheet, Alert, Pressable } from 'react-native';
 import MyText from '../../components/MyText';
 import { useTheme } from '../../theme/Colors';
+import { storageEmitter } from '../storageEmitter';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+
 import UserAPI from '../../api/UserAPI';
 import { useAPIClient } from '../../api/APIClientContext';
+import User from '../../models/User';
 
 interface UserFormProps {
+  styles: any;
+  showCloseButton: boolean,
   onClose: () => void;
 }
 
-const UserForm: React.FC<UserFormProps> = ({ onClose }) => {
-  const { colors } = useTheme();
+const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose }) => {  
+  const {colors} = useTheme();
+  const [user, setUser] = useState<User>();
+
   const { apiClient } = useAPIClient();
   const userAPI = new UserAPI(apiClient);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userData = await userAPI.getUserMe();
+        setUser(userData);
+      } catch (error) {
+        console.error('Failed to fetch user: ', error)
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  const [loading, setLoading] = useState<boolean>(true);
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState('');
+  const [role, setRole] = useState('User');
 
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [firstNameValid, setFirstNameValid] = useState(true);
+  const [lastNameValid, setLastNameValid] = useState(true);
   const [emailValid, setEmailValid] = useState(true);
 
-  const validateEmail = (email: string): boolean => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
-
   const handleSubmit = async () => {
+    setLoading(true);
     setFormSubmitted(true);
+
+    // Validate inputs
+    const isFirstNameValid = firstName.trim().length > 0;
+    const isLastNameValid = lastName.trim().length > 0;
     const isEmailValid = validateEmail(email);
+
+    // Update validation status
+    setFirstNameValid(isFirstNameValid);
+    setLastNameValid(isLastNameValid);
     setEmailValid(isEmailValid);
 
-    if (!firstName || !lastName || !isEmailValid) {
-      Alert.alert("Validation Error", "Please fill in all required fields correctly.");
+    // If any input is invalid, return early
+    if (!isFirstNameValid || !isLastNameValid || !isEmailValid) {
       return;
     }
 
-    try {
-      const newUser = { firstName, lastName, email, role };
-      //await userAPI.createUser(newUser);
-      Alert.alert("Success", "User created successfully");
-      onClose();  // Close the form modal
-    } catch (error) {
-      console.error('Error creating user:', error);
-      Alert.alert("Error", "Failed to create user. Please try again later.");
-    }
+    // Show a confirmation popup
+    Alert.alert(
+      'Submit New User',
+      `Do you wish to create a new user ${firstName} ${lastName} with email as ${email} and role of ${role}?`,
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Submission cancelled'),
+          style: 'cancel',
+        },
+        {
+          text: 'Submit',
+          onPress: async () => {
+            try {
+              await userAPI.createUser({
+                firstName,
+                lastName,
+                email,
+                role,
+              });
+
+              console.log({
+                firstName,
+                lastName,
+                email,
+                role,
+              });
+        
+              saveUser();
+              if (onClose) onClose();
+            } catch (error) {
+              console.error('Error creating user:', error);
+              Alert.alert(
+                'Error',
+                'Failed to create user. Please try again later.',
+              );
+            } finally {
+              setLoading(false);
+            }
+          },
+        },
+      ],
+      { cancelable: false },
+    );
   };
 
+  const validateEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const saveUser = async () => {
+    storageEmitter.emit('usersUpdated');
+  };
+
+  const localStyles = StyleSheet.create({
+    timesheetView: {},
+    invalidForm: {
+      color: colors.warning,
+      paddingBottom: 10,
+    },
+    invalidFormIcon: {
+      color: colors.warning,
+    },
+    row: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    closeButton: { 
+      padding: 10,
+      paddingTop: 0,
+      paddingRight: 0,
+    },
+    placeholderText: {
+      color: colors.border,
+      fontSize: 14,
+    },
+    dropdownInputIOS: {
+      color: colors.text,
+      paddingTop: 10,
+      paddingHorizontal: 10,
+      paddingBottom: 10,
+      borderWidth: 1,
+      borderRadius: 4,
+    },
+    dropdownInputAndroid: {
+      color: colors.text,
+      borderWidth: 1,
+      borderRadius: 4,
+    },
+    dropdownIcon: {
+      top: 6,
+      right: 10,
+    },
+    dateTimeInput: {
+      height: 40,
+      borderColor: colors.border,
+      borderWidth: 1,
+      borderRadius: 4,
+      marginTop: 8,
+      paddingLeft: 10,
+      color: colors.text,
+      flexDirection: 'row', 
+      alignItems: 'center', 
+      justifyContent: 'space-between'
+    },
+    textInput: {
+      height: 40,
+      borderColor: colors.border,
+      borderWidth: 1,
+      borderRadius: 4,
+      marginTop: 8,
+      paddingLeft: 10,
+      color: colors.text,
+    },
+    text: {
+      color: colors.border,
+      fontSize: 14,
+    },
+  });
+
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <MyText style={styles.title}>New User</MyText>
-        <Button title="Close" onPress={onClose} />
+    <View style={styles.section}>
+      <View style={localStyles.row}>
+        <MyText style={styles.sectionTitle}>New User</MyText>
+        {showCloseButton && (
+          <Pressable onPress={onClose} style={localStyles.closeButton}>
+            <FontAwesomeIcon icon='times' size={26} color={colors.text}/>
+          </Pressable>
+        )}
       </View>
       <TextInput
-        style={[styles.input, !firstName && formSubmitted ? styles.invalidInput : {}]}
+        style={localStyles.textInput}
         placeholder="First Name"
+        placeholderTextColor={localStyles.placeholderText.color}
         value={firstName}
         onChangeText={setFirstName}
       />
       <TextInput
-        style={[styles.input, !lastName && formSubmitted ? styles.invalidInput : {}]}
+        style={localStyles.textInput}
         placeholder="Last Name"
+        placeholderTextColor={localStyles.placeholderText.color}
         value={lastName}
         onChangeText={setLastName}
       />
       <TextInput
-        style={[styles.input, !emailValid && formSubmitted ? styles.invalidInput : {}]}
+        style={localStyles.textInput}
         placeholder="Email"
+        placeholderTextColor={localStyles.placeholderText.color}
         value={email}
         onChangeText={setEmail}
       />
       <TextInput
-        style={styles.input}
-        placeholder="Role (optional)"
+        style={localStyles.textInput}
+        placeholder="Role"
+        placeholderTextColor={localStyles.placeholderText.color}
         value={role}
         onChangeText={setRole}
       />
@@ -81,33 +234,5 @@ const UserForm: React.FC<UserFormProps> = ({ onClose }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    backgroundColor: 'white',
-    borderRadius: 5,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-  },
-  invalidInput: {
-    borderColor: 'red',
-  }
-});
 
 export default UserForm;
