@@ -9,9 +9,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { storageEmitter } from '../storageEmitter';
 
 import {useTheme} from '../../theme/Colors';
+import UserAPI from '../../api/UserAPI';
 import TimeRecordAPI from '../../api/TimeRecordAPI';
 import JobsiteAPI from '../../api/JobsiteAPI';
 import Jobsite from '../../models/Jobsite';
+import User from '../../models/User';
 import { useAPIClient } from '../../api/APIClientContext';
 
 interface TimesheetRecordFormProps {
@@ -22,9 +24,24 @@ interface TimesheetRecordFormProps {
 
 const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseButton, onClose }) => {  
   const {colors} = useTheme();
-  const user = 'user';
+  const [user, setUser] = useState<User>();
 
   const { apiClient } = useAPIClient();
+  const userAPI = new UserAPI(apiClient);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userData = await userAPI.getUserMe();
+        setUser(userData);
+      } catch (error) {
+        console.error('Failed to fetch user: ', error)
+      }
+    };
+
+    fetchUser();
+  }, []);
+
   const timeRecordAPI = new TimeRecordAPI(apiClient);
   const jobsiteAPI = new JobsiteAPI(apiClient);
 
@@ -99,7 +116,7 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
           onPress: async () => {
             try {
               await timeRecordAPI.addTimeRecord({
-                employee: '660e6d7413463bb6826432f1',
+                employee: user?._id,
                 date: date,
                 startTime: startTime.toISOString(), 
                 endTime: endTime.toISOString(),
