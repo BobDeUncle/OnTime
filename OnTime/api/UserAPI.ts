@@ -12,10 +12,6 @@ class UserAPI {
     return await this.client.get('/users');
   }
 
-  public async getUserMe(): Promise<User> {
-    return await this.client.get(`/users/me`);
-  }
-
   public async updateUser(id: string, timeRecord: any) {
     return await this.client.patch(`/users/${id}`, timeRecord);
   }
