@@ -16,6 +16,7 @@ import ProfileScreen from './screens/ProfileScreen.tsx';
 import ApprovalScreen from './screens/ApprovalScreen.tsx';
 import TimesheetsScreen from './screens/TimesheetsScreen.tsx';
 import {lightTheme, darkTheme, useTheme} from './theme/Colors.tsx';
+import {useAPIClient} from './api/APIClientContext.tsx';
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -67,6 +68,7 @@ function SideDrawer({
   handleLogout,
 }: SideDrawerProps): React.ReactElement {
   const dimensions = useWindowDimensions();
+  const {user} = useAPIClient();
 
   const drawerStyles = {
     backgroundColor: isDarkMode
@@ -124,21 +126,20 @@ function SideDrawer({
             <FontAwesomeIcon icon="user" color={color} />
           ),
         }}>
-        {() => (
-          <ProfileScreen />
-        )}
+        {() => <ProfileScreen />}
       </Drawer.Screen>
-      <Drawer.Screen
-        name="Time Record Approvals"
-        options={{
-          drawerIcon: ({color}) => (
-            <FontAwesomeIcon icon="clipboard-check" color={color} />
-          ),
-        }}>
-        {() => (
-          <ApprovalScreen />
+      {(user?.getIsSupervisor ||
+        user?.getIsAdmin) && (
+          <Drawer.Screen
+            name="Time Record Approvals"
+            options={{
+              drawerIcon: ({color}) => (
+                <FontAwesomeIcon icon="clipboard-check" color={color} />
+              ),
+            }}>
+            {() => <ApprovalScreen />}
+          </Drawer.Screen>
         )}
-      </Drawer.Screen>
       <Drawer.Screen
         name="Settings"
         options={{

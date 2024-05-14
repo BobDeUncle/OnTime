@@ -7,11 +7,14 @@ import {LogLevel, OneSignal} from 'react-native-onesignal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {setCustomText} from 'react-native-global-props';
 import SplashScreen from 'react-native-splash-screen';
-
 import SideDrawer from './SideDrawer';
 import LoginScreen from './screens/LoginScreen.tsx';
 
 import './assets/fontAwesomeImports';
+import { jwtDecode } from 'jwt-decode';
+import "core-js/stable/atob";
+import { UserDomain } from './models/domain/UserDomain.ts';
+import User from './models/User.ts';
 
 function App(): React.JSX.Element {
   // OneSignal for Push Notifications
@@ -63,12 +66,14 @@ function App(): React.JSX.Element {
   setCustomText(customTextProps);
 
   // AUTHENTICATION using userToken
-  const { isAuthenticated, setIsAuthenticated } = useAPIClient();
+  const { isAuthenticated, setIsAuthenticated, setUser } = useAPIClient();
 
   useEffect(() => {
     // Check if the user is authenticated when the app loads
     AsyncStorage.getItem('userToken').then(token => {
       if (token) {
+        // const decodedToken = jwtDecode(token);
+        // setUser(new UserDomain(decodedToken as User))
         setIsAuthenticated(true);
       }
       SplashScreen.hide();

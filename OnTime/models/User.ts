@@ -1,4 +1,6 @@
-interface Role {
+import Jobsite from './Jobsite';
+
+export interface Role {
   _id: string;
   name: string;
 }
@@ -9,6 +11,7 @@ interface User {
   firstName: string;
   lastName: string;
   roles: Role[];
+  jobsites: Jobsite[]
 }
 
 export default User;

@@ -18,8 +18,15 @@ import isEmail from 'validator/lib/isEmail';
 
 import MyText from '../components/MyText';
 
+// token decode
+import { jwtDecode } from 'jwt-decode';
+import "core-js/stable/atob";
+import User from '../models/User';
+import { UserDomain } from '../models/domain/UserDomain';
+
+
 function LoginScreen(): React.ReactElement {
-  const { apiClient, setIsAuthenticated } = useAPIClient();
+  const { apiClient, setIsAuthenticated, setUser } = useAPIClient();
   const authAPI = new AuthAPI(apiClient);
   const logo = require('../assets/pacbuild-square-blue.jpg');
   const {colors} = useTheme();
@@ -58,6 +65,9 @@ function LoginScreen(): React.ReactElement {
    try {
       const authData = await authAPI.addAuth({ email, password });
       await AsyncStorage.setItem('userToken', authData.token);
+      const decodedToken = jwtDecode(authData.token);
+
+      setUser(new UserDomain(decodedToken as User))
       setIsAuthenticated(true);
     } catch (error) {
       console.error('Error:', error);
