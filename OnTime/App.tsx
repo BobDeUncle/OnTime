@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
-import { APIClientProvider, useAPIClient } from './api/APIClientContext';
+import { useAPIClient } from './api/APIClientContext';
 import {lightTheme, darkTheme} from './theme/Colors';
 import {LogLevel, OneSignal} from 'react-native-onesignal';
 import AsyncStorage from '@react-native-async-storage/async-storage';

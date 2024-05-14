@@ -15,11 +15,12 @@ import {useTheme} from '../theme/Colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import isEmail from 'validator/lib/isEmail';
+import { decodeToken } from '../utils/authUtils';
 
 import MyText from '../components/MyText';
 
 function LoginScreen(): React.ReactElement {
-  const { apiClient, setIsAuthenticated } = useAPIClient();
+  const { apiClient, setIsAuthenticated, setUser } = useAPIClient();
   const authAPI = new AuthAPI(apiClient);
   const logo = require('../assets/pacbuild-square-blue.jpg');
   const {colors} = useTheme();
@@ -59,6 +60,18 @@ function LoginScreen(): React.ReactElement {
       const authData = await authAPI.addAuth({ email, password });
       await AsyncStorage.setItem('userToken', authData.token);
       setIsAuthenticated(true);
+
+      // Decode the token and set the user details
+      const decoded = decodeToken(authData.token);
+      if (decoded) { 
+        setUser({
+          _id: decoded._id,
+          email: decoded.email,
+          firstName: decoded.firstName,
+          lastName: decoded.lastName,
+          roles: decoded.roles,
+        })
+      };
     } catch (error) {
       console.error('Error:', error);
       setIsEmailPasswordValid(false);
