@@ -162,7 +162,7 @@ const UserManagementScreen: React.FC = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={{ backgroundColor: colors.background }}>
+      <View style={{ backgroundColor: colors.background, flex: 1 }}>
         <View style={styles.row}>
           <View style={styles.searchBar}>
             <TextInput
