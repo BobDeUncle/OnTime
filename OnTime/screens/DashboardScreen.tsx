@@ -1,31 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import {StyleSheet, View} from 'react-native';
 import { useAPIClient } from '../api/APIClientContext';
-import UserAPI from '../api/UserAPI';
 import MyText from '../components/MyText';
 import TimeRecordForm from '../components/time-record/time-record-form'
 import {useTheme} from '../theme/Colors';
-import User from '../models/User';
 
 function DashboardScreen({}): React.ReactElement {
   const {colors} = useTheme();
-  const [user, setUser] = useState<User>();
-
-  const { apiClient } = useAPIClient();
-  const userAPI = new UserAPI(apiClient);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userData = await userAPI.getUserMe();
-        setUser(userData);
-      } catch (error) {
-        console.error('Failed to fetch user: ', error)
-      }
-    };
-
-    fetchUser();
-  }, []);
+  const { user } = useAPIClient(); 
 
   const styles = StyleSheet.create({
     container: {

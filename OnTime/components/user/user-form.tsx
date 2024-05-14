@@ -11,7 +11,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 
 import UserAPI from '../../api/UserAPI';
 import { useAPIClient } from '../../api/APIClientContext';
-import User from '../../models/User';
 
 interface UserFormProps {
   styles: any;
@@ -21,23 +20,10 @@ interface UserFormProps {
 
 const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose }) => {  
   const {colors} = useTheme();
-  const [user, setUser] = useState<User>();
+  const { user } = useAPIClient(); 
 
   const { apiClient } = useAPIClient();
   const userAPI = new UserAPI(apiClient);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userData = await userAPI.getUserMe();
-        setUser(userData);
-      } catch (error) {
-        console.error('Failed to fetch user: ', error)
-      }
-    };
-
-    fetchUser();
-  }, []);
 
   const [loading, setLoading] = useState<boolean>(true);
 

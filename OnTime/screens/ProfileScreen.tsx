@@ -3,30 +3,11 @@ import {StyleSheet, View} from 'react-native';
 import {useTheme} from '../theme/Colors';
 import styles from '../theme/Styles';
 import { useAPIClient } from '../api/APIClientContext';
-import UserAPI from '../api/UserAPI';
 import MyText from '../components/MyText';
-import User from '../models/User';
 
 function ProfileScreen(): React.ReactElement {
   const {colors} = useTheme();
-  const [user, setUser] = useState<User>();
-
-  const { apiClient } = useAPIClient();
-  const userAPI = new UserAPI(apiClient);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userData = await userAPI.getUserMe();
-        console.log(userData);
-        setUser(userData);
-      } catch (error) {
-        console.error('Failed to fetch user: ', error)
-      }
-    };
-
-    fetchUser();
-  }, []);
+  const { user } = useAPIClient(); 
 
   const styles = StyleSheet.create({
     container: {
