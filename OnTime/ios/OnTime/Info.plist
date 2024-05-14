@@ -32,7 +32,7 @@
 		<true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>OneSignal is used for notifications however it also comes with location services, which are not used in this application</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Material.ttf</string>

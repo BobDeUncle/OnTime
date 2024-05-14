@@ -32,7 +32,6 @@
     "react-native": "0.73.6",
     "react-native-drawer-layout": "^3.3.0",
     "react-native-elements": "^3.4.3",
-    "react-native-geolocation-service": "^5.3.1",
     "react-native-gesture-handler": "^2.15.0",
     "react-native-global-props": "^1.1.5",
     "react-native-onesignal": "^5.1.0",
