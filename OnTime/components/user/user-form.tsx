@@ -2,14 +2,16 @@
 // roles?
 // add create users
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Alert, Pressable } from 'react-native';
 import MyText from '../../components/MyText';
 import { useTheme } from '../../theme/Colors';
 import { storageEmitter } from '../storageEmitter';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import CheckBox from '@react-native-community/checkbox';
 
 import UserAPI from '../../api/UserAPI';
+import Role from '../../models/Role';
 import { useAPIClient } from '../../api/APIClientContext';
 
 interface UserFormProps {
@@ -30,7 +32,31 @@ const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose })
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState('User');
+  const [roles, setRoles] = useState<Role[]>([]);
+
+  const toggleRole = (role: Role) => {
+    const index = roles.findIndex((r) => r._id === role._id);
+    if (index > -1) {
+      setRoles(roles.filter((r) => r._id !== role._id)); // Remove role
+    } else {
+      setRoles([...roles, role]); // Add role
+    }
+  };
+
+  const availableRoles = [
+    {
+      "_id": "65f0b68656bb772dc458d60d",
+      "name": "admin",
+    },
+    {
+      "_id": "6607b7c8e0193b972120fa1a",
+      "name": "employee",
+    },
+    {
+      "_id": "6607b7d4e0193b972120fa1c",
+      "name": "supervisor",
+    }
+  ];
 
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [firstNameValid, setFirstNameValid] = useState(true);
@@ -59,7 +85,7 @@ const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose })
     // Show a confirmation popup
     Alert.alert(
       'Submit New User',
-      `Do you wish to create a new user ${firstName} ${lastName} with email as ${email} and role of ${role}?`,
+      `Do you wish to create a new user ${firstName} ${lastName} with email as ${email} and roles of ${roles.map(role => role.name).join(", ")}?`,
       [
         {
           text: 'Cancel',
@@ -74,14 +100,14 @@ const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose })
                 firstName,
                 lastName,
                 email,
-                role,
+                roles,
               });
 
-              console.log({
+              console.log('new user', {
                 firstName,
                 lastName,
                 email,
-                role,
+                roles,
               });
         
               saveUser();
@@ -175,6 +201,11 @@ const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose })
       color: colors.border,
       fontSize: 14,
     },
+    checkboxContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 5,
+    },
   });
 
   return (
@@ -241,13 +272,17 @@ const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose })
           <FontAwesomeIcon icon='exclamation' style={localStyles.invalidFormIcon}/> Invalid Email
         </MyText>
       )}
-      <TextInput
-        style={localStyles.textInput}
-        placeholder="Role"
-        placeholderTextColor={localStyles.placeholderText.color}
-        value={role}
-        onChangeText={setRole}
-      />
+      <View>
+        {availableRoles.map((role) => (
+          <View key={role._id} style={styles.checkboxContainer}>
+            <CheckBox
+              value={roles.some((r) => r._id === role._id)}
+              onValueChange={() => toggleRole(role)}
+            />
+            <MyText style={styles.text}>{role.name}</MyText>
+          </View>
+        ))}
+      </View>
       <Button title="Submit" onPress={handleSubmit} />
     </View>
   );

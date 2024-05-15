@@ -1,7 +1,4 @@
-interface Role {
-  _id: string;
-  name: string;
-}
+import Role from './Role';
 
 interface User {
   _id: string;

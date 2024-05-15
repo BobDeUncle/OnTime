@@ -12,6 +12,10 @@ class UserAPI {
     return await this.client.get('/users');
   }
 
+  public async createUser(user: any): Promise<User[]> {
+    return await this.client.post('/users', user);
+  }
+
   public async updateUser(id: string, timeRecord: any) {
     return await this.client.patch(`/users/${id}`, timeRecord);
   }
