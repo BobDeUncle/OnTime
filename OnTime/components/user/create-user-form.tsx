@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { View, TextInput, Button, StyleSheet, Alert, Pressable, Switch } from 'react-native';
-import MyText from '../../components/MyText';
+import MyText from '../MyText';
 import { useTheme } from '../../theme/Colors';
 import { storageEmitter } from '../storageEmitter';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';

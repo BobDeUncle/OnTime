@@ -1,6 +1,3 @@
-// TO DO
-// Make work, copy from time-record-filter
-
 import React, { useState } from 'react';
 import { Modal, Pressable, StyleSheet, View, TextInput, TouchableHighlight, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';

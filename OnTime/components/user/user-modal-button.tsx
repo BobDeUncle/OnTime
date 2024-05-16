@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Modal, Pressable, StyleSheet } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useTheme } from '../../theme/Colors';
-import UserForm from './user-form';
+import UserForm from './create-user-form';
 
 type NewUserButtonProps = {
   onModalVisibleChange: (visible: boolean) => void;
