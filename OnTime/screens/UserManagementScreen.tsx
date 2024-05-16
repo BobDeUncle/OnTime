@@ -98,7 +98,7 @@ const UserManagementScreen: React.FC = () => {
       <MyText style={{...styles.userText, flex: 3}}>{item.firstName} {item.lastName}</MyText>
       <MyText style={{...styles.userText, flex: 3}}>{item.email}</MyText>
       <View>
-        <EditUserButton user={item} onModalVisibleChange={setOverlayVisible} />
+        <EditUserButton user={item} onModalVisibleChange={setOverlayVisible} refreshList={refreshList} />
       </View>
     </View>
   );

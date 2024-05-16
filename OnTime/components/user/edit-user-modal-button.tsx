@@ -1,18 +1,51 @@
 import React, { useState } from 'react';
-import { View, Modal, Pressable, StyleSheet } from 'react-native';
+import { View, Modal, Pressable, StyleSheet, Alert } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useTheme } from '../../theme/Colors';
 import EditUserForm from './edit-user-form';
+import { useAPIClient } from '../../api/APIClientContext';
 import User from '../../models/User'; 
+import UserAPI from '../../api/UserAPI';
 
 type EditUserButtonProps = {
   user: User;
   onModalVisibleChange: (visible: boolean) => void;
+  refreshList: () => void;
 }
 
-const EditUserButton: React.FC<EditUserButtonProps> = ({ user, onModalVisibleChange }) => {
+const EditUserButton: React.FC<EditUserButtonProps> = ({ user, onModalVisibleChange, refreshList }) => {
   const { colors } = useTheme();
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+
+  const { apiClient } = useAPIClient();
+  const userAPI = new UserAPI(apiClient);
+
+  const handleDeleteUser = () => {
+    Alert.alert(
+      "Confirm Delete",
+      "Are you sure you want to delete this user?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await userAPI.deleteUser(user._id);
+            } catch (error) {
+              Alert.alert("Error", "Failed to delete user. Please try again later.");
+            } finally {
+              refreshList();
+            }
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+  };  
 
   const styles = StyleSheet.create({
     container: {
@@ -21,6 +54,11 @@ const EditUserButton: React.FC<EditUserButtonProps> = ({ user, onModalVisibleCha
       backgroundColor: colors.background,
       alignItems: 'center',
       justifyContent: 'center',
+    },
+    iconContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      width: 60,
     },
     welcome: {
       color: colors.opText,
@@ -51,12 +89,17 @@ const EditUserButton: React.FC<EditUserButtonProps> = ({ user, onModalVisibleCha
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={() => {
-        setModalVisible(true);
-        onModalVisibleChange(true);
-      }}>
-        <FontAwesomeIcon icon='ellipsis-v' size={20} color={colors.opText}/>
-      </Pressable>
+      <View style={styles.iconContainer}>
+        <Pressable onPress={() => {
+          setModalVisible(true);
+          onModalVisibleChange(true);
+        }}>
+          <FontAwesomeIcon icon='ellipsis-v' size={20} color={colors.opText}/>
+        </Pressable>
+        <Pressable onPress={handleDeleteUser}>
+          <FontAwesomeIcon icon='times' size={20} color={colors.opText} />
+        </Pressable>
+      </View>
       <Modal
         animationType="slide"
         transparent={true}
