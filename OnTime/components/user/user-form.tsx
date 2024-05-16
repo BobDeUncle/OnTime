@@ -1,14 +1,9 @@
-// TO DO:
-// roles?
-// add create users
-
-import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert, Pressable } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, TextInput, Button, StyleSheet, Alert, Pressable, Switch } from 'react-native';
 import MyText from '../../components/MyText';
 import { useTheme } from '../../theme/Colors';
 import { storageEmitter } from '../storageEmitter';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import CheckBox from '@react-native-community/checkbox';
 
 import UserAPI from '../../api/UserAPI';
 import Role from '../../models/Role';
@@ -31,33 +26,46 @@ const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose })
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const lastNameRef = useRef<TextInput>(null);
   const [email, setEmail] = useState('');
-  const [roles, setRoles] = useState<Role[]>([]);
+  const emailRef = useRef<TextInput>(null);
+  const [isAdminActive, setIsAdminActive] = useState(false);
+  const [isEmployeeActive, setIsEmployeeActive] = useState(true);
+  const [isSupervisorActive, setIsSupervisorActive] = useState(false);
 
-  const toggleRole = (role: Role) => {
-    const index = roles.findIndex((r) => r._id === role._id);
-    if (index > -1) {
-      setRoles(roles.filter((r) => r._id !== role._id)); // Remove role
-    } else {
-      setRoles([...roles, role]); // Add role
-    }
-  };
-
-  const availableRoles = [
+  const roleData = [
     {
-      "_id": "65f0b68656bb772dc458d60d",
-      "name": "admin",
+      _id: "65f0b68656bb772dc458d60d",
+      name: "admin",
     },
     {
-      "_id": "6607b7c8e0193b972120fa1a",
-      "name": "employee",
+      _id: "6607b7c8e0193b972120fa1a",
+      name: "employee",
     },
     {
-      "_id": "6607b7d4e0193b972120fa1c",
-      "name": "supervisor",
+      _id: "6607b7d4e0193b972120fa1c",
+      name: "supervisor",
     }
   ];
 
+  const getSelectedRoles = (): Role[] => {
+    const selectedRoles: Role[] = [];
+    if (isAdminActive) {
+      const adminRole = roleData.find(role => role.name === "admin");
+      if (adminRole) selectedRoles.push(adminRole);
+    }
+    if (isEmployeeActive) {
+      const employeeRole = roleData.find(role => role.name === "employee");
+      if (employeeRole) selectedRoles.push(employeeRole);
+    }
+    if (isSupervisorActive) {
+      const supervisorRole = roleData.find(role => role.name === "supervisor");
+      if (supervisorRole) selectedRoles.push(supervisorRole);
+    }
+    return selectedRoles;
+  };
+  
+  
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [firstNameValid, setFirstNameValid] = useState(true);
   const [lastNameValid, setLastNameValid] = useState(true);
@@ -85,7 +93,7 @@ const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose })
     // Show a confirmation popup
     Alert.alert(
       'Submit New User',
-      `Do you wish to create a new user ${firstName} ${lastName} with email as ${email} and roles of ${roles.map(role => role.name).join(", ")}?`,
+      `Do you wish to create a new user ${firstName} ${lastName} with email as ${email} and role(s) of ${getSelectedRoles().map(role => role.name).join(", ")}?`,
       [
         {
           text: 'Cancel',
@@ -100,14 +108,14 @@ const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose })
                 firstName,
                 lastName,
                 email,
-                roles,
+                getSelectedRoles,
               });
 
               console.log('new user', {
                 firstName,
                 lastName,
                 email,
-                roles,
+                getSelectedRoles,
               });
         
               saveUser();
@@ -201,10 +209,27 @@ const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose })
       color: colors.border,
       fontSize: 14,
     },
-    checkboxContainer: {
+    container: {
+      flex: 1,
+      paddingTop: 10
+    },
+    roleContainer: {
       flexDirection: 'row',
+      justifyContent: 'space-between',
       alignItems: 'center',
-      marginBottom: 5,
+      marginTop: 10,
+      paddingVertical: 3,
+      paddingLeft: 10,
+      paddingRight: 5,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 4,
+    },
+    roleText: {
+      color: colors.border,
+    },
+    switch: {
+      transform: [{ scaleX: .8 }, { scaleY: .8 }]
     },
   });
 
@@ -230,6 +255,9 @@ const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose })
           setFirstName(text);
           setFirstNameValid(text.trim().length > 0);
         }}
+        returnKeyType="next"
+        onSubmitEditing={() => lastNameRef.current?.focus()}
+        blurOnSubmit={false}
       />
       {!firstNameValid && (
         <MyText style={localStyles.invalidForm}>
@@ -237,6 +265,7 @@ const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose })
         </MyText>
       )}
       <TextInput
+        ref={lastNameRef}
         style={{
           ...localStyles.textInput,
           borderColor: lastNameValid ? colors.border : colors.warning,
@@ -248,6 +277,9 @@ const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose })
           setLastName(text);
           setLastNameValid(text.trim().length > 0);
         }}
+        returnKeyType="next"
+        onSubmitEditing={() => emailRef.current?.focus()}
+        blurOnSubmit={false}
       />
       {!lastNameValid && (
         <MyText style={localStyles.invalidForm}>
@@ -255,6 +287,7 @@ const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose })
         </MyText>
       )}
       <TextInput
+        ref={emailRef}
         style={{
           ...localStyles.textInput,
           borderColor: emailValid ? colors.border : colors.warning,
@@ -272,16 +305,35 @@ const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose })
           <FontAwesomeIcon icon='exclamation' style={localStyles.invalidFormIcon}/> Invalid Email
         </MyText>
       )}
-      <View>
-        {availableRoles.map((role) => (
-          <View key={role._id} style={styles.checkboxContainer}>
-            <CheckBox
-              value={roles.some((r) => r._id === role._id)}
-              onValueChange={() => toggleRole(role)}
-            />
-            <MyText style={styles.text}>{role.name}</MyText>
-          </View>
-        ))}
+      <View style={localStyles.roleContainer}>
+        <MyText style={localStyles.roleText}>Employee</MyText>
+        <Switch
+          trackColor={{ false: colors.border, true: colors.secondary }}
+          thumbColor={isEmployeeActive ? colors.text : colors.text}
+          onValueChange={setIsEmployeeActive}
+          value={isEmployeeActive}
+          style={localStyles.switch}
+        />
+      </View>
+      <View style={localStyles.roleContainer}>
+        <MyText style={localStyles.roleText}>Supervisor</MyText>
+        <Switch
+          trackColor={{ false: colors.border, true: colors.secondary }}
+          thumbColor={isSupervisorActive ? colors.text : colors.text}
+          onValueChange={setIsSupervisorActive}
+          value={isSupervisorActive}
+          style={localStyles.switch}
+        />
+      </View>
+      <View style={localStyles.roleContainer}>
+        <MyText style={localStyles.roleText}>Admin</MyText>
+        <Switch
+          trackColor={{ false: colors.border, true: colors.secondary }}
+          thumbColor={isAdminActive ? colors.text : colors.text}
+          onValueChange={setIsAdminActive}
+          value={isAdminActive}
+          style={localStyles.switch}
+        />
       </View>
       <Button title="Submit" onPress={handleSubmit} />
     </View>
