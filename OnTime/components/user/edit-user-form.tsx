@@ -235,6 +235,7 @@ const EditUserForm: React.FC<UserFormProps> = ({ user, styles, showCloseButton, 
     },
     roleText: {
       color: colors.border,
+      fontSize: 14,
     },
     switch: {
       transform: [{ scaleX: .8 }, { scaleY: .8 }]
