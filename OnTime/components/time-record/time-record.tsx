@@ -19,8 +19,11 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
 }) => {
   const {colors} = useTheme();
 
+  const { user } = useAPIClient(); 
   const { apiClient } = useAPIClient();
   const timeRecordAPI = new TimeRecordAPI(apiClient);
+
+  const isAdmin = user ? user.roles.some(role => role.name === 'admin') : false;
 
   const [editModalOpen, setEditModalOpen] = useState(false);
 
@@ -166,6 +169,9 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
           }}>
             Date: {new Date(timeRecord.date.toString()).toLocaleDateString()}
           </MyText>
+          {isAdmin && (
+            <MyText style={styles.text}>Employee: {timeRecord.employee.firstName} {timeRecord.employee.lastName}</MyText>
+          )}
           <MyText style={styles.text}>Jobsite: {timeRecord.jobsite.name}, {timeRecord.jobsite.city}</MyText>
           <MyText style={styles.text}>
             Time: {timeRecord.startTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', second: undefined, hour12: true })} - {timeRecord.endTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', second: undefined, hour12: true })}

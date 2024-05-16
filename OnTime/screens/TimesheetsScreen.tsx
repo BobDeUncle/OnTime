@@ -65,7 +65,10 @@ const TimesheetsScreen: React.FC = () => {
   const fetchTimeRecords = useCallback(async (params: {[key: string]: any} = {}) => {
     setLoading(true);
     params.search = searchQuery;
-    params.employees = user?._id;
+    if (user && !user.roles.some(role => role.name === 'admin')) {
+      params.employees = user._id;
+    }
+    
     try {
       const timeRecordsData: TimeRecord[] =
         await timeRecordAPI.getAllTimeRecords(params);
