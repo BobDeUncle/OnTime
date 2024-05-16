@@ -2,11 +2,8 @@ import React, {useState} from 'react';
 import {
   View,
   StyleSheet,
-  Button,
   Pressable,
   ActivityIndicator,
-  TouchableOpacity,
-  Modal,
 } from 'react-native';
 import {useTheme} from '../../theme/Colors';
 import MyText from '../MyText';
@@ -122,11 +119,18 @@ const TimeRecordApprovalItem: React.FC<TimeRecordApprovalItemProps> = ({
       paddingHorizontal: 6,
       marginBottom: 10,
     },
+    buttonContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      paddingHorizontal: 10,
+      paddingVertical: 10,
+    },
     button: {
       backgroundColor: colors.primary,
       padding: 10,
       borderRadius: 5,
       alignItems: 'center',
+      marginLeft: 10,
     },
     buttonText: {
       color: 'white',
@@ -138,8 +142,6 @@ const TimeRecordApprovalItem: React.FC<TimeRecordApprovalItemProps> = ({
       alignItems: 'center',
       borderColor: 'black',
       borderWidth: 1,
-      marginTop: 10,
-      marginBottom: 10,
     },
     denyButtonText: {
       color: 'black',
@@ -213,27 +215,29 @@ const TimeRecordApprovalItem: React.FC<TimeRecordApprovalItemProps> = ({
             </View>
           </View>
 
-          <Pressable
-            style={styles.button}
-            onPress={handleApproval}
-            disabled={loadingApproval}>
-            {loadingApproval ? (
-              <ActivityIndicator size="small" color={colors.text} />
-            ) : (
-              <MyText style={styles.buttonText}>APPROVE</MyText>
-            )}
-          </Pressable>
+          <View style={styles.buttonContainer}>
+            <Pressable
+              style={styles.denyButton}
+              onPress={handleDeny}
+              disabled={loadingDeny}>
+              {loadingDeny ? (
+                <ActivityIndicator size="small" color={colors.secondary} />
+              ) : (
+                <MyText style={styles.denyButtonText}>DENY</MyText>
+              )}
+            </Pressable>
 
-          <Pressable
-            style={styles.denyButton}
-            onPress={handleDeny}
-            disabled={loadingDeny}>
-            {loadingDeny ? (
-              <ActivityIndicator size="small" color={colors.secondary} />
-            ) : (
-              <MyText style={styles.denyButtonText}>DENY</MyText>
-            )}
-          </Pressable>
+            <Pressable
+              style={styles.button}
+              onPress={handleApproval}
+              disabled={loadingApproval}>
+              {loadingApproval ? (
+                <ActivityIndicator size="small" color={colors.text} />
+              ) : (
+                <MyText style={styles.buttonText}>APPROVE</MyText>
+              )}
+            </Pressable>
+          </View>
         </View>
       </View>
     );

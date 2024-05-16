@@ -1,10 +1,12 @@
-import React from 'react';
-import {View, StyleSheet, Alert} from 'react-native';
+import React, { useState } from 'react';
+import {View, StyleSheet, Alert, Pressable, Modal, TouchableOpacity} from 'react-native';
 import {useTheme} from '../../theme/Colors';
 import MyText from '../../components/MyText';
 import TimeRecord, { Status } from '../../models/TimeRecord';
 import TimeRecordAPI from '../../api/TimeRecordAPI';
 import { useAPIClient } from '../../api/APIClientContext';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import TimeRecordUserUpdateForm from '../../components/time-record/time-record-user-update-form';
 
 interface TimeRecordProps {
   timeRecord: TimeRecord;
@@ -19,6 +21,8 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
 
   const { apiClient } = useAPIClient();
   const timeRecordAPI = new TimeRecordAPI(apiClient);
+
+  const [editModalOpen, setEditModalOpen] = useState(false);
 
   timeRecord.startTime = new Date(timeRecord.startTime);
   timeRecord.endTime = new Date(timeRecord.endTime);
@@ -36,6 +40,17 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
       );
     }
   };
+
+  const onUpdate = async (newTimeRecord: TimeRecord) => {
+    try {
+      await timeRecordAPI.updateTimeRecord(newTimeRecord._id, newTimeRecord);
+      refreshList();
+    } catch (error) {
+      console.error('Error updating new timesheet:', error);
+    } finally {
+      setEditModalOpen(false);
+    }
+  }
 
   const getApprovalColor = (status: Status) => {
     switch (status) {
@@ -56,6 +71,12 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
       borderRadius: 20,
       borderWidth: 2,
       borderColor: colors.border,
+    },
+    topHalfContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: 10,
     },
     line: {
       height: 1.3,
@@ -110,20 +131,50 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
       color: 'white',
       fontWeight: 'bold',
     },
+    editIcon: {
+      position: 'absolute',
+      zIndex: 100,
+      right: 25,
+      top: 25,
+    },
+    modalContainer: {
+      backgroundColor: 'white',
+      borderRadius: 10,
+      padding: 20,
+      width: '80%',
+      maxWidth: 400,
+    },
+    overlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
   });
 
   return (
     <View style={styles.container}>
-      <MyText style={{
-        ...styles.text,
-        paddingTop: 12,
-      }}>
-        Date: {new Date(timeRecord.date.toString()).toLocaleDateString()}
-      </MyText>
-      <MyText style={styles.text}>Jobsite: {timeRecord.jobsite.name}, {timeRecord.jobsite.city}</MyText>
-      <MyText style={styles.text}>
-        Time: {timeRecord.startTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', second: undefined, hour12: true })} - {timeRecord.endTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', second: undefined, hour12: true })}
-      </MyText>
+      <View style={styles.topHalfContainer}>
+        <View style={{ flex: 1 }}>
+          <MyText style={{
+            ...styles.text,
+            paddingTop: 12,
+          }}>
+            Date: {new Date(timeRecord.date.toString()).toLocaleDateString()}
+          </MyText>
+          <MyText style={styles.text}>Jobsite: {timeRecord.jobsite.name}, {timeRecord.jobsite.city}</MyText>
+          <MyText style={styles.text}>
+            Time: {timeRecord.startTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', second: undefined, hour12: true })} - {timeRecord.endTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', second: undefined, hour12: true })}
+          </MyText>
+        </View>
+        <Pressable
+          onPress={() => {
+            setEditModalOpen(true);
+          }}
+          style={styles.editIcon}>
+          <FontAwesomeIcon icon="pen-to-square" size={26} />
+        </Pressable>
+      </View>
       {/* <TouchableOpacity style={styles.button} onPress={handleDelete}>
         <MyText style={styles.buttonText}>Delete</MyText>
       </TouchableOpacity> */}
@@ -146,6 +197,25 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
           </View>
         </View>
       </View>
+
+      <Modal
+        style={styles.modalContainer}
+        transparent={true}
+        visible={editModalOpen}
+        animationType="slide"
+        onRequestClose={() => {
+          setEditModalOpen(false);
+        }}>
+        <TouchableOpacity
+          style={styles.overlay}
+          activeOpacity={1}
+          onPress={() => setEditModalOpen(false)}>
+          <TimeRecordUserUpdateForm
+            timeRecord={timeRecord}
+            onUpdate={onUpdate}
+          />
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 };
