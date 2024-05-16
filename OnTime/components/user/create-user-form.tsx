@@ -29,6 +29,8 @@ const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose })
   const lastNameRef = useRef<TextInput>(null);
   const [email, setEmail] = useState('');
   const emailRef = useRef<TextInput>(null);
+  const [password, setPassword] = useState('');
+  const passwordRef = useRef<TextInput>(null);
   const [isAdminActive, setIsAdminActive] = useState(false);
   const [isEmployeeActive, setIsEmployeeActive] = useState(true);
   const [isSupervisorActive, setIsSupervisorActive] = useState(false);
@@ -70,6 +72,7 @@ const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose })
   const [firstNameValid, setFirstNameValid] = useState(true);
   const [lastNameValid, setLastNameValid] = useState(true);
   const [emailValid, setEmailValid] = useState(true);
+  const [passwordValid, setPasswordValid] = useState(true);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -79,21 +82,24 @@ const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose })
     const isFirstNameValid = firstName.trim().length > 0;
     const isLastNameValid = lastName.trim().length > 0;
     const isEmailValid = validateEmail(email);
+    const isPasswordValid = password.trim().length > 0;
 
     // Update validation status
     setFirstNameValid(isFirstNameValid);
     setLastNameValid(isLastNameValid);
     setEmailValid(isEmailValid);
+    setPasswordValid(isPasswordValid);
 
     // If any input is invalid, return early
-    if (!isFirstNameValid || !isLastNameValid || !isEmailValid) {
+    if (!isFirstNameValid || !isLastNameValid || !isEmailValid || !isPasswordValid) {
       return;
     }
 
     // Show a confirmation popup
     Alert.alert(
       'Submit New User',
-      `Do you wish to create a new user ${firstName} ${lastName} with email as ${email} and role(s) of ${getSelectedRoles().map(role => role.name).join(", ")}?`,
+      `Do you wish to create a new user ${firstName} ${lastName} with email as ${email}, 
+      password as ${password} and role(s) of ${getSelectedRoles().map(role => role.name).join(", ")}?`,
       [
         {
           text: 'Cancel',
@@ -108,13 +114,7 @@ const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose })
                 firstName,
                 lastName,
                 email,
-                getSelectedRoles,
-              });
-
-              console.log('new user', {
-                firstName,
-                lastName,
-                email,
+                password,
                 getSelectedRoles,
               });
         
@@ -299,10 +299,32 @@ const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose })
           setEmail(text);
           setEmailValid(validateEmail(text));
         }}
+        returnKeyType="next"
+        onSubmitEditing={() => passwordRef.current?.focus()}
+        blurOnSubmit={false}
       />
       {!emailValid && (
         <MyText style={localStyles.invalidForm}>
           <FontAwesomeIcon icon='exclamation' style={localStyles.invalidFormIcon}/> Invalid Email
+        </MyText>
+      )}
+      <TextInput
+        ref={passwordRef}
+        style={{
+          ...localStyles.textInput,
+          borderColor: passwordValid ? colors.border : colors.warning,
+        }}
+        placeholder="Password"
+        placeholderTextColor={localStyles.placeholderText.color}
+        value={password}
+        onChangeText={(text) => {
+          setPassword(text);
+          setPasswordValid(text.trim().length > 0);
+        }}
+      />
+      {!passwordValid && (
+        <MyText style={localStyles.invalidForm}>
+          <FontAwesomeIcon icon='exclamation' style={localStyles.invalidFormIcon}/> Invalid Password
         </MyText>
       )}
       <View style={localStyles.roleContainer}>
