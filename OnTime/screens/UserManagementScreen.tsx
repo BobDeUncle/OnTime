@@ -1,7 +1,3 @@
-// TO DO
-// Create User edit/delete functionality
-// Implement search and filter
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, TextInput, FlatList, ActivityIndicator, Animated, StyleSheet, TouchableOpacity } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -109,7 +105,7 @@ const UserManagementScreen: React.FC = () => {
     },
     searchBar: {
       flexDirection: 'row',
-      flex: 0.7,
+      flex: 0.85,
       alignItems: 'center',
       backgroundColor: colors.background,
       borderWidth: 1,
@@ -174,9 +170,9 @@ const UserManagementScreen: React.FC = () => {
           <View style={styles.filterView}>
             <NewUserButton onModalVisibleChange={setOverlayVisible} />
           </View>
-          <View style={styles.filterView}>
+          {/* <View style={styles.filterView}>
             <UserFilter onApply={handleApplyFilter} onModalVisibleChange={setOverlayVisible} />
-          </View>
+          </View> */}
         </View>
 
         {loading ? (

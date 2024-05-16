@@ -110,6 +110,7 @@ const EditUserButton: React.FC<EditUserButtonProps> = ({ user, onModalVisibleCha
         }}>
         <View style={styles.centeredView}>
           <EditUserForm user={user} styles={styles} showCloseButton={true} onClose={() => {
+            refreshList();
             setModalVisible(false);
             onModalVisibleChange(false);
           }}/>
