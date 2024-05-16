@@ -9,6 +9,8 @@ import {
 } from '@react-navigation/drawer';
 import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import { useAPIClient } from './api/APIClientContext';
+import Role from './models/Role';
 
 import DashboardScreen from './screens/DashboardScreen.tsx';
 import SettingsScreen from './screens/SettingsScreen.tsx';
@@ -67,6 +69,17 @@ function SideDrawer({
   toggleTheme,
   handleLogout,
 }: SideDrawerProps): React.ReactElement {
+  const {user} = useAPIClient(); 
+  console.log(user);
+
+  function hasManagementAccess(roles: Role[]): boolean {
+    return roles.some(role => role.name === 'admin' || role.name === 'supervisor');
+  }
+
+  function hasAdminAccess(roles: Role[]): boolean {
+    return roles.some(role => role.name === 'admin');
+  }
+
   const dimensions = useWindowDimensions();
 
   const drawerStyles = {
@@ -129,17 +142,19 @@ function SideDrawer({
           <ProfileScreen />
         )}
       </Drawer.Screen>
-      <Drawer.Screen
-        name="Time Record Approvals"
-        options={{
-          drawerIcon: ({color}) => (
-            <FontAwesomeIcon icon="clipboard-check" color={color} />
-          ),
-        }}>
-        {() => (
-          <ApprovalScreen />
-        )}
-      </Drawer.Screen>
+      {user && hasManagementAccess(user.roles) && (
+        <Drawer.Screen
+          name="Time Record Approvals"
+          options={{
+            drawerIcon: ({color}) => (
+              <FontAwesomeIcon icon="clipboard-check" color={color} />
+            ),
+          }}>
+          {() => (
+            <ApprovalScreen />
+          )}
+        </Drawer.Screen>
+      )}
       <Drawer.Screen
         name="Settings"
         options={{
@@ -151,6 +166,7 @@ function SideDrawer({
           <SettingsScreen isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
         )}
       </Drawer.Screen>
+      {user && hasManagementAccess(user.roles) && (
       <Drawer.Screen
         name="User Management"
         component={UserManagementScreen}
@@ -159,7 +175,8 @@ function SideDrawer({
                 <FontAwesomeIcon icon="user" color={color} />
           )
         }}
-    />
+      />
+      )}
     </Drawer.Navigator>
   );
 }
