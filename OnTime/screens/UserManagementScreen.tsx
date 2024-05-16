@@ -7,6 +7,7 @@ import { View, TextInput, FlatList, ActivityIndicator, Animated, StyleSheet, Tou
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import MyText from '../components/MyText';
 import NewUserButton from '../components/user/user-modal-button';
+import EditUserButton from '../components/user/edit-user-modal-button';
 import UserFilter from '../components/user/user-filter';
 import UserAPI from '../api/UserAPI';
 import { useAPIClient } from '../api/APIClientContext';
@@ -96,9 +97,9 @@ const UserManagementScreen: React.FC = () => {
     <View style={styles.userRow}>
       <MyText style={{...styles.userText, flex: 3}}>{item.firstName} {item.lastName}</MyText>
       <MyText style={{...styles.userText, flex: 3}}>{item.email}</MyText>
-      <TouchableOpacity style={[styles.actionButton, { flex: 1 }]} onPress={() => console.log('Edit/Delete user', item)}>
-        <FontAwesomeIcon icon='ellipsis-v' size={20} color={colors.opText} />
-      </TouchableOpacity>
+      <View>
+        <EditUserButton user={item} onModalVisibleChange={setOverlayVisible} />
+      </View>
     </View>
   );
 
@@ -153,11 +154,6 @@ const UserManagementScreen: React.FC = () => {
     },
     userText: {
       color: colors.opText,
-    },
-    actionButton: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: 10,
     },
   });
 

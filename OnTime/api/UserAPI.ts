@@ -17,8 +17,8 @@ class UserAPI {
     return await this.client.post('/users', user);
   }
 
-  public async updateUser(id: string, timeRecord: any) {
-    return await this.client.patch(`/users/${id}`, timeRecord);
+  public async updateUser(id: string, user: any) {
+    return await this.client.patch(`/users/${id}`, user);
   }
 
   public async deleteUser(id: string) {
