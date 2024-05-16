@@ -19,6 +19,9 @@ type TimeRecordFilterProps = {
 
 const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply, onModalVisibleChange }) => {
   const {colors} = useTheme();
+  const { user } = useAPIClient(); 
+
+  const isManager = user ? user.roles.some(role => role.name === 'admin' || role.name === 'supervisor') : false;
 
   const [modalVisible, setModalVisible] = useState(false);
   const [jobsites, setJobsites] = useState<Jobsite[]>([]);
@@ -260,21 +263,23 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply, onModalVis
               }}
             />
 
-            <RNPickerSelect
-              value={selectedEmployee}
-              onValueChange={(value) => setSelectedEmployee(value)}
-              items={employees.map(employee => ({ label: employee.firstName + ' ' + employee.lastName, value: employee._id }))}
-              placeholder={{label: 'Select Employee', value: null}}
-              Icon={() => {
-                return <FontAwesomeIcon icon='chevron-down' size={24} color={colors.border} />;
-              }}
-              style={{
-                inputIOS: styles.dropdownInputIOS,
-                inputAndroid: styles.dropdownInputAndroid,
-                iconContainer: styles.dropdownIcon,
-                placeholder: styles.placeholderText,
-              }}
-            />
+            {isManager && (
+              <RNPickerSelect
+                value={selectedEmployee}
+                onValueChange={(value) => setSelectedEmployee(value)}
+                items={employees.map(employee => ({ label: employee.firstName + ' ' + employee.lastName, value: employee._id }))}
+                placeholder={{label: 'Select Employee', value: null}}
+                Icon={() => {
+                  return <FontAwesomeIcon icon='chevron-down' size={24} color={colors.border} />;
+                }}
+                style={{
+                  inputIOS: styles.dropdownInputIOS,
+                  inputAndroid: styles.dropdownInputAndroid,
+                  iconContainer: styles.dropdownIcon,
+                  placeholder: styles.placeholderText,
+                }}
+              />
+            )}
 
             <RNPickerSelect
               value={selectedStatus}
