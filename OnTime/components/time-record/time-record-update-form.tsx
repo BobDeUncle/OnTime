@@ -35,6 +35,7 @@ const TimeRecordUpdateForm: React.FC<TimesheetRecordUpdateFormProps> = ({
   const {apiClient} = useAPIClient();
   const timeRecordAPI = new TimeRecordAPI(apiClient);
   const jobsiteAPI = new JobsiteAPI(apiClient);
+  const [selectedJobsiteId, setSelectedJobsiteId] = useState(timeRecord.jobsite?._id || '');
 
   const [loading, setLoading] = useState<boolean>(false);
   const [notes, setNotes] = useState('');
@@ -188,6 +189,7 @@ const TimeRecordUpdateForm: React.FC<TimesheetRecordUpdateFormProps> = ({
       )}
       <RNPickerSelect
         onValueChange={(item) => {
+          setSelectedJobsiteId(item);
           setNewTimeRecord({
             ...newTimeRecord,
             jobsite: {...newTimeRecord.jobsite, _id: item},
@@ -197,6 +199,7 @@ const TimeRecordUpdateForm: React.FC<TimesheetRecordUpdateFormProps> = ({
             setJobsiteValid(!!item);
           }
         }}
+        value={selectedJobsiteId}
         items={jobsites.map((jobsite: Jobsite) => ({
           label: jobsite.name,
           value: jobsite._id,
