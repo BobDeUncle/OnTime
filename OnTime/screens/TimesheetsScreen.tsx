@@ -68,7 +68,7 @@ const TimesheetsScreen: React.FC = () => {
     if (user && !user.roles.some(role => role.name === 'admin')) {
       params.employees = user._id;
     }
-    
+
     try {
       const timeRecordsData: TimeRecord[] =
         await timeRecordAPI.getAllTimeRecords(params);
@@ -81,9 +81,10 @@ const TimesheetsScreen: React.FC = () => {
     }
   }, [timeRecordAPI]);  
 
-  const handleApplyFilter = (selectedJobsite: string, selectedStatus: string, selectedStartDate: string, selectedEndDate: string, selectedSortOrder: string) => {
+  const handleApplyFilter = (selectedJobsite: string, selectedEmployee: string, selectedStatus: string, selectedStartDate: string, selectedEndDate: string, selectedSortOrder: string) => {
     const params = {
       jobsites: [selectedJobsite],
+      employees: [selectedEmployee],
       status: [selectedStatus],
       startDate: [selectedStartDate],
       endDate: [selectedEndDate],

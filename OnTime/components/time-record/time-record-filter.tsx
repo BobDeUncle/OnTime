@@ -9,9 +9,11 @@ import {useTheme} from '../../theme/Colors';
 import { useAPIClient } from '../../api/APIClientContext';
 import JobsiteAPI from '../../api/JobsiteAPI';
 import Jobsite from '../../models/Jobsite';
+import UserAPI from '../../api/UserAPI';
+import User from '../../models/User'; 
 
 type TimeRecordFilterProps = {
-  onApply: (selectedJobsite: string, selectedStatus: string, selectedStartDate: string, selectedEndDate: string, selectedSortOrder: string) => void;
+  onApply: (selectedJobsite: string, selectedEmployee: string, selectedStatus: string, selectedStartDate: string, selectedEndDate: string, selectedSortOrder: string) => void;
   onModalVisibleChange: (visible: boolean) => void;
 };
 
@@ -20,7 +22,9 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply, onModalVis
 
   const [modalVisible, setModalVisible] = useState(false);
   const [jobsites, setJobsites] = useState<Jobsite[]>([]);
+  const [employees, setEmployees] = useState<User[]>([]);
   const [selectedJobsite, setSelectedJobsite] = useState('');
+  const [selectedEmployee, setSelectedEmployee] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
   const [selectedStartDate, setSelectedStartDate] = useState(new Date().toISOString().split('T')[0]);
   const [selectedEndDate, setSelectedEndDate] = useState(new Date().toISOString().split('T')[0]);
@@ -31,9 +35,11 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply, onModalVis
 
   const { apiClient } = useAPIClient();
   const jobsiteAPI = new JobsiteAPI(apiClient);
+  const userAPI = new UserAPI(apiClient);
 
   useEffect(() => {
     getJobsites();
+    getEmployees();
   }, []);
 
   useEffect(() => {
@@ -53,6 +59,15 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply, onModalVis
     }
   };
 
+  const getEmployees = async () => {
+    try {
+      const employeesData = await userAPI.getAllUsers();
+      setEmployees(employeesData);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
+
   const applyFiltering = () => {
     setModalVisible(false);
     onModalVisibleChange(false);
@@ -60,7 +75,7 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply, onModalVis
     const selectedStartDateTemp = showStartPicker ? selectedStartDate : '';
     const selectedEndDateTemp = showEndPicker ? selectedEndDate : '';
 
-    onApply(selectedJobsite, selectedStatus, selectedStartDateTemp, selectedEndDateTemp, selectedSortOrder);
+    onApply(selectedJobsite, selectedEmployee, selectedStatus, selectedStartDateTemp, selectedEndDateTemp, selectedSortOrder);
   };
 
   const styles = StyleSheet.create({
@@ -211,6 +226,7 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply, onModalVis
               <TouchableHighlight
                 onPress={() => {
                   setSelectedJobsite('');
+                  setSelectedEmployee('');
                   setSelectedStatus('');
                   setSelectedStartDate(new Date().toISOString().split('T')[0]);
                   setSelectedEndDate(new Date().toISOString().split('T')[0]);
@@ -233,6 +249,22 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply, onModalVis
               onValueChange={(value) => setSelectedJobsite(value)}
               items={jobsites.map(jobsite => ({ label: jobsite.name, value: jobsite._id }))}
               placeholder={{label: 'Select Jobsite', value: null}}
+              Icon={() => {
+                return <FontAwesomeIcon icon='chevron-down' size={24} color={colors.border} />;
+              }}
+              style={{
+                inputIOS: styles.dropdownInputIOS,
+                inputAndroid: styles.dropdownInputAndroid,
+                iconContainer: styles.dropdownIcon,
+                placeholder: styles.placeholderText,
+              }}
+            />
+
+            <RNPickerSelect
+              value={selectedEmployee}
+              onValueChange={(value) => setSelectedEmployee(value)}
+              items={employees.map(employee => ({ label: employee.firstName + ' ' + employee.lastName, value: employee._id }))}
+              placeholder={{label: 'Select Employee', value: null}}
               Icon={() => {
                 return <FontAwesomeIcon icon='chevron-down' size={24} color={colors.border} />;
               }}
