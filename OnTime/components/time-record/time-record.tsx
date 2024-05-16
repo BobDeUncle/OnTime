@@ -52,6 +52,10 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
     }
   }
 
+  const onClose = () => {
+    setEditModalOpen(false);
+  }
+
   const getApprovalColor = (status: Status) => {
     switch (status) {
       case Status.approved:
@@ -213,6 +217,7 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
           <TimeRecordUserUpdateForm
             timeRecord={timeRecord}
             onUpdate={onUpdate}
+            onClose={onClose}
           />
         </TouchableOpacity>
       </Modal>

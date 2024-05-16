@@ -96,7 +96,11 @@ function ApprovalScreen(): React.ReactElement {
     } finally {
       setEditModalOpen(false);
     }
-  }
+  };
+
+  const onClose = () => {
+    setEditModalOpen(false);
+  };
 
   return loading ? (
     <ActivityIndicator
@@ -135,6 +139,7 @@ function ApprovalScreen(): React.ReactElement {
               timeRecord={timeRecordUpdate}
               jobsites={jobsites}
               onUpdate={onUpdate}
+              onClose={onClose}
             />
           )}
         </TouchableOpacity>

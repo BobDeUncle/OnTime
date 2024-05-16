@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TextInput,
   Button,
+  Pressable,
 } from 'react-native';
 import MyText from '../../components/MyText';
 import MyDatePicker from '../../components/MyDatePicker';
@@ -23,13 +24,15 @@ interface TimesheetRecordUpdateFormProps {
   styles?: any;
   timeRecord: TimeRecord;
   jobsites: Jobsite[];
-  onUpdate: (_timeRecord: TimeRecord) => Promise<any>
+  onUpdate: (_timeRecord: TimeRecord) => Promise<any>;
+  onClose: () => void;
 }
 
 const TimeRecordUpdateForm: React.FC<TimesheetRecordUpdateFormProps> = ({
   timeRecord,
   jobsites,
-  onUpdate
+  onUpdate,
+  onClose,
 }) => {
   const {colors} = useTheme();
   const {apiClient} = useAPIClient();
@@ -168,6 +171,9 @@ const TimeRecordUpdateForm: React.FC<TimesheetRecordUpdateFormProps> = ({
           Employee: {newTimeRecord.employee.firstName}{' '}
           {newTimeRecord.employee.lastName}
         </MyText>
+        <Pressable onPress={onClose} style={localStyles.closeButton}>
+          <FontAwesomeIcon icon='times' size={26} color={colors.text}/>
+        </Pressable>
       </View>
       {!jobsiteValid && (
         <MyText style={localStyles.invalidForm}>
