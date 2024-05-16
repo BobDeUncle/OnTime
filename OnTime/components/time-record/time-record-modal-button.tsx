@@ -10,7 +10,6 @@ type NewTimeRecordButtonProps = {
 
 const NewTimeRecordButton: React.FC<NewTimeRecordButtonProps> = ({ onModalVisibleChange }) => {
   const {colors} = useTheme();
-
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const styles = StyleSheet.create({

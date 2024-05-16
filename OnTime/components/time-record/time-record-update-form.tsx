@@ -5,7 +5,7 @@ import {
   StyleSheet,
   TextInput,
   Button,
-  Pressable,
+  Pressable
 } from 'react-native';
 import MyText from '../../components/MyText';
 import MyDatePicker from '../../components/MyDatePicker';

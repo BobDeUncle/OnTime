@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  Animated,
 } from 'react-native';
 import {useTheme} from '../theme/Colors';
 import styles from '../theme/Styles';
@@ -34,6 +35,17 @@ function ApprovalScreen(): React.ReactElement {
     TimeRecord | undefined
   >(undefined);
 
+  const [overlayVisible, setOverlayVisible] = useState(false);
+  const [overlayOpacity, setOverlayOpacity] = useState(new Animated.Value(0));
+
+  useEffect(() => {
+    Animated.timing(overlayOpacity, {
+      toValue: overlayVisible ? 0.5 : 0,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  }, [overlayVisible]);
+
   const styles = StyleSheet.create({
     loadingContainer: {
       flex: 1,
@@ -43,12 +55,12 @@ function ApprovalScreen(): React.ReactElement {
     },
     overlay: {
       flex: 1,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+      // backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
       justifyContent: 'center',
       alignItems: 'center',
     },
     modalContainer: {
-      backgroundColor: 'white',
+      flex: 1,
       borderRadius: 10,
       padding: 20,
       width: '80%',
@@ -95,11 +107,13 @@ function ApprovalScreen(): React.ReactElement {
       console.error('Error updating new timesheet:', error);
     } finally {
       setEditModalOpen(false);
+      setOverlayVisible(false);
     }
   };
 
   const onClose = () => {
     setEditModalOpen(false);
+    setOverlayVisible(false);
   };
 
   return loading ? (
@@ -115,6 +129,7 @@ function ApprovalScreen(): React.ReactElement {
             onEditSelect={_timeRecord => {
               setTimeRecordUpdate(_timeRecord);
               setEditModalOpen(true);
+              setOverlayVisible(true);
             }}
             timeRecord={record}
             key={index}
@@ -129,11 +144,16 @@ function ApprovalScreen(): React.ReactElement {
         animationType="slide"
         onRequestClose={() => {
           setEditModalOpen(false);
+          setOverlayVisible(false);
         }}>
         <TouchableOpacity
           style={styles.overlay}
           activeOpacity={1}
-          onPress={() => setEditModalOpen(false)}>
+          onPress={() => {
+              setEditModalOpen(false);
+              setOverlayVisible(false);
+            }
+          }>
           {timeRecordUpdate && (
             <TimeRecordUpdateForm
               timeRecord={timeRecordUpdate}
@@ -144,6 +164,18 @@ function ApprovalScreen(): React.ReactElement {
           )}
         </TouchableOpacity>
       </Modal>
+      <Animated.View
+        style={{
+          position: 'absolute',
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: 'black',
+          opacity: overlayOpacity,
+        }}
+        pointerEvents={overlayVisible ? 'auto' : 'none'}
+      />
     </ScrollView>
   );
 }
