@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {ActivityIndicator, Animated, FlatList, Modal, Pressable, StyleSheet, TextInput, TouchableHighlight, TouchableOpacity, View} from 'react-native';
+import { Animated, Modal, Pressable, StyleSheet, TouchableHighlight, TouchableOpacity, View} from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import MyText from '../../components/MyText';

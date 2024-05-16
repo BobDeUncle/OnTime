@@ -1,8 +1,8 @@
 // TO DO
 // Create User edit/delete functionality
-// Implement search
+// Implement search and filter
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, TextInput, FlatList, ActivityIndicator, Animated, StyleSheet, TouchableOpacity } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import MyText from '../components/MyText';
@@ -43,17 +43,18 @@ const UserManagementScreen: React.FC = () => {
     fetchUsers();
   }, [searchQuery]);
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async (params: {[key: string]: any} = {}) => {
     setLoading(true);
+    params.search = searchQuery;
     try {
-      const fetchedUsers = await userAPI.getAllUsers();
+      const fetchedUsers = await userAPI.getAllUsers(params);
       setUsers(fetchedUsers);
     } catch (error) {
       console.error('Error fetching users:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [userAPI]);
 
   useEffect(() => {
     Animated.timing(overlayOpacity, {
@@ -80,7 +81,7 @@ const UserManagementScreen: React.FC = () => {
   const handleApplyFilter = (filters: any) => {
     console.log('Filters applied:', filters);
     // Implement the filter logic or refresh the list based on the filters
-    fetchUsers();  // Refresh with new filters
+    fetchUsers(filters);  // Refresh with new filters
   };
 
   const renderHeader = () => (

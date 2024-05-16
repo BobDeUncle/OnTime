@@ -8,8 +8,9 @@ class UserAPI {
     this.client = client;
   }
 
-  public async getAllUsers(): Promise<User[]> {
-    return await this.client.get('/users');
+  public async getAllUsers(params?: { firstName?: string, lastName?: string, email?: string }): Promise<User[]> {
+    console.log('GET', '/users', params);
+    return await this.client.get('/users', params);
   }
 
   public async createUser(user: any): Promise<User[]> {
