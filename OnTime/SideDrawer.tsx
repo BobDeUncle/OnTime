@@ -9,7 +9,7 @@ import {
 } from '@react-navigation/drawer';
 import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import { useAPIClient } from './api/APIClientContext';
+import {useAPIClient} from './api/APIClientContext';
 import Role from './models/Role';
 
 import DashboardScreen from './screens/DashboardScreen.tsx';
@@ -69,11 +69,13 @@ function SideDrawer({
   toggleTheme,
   handleLogout,
 }: SideDrawerProps): React.ReactElement {
-  const {user} = useAPIClient(); 
+  const {user} = useAPIClient();
   console.log(user);
 
   function hasManagementAccess(roles: Role[]): boolean {
-    return roles.some(role => role.name === 'admin' || role.name === 'supervisor');
+    return roles.some(
+      role => role.name === 'admin' || role.name === 'supervisor',
+    );
   }
 
   function hasAdminAccess(roles: Role[]): boolean {
@@ -138,9 +140,7 @@ function SideDrawer({
             <FontAwesomeIcon icon="user" color={color} />
           ),
         }}>
-        {() => (
-          <ProfileScreen />
-        )}
+        {() => <ProfileScreen />}
       </Drawer.Screen>
       {user && hasManagementAccess(user.roles) && (
         <Drawer.Screen
@@ -150,9 +150,7 @@ function SideDrawer({
               <FontAwesomeIcon icon="clipboard-check" color={color} />
             ),
           }}>
-          {() => (
-            <ApprovalScreen />
-          )}
+          {() => <ApprovalScreen />}
         </Drawer.Screen>
       )}
       <Drawer.Screen
@@ -167,15 +165,15 @@ function SideDrawer({
         )}
       </Drawer.Screen>
       {user && hasManagementAccess(user.roles) && (
-      <Drawer.Screen
-        name="User Management"
-        component={UserManagementScreen}
-        options={{
-          drawerIcon: ({ color }) => (
-                <FontAwesomeIcon icon="user" color={color} />
-          )
-        }}
-      />
+        <Drawer.Screen
+          name="User Management"
+          component={UserManagementScreen}
+          options={{
+            drawerIcon: ({color}) => (
+              <FontAwesomeIcon icon="user" color={color} />
+            ),
+          }}
+        />
       )}
     </Drawer.Navigator>
   );

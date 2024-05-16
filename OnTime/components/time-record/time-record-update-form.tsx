@@ -1,20 +1,16 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   Alert,
   View,
-  Pressable,
   StyleSheet,
   TextInput,
   Button,
-  ActivityIndicator,
 } from 'react-native';
 import MyText from '../../components/MyText';
 import MyDatePicker from '../../components/MyDatePicker';
 import MyTimePicker from '../../components/MyTimePicker';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from 'react-native-picker-select';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {storageEmitter} from '../storageEmitter';
 
 import {useTheme} from '../../theme/Colors';
 import TimeRecordAPI from '../../api/TimeRecordAPI';
