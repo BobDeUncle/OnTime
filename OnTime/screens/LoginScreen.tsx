@@ -1,9 +1,12 @@
 // Partly based on https://medium.com/@mustapha.aitigunaoun/creating-a-stylish-login-form-in-react-native-45e9277f1b9f
 
-import React, {createRef, useState, RefObject} from 'react';
+import React, {createRef, useState, useEffect, RefObject} from 'react';
 import {
   ActivityIndicator,
   Image,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
   StyleSheet,
   TextInput,
@@ -504,6 +507,7 @@ function LoginScreen(): React.ReactElement {
       height: 450,
       borderTopLeftRadius: 30,
       borderTopRightRadius: 30,
+      flex: 1,
     },
     image: {
       height: 300,
@@ -650,9 +654,13 @@ function LoginScreen(): React.ReactElement {
       <View style={styles.topContainer}>
         <Image source={logo} style={styles.image} resizeMode="contain" />
       </View>
-      <View style={styles.bottomContainer}>
+      <KeyboardAvoidingView 
+        style={[styles.bottomContainer]}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={0}
+      >
         {renderBottomContainerContent()}
-      </View>
+      </KeyboardAvoidingView>
     </View>
   );
 }
