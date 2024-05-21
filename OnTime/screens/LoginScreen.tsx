@@ -141,7 +141,7 @@ function LoginScreen(): React.ReactElement {
       setIsVeriCodeValid(false);
       setIsLoading(false);
       return;
-    }
+    };
 
     setResetStage('resetPassword');
     setIsLoading(false);
@@ -194,6 +194,7 @@ function LoginScreen(): React.ReactElement {
       setResetStage('success');
     } catch (error) {
       console.error('Error:', error);
+      setResetStage('veriCode');
     } finally {
       setIsLoading(false);
     }
