@@ -1,6 +1,6 @@
 // Partly based on https://medium.com/@mustapha.aitigunaoun/creating-a-stylish-login-form-in-react-native-45e9277f1b9f
 
-import React, {createRef, useState, useEffect, RefObject} from 'react';
+import React, {createRef, useState, useEffect, useRef, RefObject} from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -32,6 +32,7 @@ function LoginScreen(): React.ReactElement {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const passwordInputRef = useRef<TextInput>(null); // Reference for the password input box
   const [isLoading, setIsLoading] = useState(false);
 
   const [isEmailValid, setIsEmailValid] = useState(true);
@@ -232,6 +233,7 @@ function LoginScreen(): React.ReactElement {
                 }}
                 autoCorrect={false}
                 autoCapitalize="none"
+                onSubmitEditing={() => passwordInputRef.current?.focus()}
               />
               <TextInput
                 style={{
@@ -252,6 +254,7 @@ function LoginScreen(): React.ReactElement {
                 }}
                 autoCorrect={false}
                 autoCapitalize="none"
+                ref={passwordInputRef}
               />
             </View>
             {!isEmailValid && (
