@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, TextInput, Button, StyleSheet, Alert, Pressable, Switch } from 'react-native';
 import MyText from '../MyText';
 import { useTheme } from '../../theme/Colors';
@@ -6,6 +6,7 @@ import { storageEmitter } from '../storageEmitter';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 
 import UserAPI from '../../api/UserAPI';
+import RoleAPI from '../../api/RoleAPI';
 import Role from '../../models/Role';
 import User from '../../models/User'; 
 import { useAPIClient } from '../../api/APIClientContext';
@@ -21,6 +22,7 @@ const EditUserForm: React.FC<UserFormProps> = ({ user, styles, showCloseButton, 
   const {colors} = useTheme();
 
   const { apiClient } = useAPIClient();
+  const roleAPI = new RoleAPI(apiClient);
   const userAPI = new UserAPI(apiClient);
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -30,43 +32,42 @@ const EditUserForm: React.FC<UserFormProps> = ({ user, styles, showCloseButton, 
   const lastNameRef = useRef<TextInput>(null);
   const [email, setEmail] = useState(user?.email || '');
   const emailRef = useRef<TextInput>(null);
-  const [isAdminActive, setIsAdminActive] = useState(
-    user?.roles.some(role => role.name === 'admin') || false
-  );
-  const [isEmployeeActive, setIsEmployeeActive] = useState(
-    user?.roles.some(role => role.name === 'employee') || false
-  );
-  const [isSupervisorActive, setIsSupervisorActive] = useState(
-    user?.roles.some(role => role.name === 'supervisor') || false
-  );
+  const [isAdminActive, setIsAdminActive] = useState(false);
+  const [isEmployeeActive, setIsEmployeeActive] = useState(false);
+  const [isSupervisorActive, setIsSupervisorActive] = useState(false);
+  const [rolesData, setRoles] = useState<Role[]>([]);
 
-  const roleData = [
-    {
-      _id: "65f0b68656bb772dc458d60d",
-      name: "admin",
-    },
-    {
-      _id: "6607b7c8e0193b972120fa1a",
-      name: "employee",
-    },
-    {
-      _id: "6607b7d4e0193b972120fa1c",
-      name: "supervisor",
-    }
-  ];
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        setLoading(true);
+        const rolesData = await roleAPI.getAllRoles();
+        setRoles(rolesData);
+        console.log(rolesData);
+        setIsAdminActive(user.roles.some(role => role.name === 'admin'));
+        setIsEmployeeActive(user.roles.some(role => role.name === 'employee'));
+        setIsSupervisorActive(user.roles.some(role => role.name === 'supervisor'));
+      } catch (error) {
+        console.error('Error fetching roles:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRoles();
+  }, [user]);
 
   const getSelectedRoles = (): Role[] => {
     const selectedRoles: Role[] = [];
     if (isAdminActive) {
-      const adminRole = roleData.find(role => role.name === "admin");
+      const adminRole = rolesData.find(role => role.name === "admin");
       if (adminRole) selectedRoles.push(adminRole);
     }
     if (isEmployeeActive) {
-      const employeeRole = roleData.find(role => role.name === "employee");
+      const employeeRole = rolesData.find(role => role.name === "employee");
       if (employeeRole) selectedRoles.push(employeeRole);
     }
     if (isSupervisorActive) {
-      const supervisorRole = roleData.find(role => role.name === "supervisor");
+      const supervisorRole = rolesData.find(role => role.name === "supervisor");
       if (supervisorRole) selectedRoles.push(supervisorRole);
     }
     return selectedRoles;
@@ -99,10 +100,12 @@ const EditUserForm: React.FC<UserFormProps> = ({ user, styles, showCloseButton, 
       return;
     }
 
+    const selectedRoles = getSelectedRoles();
+
     // Show a confirmation popup
     Alert.alert(
       'Submit Updated User',
-      `Do you wish to update the user ${firstName} ${lastName} with email as ${email} and role(s) of ${getSelectedRoles().map(role => role.name).join(", ")}?`,
+      `Do you wish to update the user ${firstName} ${lastName} with email as ${email} and role(s) of ${selectedRoles.map(role => role.name).join(", ")}?`,
       [
         {
           text: 'Cancel',
@@ -117,14 +120,14 @@ const EditUserForm: React.FC<UserFormProps> = ({ user, styles, showCloseButton, 
                 firstName,
                 lastName,
                 email,
-                getSelectedRoles,
+                roles: selectedRoles,
               });
 
               console.log('update user', {
                 firstName,
                 lastName,
                 email,
-                getSelectedRoles,
+                roles: selectedRoles,
               });
         
               saveUser();
