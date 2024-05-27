@@ -11,6 +11,7 @@ import TimeRecordAPI from '../api/TimeRecordAPI';
 import TimeRecord from '../models/TimeRecord';
 import TimeRecordItem from '../components/time-record/time-record';
 import TimeRecordFilter from '../components/time-record/time-record-filter';
+import TimeRecordExportButton from '../components/time-record/time-record-export-button';
 
 const TimesheetsScreen: React.FC = () => {
   const {colors} = useTheme();
@@ -23,6 +24,16 @@ const TimesheetsScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [overlayOpacity, setOverlayOpacity] = useState(new Animated.Value(0.5));
+  const [filters, setFilters] = useState({
+    jobsites: [] as string[],
+    employees: [] as string[],
+    status: '',
+    startDate: '',
+    endDate: '',
+    sortOrder: ''
+  });
+
+  const isAdmin = user && user.roles.some(role => role.name === 'admin');
 
   const timeRecordAPI = new TimeRecordAPI(apiClient);
 
@@ -65,7 +76,7 @@ const TimesheetsScreen: React.FC = () => {
   const fetchTimeRecords = useCallback(async (params: {[key: string]: any} = {}) => {
     setLoading(true);
     params.search = searchQuery;
-    if (user && !user.roles.some(role => role.name === 'admin')) {
+    if (user && !isAdmin) {
       params.employees = user._id;
     }
 
@@ -90,6 +101,15 @@ const TimesheetsScreen: React.FC = () => {
       endDate: [selectedEndDate],
       sortOrder: [selectedSortOrder]
     };
+
+    setFilters({
+      jobsites: [selectedJobsite],
+      employees: [selectedEmployee],
+      status: selectedStatus,
+      startDate: selectedStartDate,
+      endDate: selectedEndDate,
+      sortOrder: selectedSortOrder
+    });
   
     refreshList(params);
   };
@@ -100,7 +120,7 @@ const TimesheetsScreen: React.FC = () => {
     },
     searchBar: {
       flexDirection: 'row',
-      flex: 0.7,
+      flex: isAdmin ? 0.55 : 0.7,
       alignItems: 'center',
       backgroundColor: colors.background,
       borderWidth: 1,
@@ -145,6 +165,11 @@ const TimesheetsScreen: React.FC = () => {
           <View style={styles.filterView}>
             <TimeRecordFilter onApply={handleApplyFilter} onModalVisibleChange={setOverlayVisible} />
           </View>
+          {isAdmin && (
+            <View style={styles.filterView}>
+              <TimeRecordExportButton filters={filters} onModalVisibleChange={setOverlayVisible} />
+            </View>
+          )}
         </View>
 
         {loading ? (

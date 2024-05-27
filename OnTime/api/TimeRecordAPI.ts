@@ -8,7 +8,7 @@ class TimeRecordAPI {
     this.client = client;
   }
 
-  public async getAllTimeRecords(params?: { startDate?: string, endDate?: string, employees?: string[], jobsites?: string[], status?: string }): Promise<TimeRecord[]> {
+  public async getAllTimeRecords(params?: { startDate?: string, endDate?: string, employees?: string[], jobsites?: string[], status?: string, export?: boolean}): Promise<TimeRecord[]> {
     console.log('GET', '/time-records', params);
     return await this.client.get('/time-records', params );
   }
