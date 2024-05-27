@@ -2,6 +2,7 @@ import React, {useState, useEffect, useCallback} from 'react';
 import {ActivityIndicator, Animated, FlatList, ScrollView, StyleSheet, TextInput, View} from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { storageEmitter } from '../components/storageEmitter';
+import MyText from '../components/MyText';
 
 import NewTimeRecordButton from '../components/time-record/time-record-modal-button';
 
@@ -143,6 +144,13 @@ const TimesheetsScreen: React.FC = () => {
       alignItems: 'center',
       paddingRight: 5,
     },
+    emptyListText: {
+      textAlign: 'center',
+      color: colors.opText,
+      marginTop: 20,
+      fontSize: 16,
+      paddingHorizontal: 20,
+    },
   });
 
   return (
@@ -187,6 +195,7 @@ const TimesheetsScreen: React.FC = () => {
             />
           )}
           keyExtractor={item => item._id}
+          ListEmptyComponent={<MyText style={styles.emptyListText}>No time records found. Try a different filter or add in a new timesheet.</MyText>}
         />
       )}
       </ScrollView>

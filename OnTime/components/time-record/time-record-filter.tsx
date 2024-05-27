@@ -78,7 +78,11 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply, onModalVis
     const selectedStartDateTemp = showStartPicker ? selectedStartDate : '';
     const selectedEndDateTemp = showEndPicker ? selectedEndDate : '';
 
-    onApply(selectedJobsite, selectedEmployee, selectedStatus, selectedStartDateTemp, selectedEndDateTemp, selectedSortOrder);
+    const selectedJobsiteTemp = selectedJobsite ?? '';
+    const selectedEmployeeTemp = selectedEmployee ?? '';
+    const selectedStatusTemp = selectedStatus ?? '';
+
+    onApply(selectedJobsiteTemp, selectedEmployeeTemp, selectedStatusTemp, selectedStartDateTemp, selectedEndDateTemp, selectedSortOrder);
   };
 
   const styles = StyleSheet.create({

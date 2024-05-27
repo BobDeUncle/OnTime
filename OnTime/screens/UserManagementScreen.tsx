@@ -151,6 +151,13 @@ const UserManagementScreen: React.FC = () => {
     userText: {
       color: colors.opText,
     },
+    emptyListText: {
+      textAlign: 'center',
+      color: colors.opText,
+      marginTop: 20,
+      fontSize: 16,
+      paddingHorizontal: 20,
+    },
   });
 
   return (
@@ -183,7 +190,7 @@ const UserManagementScreen: React.FC = () => {
             data={users}
             renderItem={renderUser}
             keyExtractor={item => item._id}
-            ListEmptyComponent={<MyText>No users found.</MyText>}
+            ListEmptyComponent={<MyText style={styles.emptyListText}>No users found.</MyText>}
           />
         )}
       </View>
