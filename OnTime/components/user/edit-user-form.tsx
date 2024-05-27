@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert, Pressable, Switch } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Alert, Pressable, Switch, ActivityIndicator } from 'react-native';
 import MyText from '../MyText';
 import { useTheme } from '../../theme/Colors';
 import { storageEmitter } from '../storageEmitter';
@@ -321,33 +321,45 @@ const EditUserForm: React.FC<UserFormProps> = ({ user, styles, showCloseButton, 
       )}
       <View style={localStyles.roleContainer}>
         <MyText style={localStyles.roleText}>Employee</MyText>
-        <Switch
-          trackColor={{ false: colors.border, true: colors.secondary }}
-          thumbColor={isEmployeeActive ? colors.text : colors.text}
-          onValueChange={setIsEmployeeActive}
-          value={isEmployeeActive}
-          style={localStyles.switch}
-        />
+        {loading ? (
+          <ActivityIndicator size="small" color={colors.text} />
+        ) : (
+          <Switch
+            trackColor={{ false: colors.border, true: colors.secondary }}
+            thumbColor={isEmployeeActive ? colors.text : colors.text}
+            onValueChange={setIsEmployeeActive}
+            value={isEmployeeActive}
+            style={localStyles.switch}
+          />
+        )}
       </View>
       <View style={localStyles.roleContainer}>
         <MyText style={localStyles.roleText}>Supervisor</MyText>
-        <Switch
-          trackColor={{ false: colors.border, true: colors.secondary }}
-          thumbColor={isSupervisorActive ? colors.text : colors.text}
-          onValueChange={setIsSupervisorActive}
-          value={isSupervisorActive}
-          style={localStyles.switch}
-        />
+        {loading ? (
+          <ActivityIndicator size="small" color={colors.text} />
+        ) : (
+          <Switch
+            trackColor={{ false: colors.border, true: colors.secondary }}
+            thumbColor={isSupervisorActive ? colors.text : colors.text}
+            onValueChange={setIsSupervisorActive}
+            value={isSupervisorActive}
+            style={localStyles.switch}
+          />
+        )}
       </View>
       <View style={localStyles.roleContainer}>
         <MyText style={localStyles.roleText}>Admin</MyText>
-        <Switch
-          trackColor={{ false: colors.border, true: colors.secondary }}
-          thumbColor={isAdminActive ? colors.text : colors.text}
-          onValueChange={setIsAdminActive}
-          value={isAdminActive}
-          style={localStyles.switch}
-        />
+        {loading ? (
+          <ActivityIndicator size="small" color={colors.text} />
+        ) : (
+          <Switch
+            trackColor={{ false: colors.border, true: colors.secondary }}
+            thumbColor={isAdminActive ? colors.text : colors.text}
+            onValueChange={setIsAdminActive}
+            value={isAdminActive}
+            style={localStyles.switch}
+          />
+        )}
       </View>
       <Button title="Submit" onPress={handleSubmit} />
     </View>
