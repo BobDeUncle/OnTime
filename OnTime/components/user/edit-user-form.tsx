@@ -93,6 +93,7 @@ const EditUserForm: React.FC<UserFormProps> = ({ user, styles, showCloseButton, 
 
     // If any input is invalid, return early
     if (!isFirstNameValid || !isLastNameValid || !isEmailValid || !isPasswordValid) {
+      setLoading(false);
       return;
     }
 

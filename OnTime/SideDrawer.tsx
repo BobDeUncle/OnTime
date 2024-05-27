@@ -18,6 +18,7 @@ import ProfileScreen from './screens/ProfileScreen.tsx';
 import ApprovalScreen from './screens/ApprovalScreen.tsx';
 import TimesheetsScreen from './screens/TimesheetsScreen.tsx';
 import UserManagementScreen from './screens/UserManagementScreen.tsx';
+import JobsiteManagementScreen from './screens/JobsiteManagementScreen.tsx';
 import {lightTheme, darkTheme, useTheme} from './theme/Colors.tsx';
 
 const styles = StyleSheet.create({
@@ -171,6 +172,17 @@ function SideDrawer({
           options={{
             drawerIcon: ({color}) => (
               <FontAwesomeIcon icon="user" color={color} />
+            ),
+          }}
+        />
+      )}
+      {user && hasManagementAccess(user.roles) && (
+        <Drawer.Screen
+          name="Jobsite Management"
+          component={JobsiteManagementScreen}
+          options={{
+            drawerIcon: ({color}) => (
+              <FontAwesomeIcon icon="hard-hat" color={color} />
             ),
           }}
         />

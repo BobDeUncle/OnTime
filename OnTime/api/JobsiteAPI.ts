@@ -8,7 +8,8 @@ class JobsiteAPI {
     this.client = client;
   }
 
-  public async getAllJobsites(): Promise<Jobsite[]> {
+  public async getAllJobsites(params?: { name?: string, city?: string }): Promise<Jobsite[]> {
+    console.log('GET', '/jobsites', params);
     return await this.client.get('/jobsites');
   }
 
