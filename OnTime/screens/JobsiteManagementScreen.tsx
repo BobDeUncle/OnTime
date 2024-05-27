@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import MyText from '../components/MyText';
 import NewJobsiteButton from '../components/jobsite/jobsite-modal-button';
 import EditJobsiteButton from '../components/jobsite/edit-jobsite-modal-button';
-import JobsiteFilter from '../components/jobsite/jobsite-filter';
 import JobsiteAPI from '../api/JobsiteAPI';
 import { useAPIClient } from '../api/APIClientContext';
 import { useTheme } from '../theme/Colors';
@@ -68,12 +67,6 @@ const JobsiteManagementScreen: React.FC = () => {
 
   const refreshList = () => {
     fetchJobsites();
-  }
-
-  const handleApplyFilter = (filters: any) => {
-    console.log('Filters applied:', filters);
-    // Implement the filter logic or refresh the list based on the filters
-    fetchJobsites(filters);  // Refresh with new filters
   };
 
   const renderHeader = () => (
@@ -172,9 +165,6 @@ const JobsiteManagementScreen: React.FC = () => {
           <View style={styles.filterView}>
             <NewJobsiteButton onModalVisibleChange={setOverlayVisible} />
           </View>
-          {/* <View style={styles.filterView}>
-            <UserFilter onApply={handleApplyFilter} onModalVisibleChange={setOverlayVisible} />
-          </View> */}
         </View>
 
         {loading ? (

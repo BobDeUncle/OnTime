@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import MyText from '../components/MyText';
 import NewUserButton from '../components/user/user-modal-button';
 import EditUserButton from '../components/user/edit-user-modal-button';
-import UserFilter from '../components/user/user-filter';
 import UserAPI from '../api/UserAPI';
 import { useAPIClient } from '../api/APIClientContext';
 import { useTheme } from '../theme/Colors';
@@ -23,15 +22,10 @@ const UserManagementScreen: React.FC = () => {
   const [overlayOpacity, setOverlayOpacity] = useState(new Animated.Value(0));
 
   useEffect(() => {
-    // Fetch data when the component mounts
     fetchUsers();
-
-    // Listen for the 'usersUpdated' event
     storageEmitter.on('usersUpdated', refreshList);
 
-    // Cleanup function
     return () => {
-      // Remove the event listener when the component unmounts
       storageEmitter.off('usersUpdated', refreshList);
     };
   }, []);
@@ -73,12 +67,6 @@ const UserManagementScreen: React.FC = () => {
 
   const refreshList = () => {
     fetchUsers();
-  }
-
-  const handleApplyFilter = (filters: any) => {
-    console.log('Filters applied:', filters);
-    // Implement the filter logic or refresh the list based on the filters
-    fetchUsers(filters);  // Refresh with new filters
   };
 
   const renderHeader = () => (
@@ -177,9 +165,6 @@ const UserManagementScreen: React.FC = () => {
           <View style={styles.filterView}>
             <NewUserButton onModalVisibleChange={setOverlayVisible} />
           </View>
-          {/* <View style={styles.filterView}>
-            <UserFilter onApply={handleApplyFilter} onModalVisibleChange={setOverlayVisible} />
-          </View> */}
         </View>
 
         {loading ? (
