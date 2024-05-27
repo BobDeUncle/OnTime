@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, TextInput, Button, StyleSheet, Alert, Pressable, Switch } from 'react-native';
 import MyText from '../MyText';
 import { useTheme } from '../../theme/Colors';
@@ -6,6 +6,7 @@ import { storageEmitter } from '../storageEmitter';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 
 import UserAPI from '../../api/UserAPI';
+import RoleAPI from '../../api/RoleAPI';
 import Role from '../../models/Role';
 import { useAPIClient } from '../../api/APIClientContext';
 
@@ -20,6 +21,7 @@ const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose })
   const { user } = useAPIClient(); 
 
   const { apiClient } = useAPIClient();
+  const roleAPI = new RoleAPI(apiClient);
   const userAPI = new UserAPI(apiClient);
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -34,34 +36,36 @@ const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose })
   const [isAdminActive, setIsAdminActive] = useState(false);
   const [isEmployeeActive, setIsEmployeeActive] = useState(true);
   const [isSupervisorActive, setIsSupervisorActive] = useState(false);
+  const [rolesData, setRoles] = useState<Role[]>([]);
 
-  const roleData = [
-    {
-      _id: "65f0b68656bb772dc458d60d",
-      name: "admin",
-    },
-    {
-      _id: "6607b7c8e0193b972120fa1a",
-      name: "employee",
-    },
-    {
-      _id: "6607b7d4e0193b972120fa1c",
-      name: "supervisor",
-    }
-  ];
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        setLoading(true);
+        const rolesData = await roleAPI.getAllRoles();
+        setRoles(rolesData);
+        console.log(rolesData);
+      } catch (error) {
+        console.error('Error fetching roles:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRoles();
+  }, [user]);
 
   const getSelectedRoles = (): Role[] => {
     const selectedRoles: Role[] = [];
     if (isAdminActive) {
-      const adminRole = roleData.find(role => role.name === "admin");
+      const adminRole = rolesData.find(role => role.name === "admin");
       if (adminRole) selectedRoles.push(adminRole);
     }
     if (isEmployeeActive) {
-      const employeeRole = roleData.find(role => role.name === "employee");
+      const employeeRole = rolesData.find(role => role.name === "employee");
       if (employeeRole) selectedRoles.push(employeeRole);
     }
     if (isSupervisorActive) {
-      const supervisorRole = roleData.find(role => role.name === "supervisor");
+      const supervisorRole = rolesData.find(role => role.name === "supervisor");
       if (supervisorRole) selectedRoles.push(supervisorRole);
     }
     return selectedRoles;
@@ -95,11 +99,13 @@ const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose })
       return;
     }
 
+    const selectedRoles = getSelectedRoles();
+
     // Show a confirmation popup
     Alert.alert(
       'Submit New User',
       `Do you wish to create a new user ${firstName} ${lastName} with email as ${email}, 
-      password as ${password} and role(s) of ${getSelectedRoles().map(role => role.name).join(", ")}?`,
+      password as ${password} and role(s) of ${selectedRoles.map(role => role.name).join(", ")}?`,
       [
         {
           text: 'Cancel',
@@ -115,7 +121,7 @@ const UserForm: React.FC<UserFormProps> = ({ styles, showCloseButton, onClose })
                 lastName,
                 email,
                 password,
-                getSelectedRoles,
+                roles: selectedRoles,
               });
         
               saveUser();
