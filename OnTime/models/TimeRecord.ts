@@ -11,12 +11,19 @@ interface TimeRecord {
   jobsite: Jobsite;
   recordTotalHours: number;
   status: Status;
+  recordType: RecordType;
 }
 
 export enum Status {
   approved = 'approved',
   pending = 'pending',
   denied = 'denied',
+}
+
+export enum RecordType {
+  hoursWorked = 'hoursWorked',
+  annualLeave = 'annualLeave',
+  sickLeave = 'sickLeave'
 }
 
 export default TimeRecord;
