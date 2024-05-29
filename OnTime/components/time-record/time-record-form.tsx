@@ -85,6 +85,19 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
 
     const totalHours = ((endTime.getTime() - startTime.getTime()) / (1000 * 60 * 60)) - (Number(breakTime) / 60);
 
+    // Format date and time as ISO string with local time zone offset
+    const formatLocalDateTime = (date: Date) => {
+      const tzOffset = -date.getTimezoneOffset() * 60000; // offset in milliseconds
+      const localISOTime = new Date(date.getTime() + tzOffset).toISOString().slice(0, -1);
+      const offsetSign = date.getTimezoneOffset() > 0 ? '-' : '+';
+      const offsetHours = String(Math.abs(date.getTimezoneOffset() / 60)).padStart(2, '0');
+      const offsetMinutes = String(Math.abs(date.getTimezoneOffset() % 60)).padStart(2, '0');
+      return `${localISOTime}${offsetSign}${offsetHours}:${offsetMinutes}`;
+    };
+
+    const startTimeFormatted = formatLocalDateTime(startTime);
+    const endTimeFormatted = formatLocalDateTime(endTime);
+
     // Show a confirmation popup
     Alert.alert(
       'Submit Time Record',
@@ -102,8 +115,18 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
               await timeRecordAPI.addTimeRecord({
                 employee: user?._id,
                 date: date,
-                startTime: startTime, 
-                endTime: endTime,
+                startTime: startTimeFormatted, 
+                endTime: endTimeFormatted,
+                breakHours: Number(breakTime) / 60,
+                jobsite: selectedJobsite,
+                isApproved: false,
+              });
+
+              console.log({
+                employee: user?._id,
+                date: date,
+                startTime: startTimeFormatted, 
+                endTime: endTimeFormatted,
                 breakHours: Number(breakTime) / 60,
                 jobsite: selectedJobsite,
                 isApproved: false,
