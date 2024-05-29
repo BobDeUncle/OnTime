@@ -7,6 +7,7 @@ interface TimeRecord {
   date: Date;
   startTime: Date,
   endTime: Date,
+  breakHours: number,
   jobsite: Jobsite;
   recordTotalHours: number;
   status: Status;

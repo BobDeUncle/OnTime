@@ -176,6 +176,7 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
           <MyText style={styles.text}>
             Time: {timeRecord.startTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', second: undefined, hour12: true })} - {timeRecord.endTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', second: undefined, hour12: true })}
           </MyText>
+          <MyText style={styles.text}>Break (mins): {timeRecord.breakHours * 60}</MyText>
         </View>
         <Pressable
           onPress={() => {
@@ -192,7 +193,7 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
       <View style={styles.row}>
         <View style={styles.column}>
           <MyText style={styles.secondText}>
-            Total Hours: {/* Calculate total hours here */}
+            Total Hours: {timeRecord.recordTotalHours}
           </MyText>
         </View>
         <View style={styles.verticalLine} />

@@ -38,7 +38,9 @@ const TimeRecordUpdateForm: React.FC<TimesheetRecordUpdateFormProps> = ({
   const jobsiteAPI = new JobsiteAPI(apiClient);
 
   const [loading, setLoading] = useState<boolean>(false);
+  const [breakTime, setBreakTime] = useState((timeRecord.breakHours * 60).toString() || '');
   const [notes, setNotes] = useState('');
+  const [recordTotalHours, setRecordTotalHours] = useState<number>(0);
 
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [jobsiteValid, setJobsiteValid] = useState(true);
@@ -62,6 +64,20 @@ const TimeRecordUpdateForm: React.FC<TimesheetRecordUpdateFormProps> = ({
       console.error('Error fetching jobsites:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    calculateTotalHours();
+  }, [newTimeRecord.startTime, newTimeRecord.endTime, breakTime]);
+
+  const calculateTotalHours = () => {
+    if (newTimeRecord.startTime && newTimeRecord.endTime) {
+      const start = new Date(newTimeRecord.startTime).getTime();
+      const end = new Date(newTimeRecord.endTime).getTime();
+      const breakMinutes = parseFloat(breakTime) || 0;
+      const totalHours = (end - start) / (1000 * 60 * 60) - breakMinutes / 60;
+      newTimeRecord.recordTotalHours = totalHours;
     }
   };
 
@@ -265,6 +281,18 @@ const TimeRecordUpdateForm: React.FC<TimesheetRecordUpdateFormProps> = ({
         onChange={(newEndTime: Date) =>
           setNewTimeRecord({...newTimeRecord, endTime: newEndTime})
         }
+      />
+      <TextInput
+        value={breakTime}
+        onChangeText={(newBreakTime: string) => {
+          setBreakTime(newBreakTime)
+          setNewTimeRecord({...newTimeRecord, breakHours: Number(newBreakTime) / 60})
+        }}
+        keyboardType="numeric"
+        placeholder="Break Time (mins)"
+        placeholderTextColor={localStyles.placeholderText.color}
+        style={localStyles.textInput}
+        returnKeyType="done"
       />
       <TextInput
         value={notes}

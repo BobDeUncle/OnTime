@@ -46,6 +46,7 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
     now.setSeconds(0);
     return now;
   });  
+  const [breakTime, setBreakTime] = useState('');
   const [notes, setNotes] = useState('');
 
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -82,7 +83,7 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
       return;
     }
 
-    const totalHours = (endTime.getTime() - startTime.getTime()) / (1000 * 60 * 60);
+    const totalHours = ((endTime.getTime() - startTime.getTime()) / (1000 * 60 * 60)) - (Number(breakTime) / 60);
 
     // Show a confirmation popup
     Alert.alert(
@@ -101,8 +102,9 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
               await timeRecordAPI.addTimeRecord({
                 employee: user?._id,
                 date: date,
-                startTime: startTime.toISOString(), 
-                endTime: endTime.toISOString(),
+                startTime: startTime, 
+                endTime: endTime,
+                breakHours: Number(breakTime) / 60,
                 jobsite: selectedJobsite,
                 isApproved: false,
               });
@@ -260,6 +262,15 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
       <MyTimePicker
         time={endTime}
         onChange={(newEndTime: Date) => setEndTime(newEndTime)}
+      />
+      <TextInput
+        value={breakTime}
+        onChangeText={setBreakTime}
+        keyboardType="numeric"
+        placeholder="Break Time (mins)"
+        placeholderTextColor={localStyles.placeholderText.color}
+        style={localStyles.textInput}
+        returnKeyType="done"
       />
       <TextInput
         value={notes}

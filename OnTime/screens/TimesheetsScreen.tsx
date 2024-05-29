@@ -84,8 +84,8 @@ const TimesheetsScreen: React.FC = () => {
     try {
       const timeRecordsData: TimeRecord[] =
         await timeRecordAPI.getAllTimeRecords(params);
-  
-      setTimeRecords(timeRecordsData);
+        
+        setTimeRecords(timeRecordsData);
     } catch (error) {
       console.error('Error fetching time records:', error);
     } finally {
