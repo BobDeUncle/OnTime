@@ -14,12 +14,23 @@ then
     brew install node
 fi
 
+# Install Yarn
+if ! command -v yarn &> /dev/null
+then
+    echo "Yarn not found. Installing Yarn..."
+    brew install yarn
+fi
+
 # Install CocoaPods using Homebrew
 echo "Installing CocoaPods..."
 brew install cocoapods
 
 # Navigate to the project directory
 cd /Volumes/workspace/repository/OnTime/ios
+
+# Install project dependencies
+echo "Running yarn install..."
+yarn install
 
 # Install the pods
 echo "Running pod install..."
