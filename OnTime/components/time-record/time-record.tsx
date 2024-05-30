@@ -30,18 +30,34 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
   timeRecord.startTime = new Date(timeRecord.startTime);
   timeRecord.endTime = new Date(timeRecord.endTime);
 
-  const handleDelete = async () => {
-    try {
-      await timeRecordAPI.deleteTimeRecord(timeRecord._id);
-
-      refreshList();
-    } catch (error) {
-      console.error('Error deleting time record:', error);
-      Alert.alert(
-        'Error',
-        'Failed to delete time record. Please try again later.',
-      );
-    }
+  const handleDelete = () => {
+    Alert.alert(
+      "Confirm Delete",
+      "Are you sure you want to delete this time record?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await timeRecordAPI.deleteTimeRecord(timeRecord._id);
+              refreshList();
+            } catch (error) {
+              console.error('Error deleting time record:', error);
+              Alert.alert(
+                'Error',
+                'Failed to delete time record. Please try again later.',
+              );
+            }
+          },
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   const onUpdate = async (newTimeRecord: TimeRecord) => {
@@ -144,6 +160,12 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
       right: 25,
       top: 25,
     },
+    deleteIcon: {
+      position: 'absolute',
+      zIndex: 100,
+      right: 60,
+      top: 25,
+    },
     modalContainer: {
       backgroundColor: 'white',
       borderRadius: 10,
@@ -185,10 +207,14 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
           style={styles.editIcon}>
           <FontAwesomeIcon icon="pen-to-square" size={26} />
         </Pressable>
+        {isAdmin && (
+          <Pressable
+            onPress={handleDelete}
+            style={styles.deleteIcon}>
+            <FontAwesomeIcon icon="times" size={26} />
+          </Pressable>
+        )}
       </View>
-      {/* <TouchableOpacity style={styles.button} onPress={handleDelete}>
-        <MyText style={styles.buttonText}>Delete</MyText>
-      </TouchableOpacity> */}
       <View style={styles.line} />
       <View style={styles.row}>
         <View style={styles.column}>
