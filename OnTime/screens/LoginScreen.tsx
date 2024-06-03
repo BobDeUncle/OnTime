@@ -181,6 +181,21 @@ function LoginScreen(): React.ReactElement {
       setIsConfirmPasswordValid(false);
       setIsLoading(false);
       return;
+    } else if (newPassword.length < 6) {
+      setConfirmPasswordMessage('Password must be at least 6 characters long');
+      setIsConfirmPasswordValid(false);
+      setIsLoading(false);
+      return;
+    } else if (!/[A-Z]/.test(newPassword)) {
+      setConfirmPasswordMessage('Password must contain at least one uppercase letter');
+      setIsConfirmPasswordValid(false);
+      setIsLoading(false);
+      return;
+    } else if (!/[a-z]/.test(newPassword)) {
+      setConfirmPasswordMessage('Password must contain at least one lowercase letter');
+      setIsConfirmPasswordValid(false);
+      setIsLoading(false);
+      return;
     } else {
       setIsConfirmPasswordValid(true);
     };
