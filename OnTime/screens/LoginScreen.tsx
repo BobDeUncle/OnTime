@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   Image,
   Keyboard,
+  ScrollView,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -233,7 +234,10 @@ function LoginScreen(): React.ReactElement {
                 }}
                 autoCorrect={false}
                 autoCapitalize="none"
+                autoComplete='email'
                 onSubmitEditing={() => passwordInputRef.current?.focus()}
+                textContentType="emailAddress"
+                keyboardType='email-address'
               />
               <TextInput
                 style={{
@@ -255,6 +259,7 @@ function LoginScreen(): React.ReactElement {
                 autoCorrect={false}
                 autoCapitalize="none"
                 ref={passwordInputRef}
+                textContentType="password"
               />
             </View>
             {!isEmailValid && (
@@ -386,7 +391,7 @@ function LoginScreen(): React.ReactElement {
                 opacity: pressed ? 0.5 : 1,
               })}>
                 <MyText style={{...styles.subtext, paddingTop: 20, marginBottom: 5, color: colors.opText}}>
-                  Didn't get a code?{' '}
+                  Didn't get a code? Check your spam or{'\n'}
                   <MyText style={{...styles.subtext, ...styles.hyperlink}}>
                     Click to resend
                   </MyText>
@@ -508,7 +513,7 @@ function LoginScreen(): React.ReactElement {
     bottomContainer: {
       alignItems: 'center',
       backgroundColor: colors.background,
-      height: 450,
+      height: 400,
       borderTopLeftRadius: 30,
       borderTopRightRadius: 30,
       flex: 1,
@@ -654,18 +659,21 @@ function LoginScreen(): React.ReactElement {
   });
 
   return (
-    <View style={styles.mainContainer}>
-      <View style={styles.topContainer}>
-        <Image source={logo} style={styles.image} resizeMode="contain" />
+    <KeyboardAvoidingView
+    style={{ flex: 1 }}
+    behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+  >
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <View style={styles.mainContainer}>
+        <View style={styles.topContainer}>
+          <Image source={logo} style={styles.image} resizeMode="contain" />
+        </View>
+        <View style={styles.bottomContainer}>
+          {renderBottomContainerContent()}
+        </View>
       </View>
-      <KeyboardAvoidingView 
-        style={[styles.bottomContainer]}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={0}
-      >
-        {renderBottomContainerContent()}
-      </KeyboardAvoidingView>
-    </View>
+    </ScrollView>
+  </KeyboardAvoidingView>
   );
 }
 
