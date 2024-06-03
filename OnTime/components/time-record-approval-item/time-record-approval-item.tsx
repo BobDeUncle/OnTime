@@ -225,7 +225,7 @@ const TimeRecordApprovalItem: React.FC<TimeRecordApprovalItemProps> = ({
               onPress={handleDeny}
               disabled={loadingDeny}>
               {loadingDeny ? (
-                <ActivityIndicator size="small" color={colors.secondary} />
+                <ActivityIndicator size="small" color={colors.opText} />
               ) : (
                 <MyText style={styles.denyButtonText}>DENY</MyText>
               )}
