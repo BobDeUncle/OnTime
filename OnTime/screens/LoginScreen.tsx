@@ -196,6 +196,11 @@ function LoginScreen(): React.ReactElement {
       setIsConfirmPasswordValid(false);
       setIsLoading(false);
       return;
+    } else if (!/\d/.test(newPassword)) {
+      setConfirmPasswordMessage('Password must contain at least one digit');
+      setIsConfirmPasswordValid(false);
+      setIsLoading(false);
+      return;
     } else {
       setIsConfirmPasswordValid(true);
     };
