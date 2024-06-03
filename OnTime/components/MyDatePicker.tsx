@@ -112,6 +112,7 @@ const MyDatePicker: React.FC<MyDatePickerProps> = ({ date, onChange }) => {
                 mode="date"
                 display="spinner"
                 onChange={handleChange}
+                textColor={colors.text}
               />
               <Button title="Done" onPress={closePicker} color={colors.text} />
             </Animated.View>
@@ -123,7 +124,7 @@ const MyDatePicker: React.FC<MyDatePickerProps> = ({ date, onChange }) => {
             mode="date"
             display="default"
             onChange={handleChange}
-            textColor={colors.opText}
+            textColor={colors.text}
           />
         )
       )}

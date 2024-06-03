@@ -116,6 +116,7 @@ const MyTimePicker: React.FC<MyTimePickerProps> = ({ time, onChange }) => {
                 mode="time"
                 display="spinner"
                 onChange={handleChange}
+                textColor={colors.text}
               />
               <Button title="Done" onPress={closePicker} color={colors.text} />
             </Animated.View>
@@ -127,7 +128,7 @@ const MyTimePicker: React.FC<MyTimePickerProps> = ({ time, onChange }) => {
             mode="time"
             display="default"
             onChange={handleChange}
-            textColor={colors.opText}
+            textColor={colors.text}
           />
         )
       )}
