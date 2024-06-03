@@ -134,15 +134,6 @@ function SideDrawer({
           ),
         }}
       />
-      <Drawer.Screen
-        name="Profile"
-        options={{
-          drawerIcon: ({color}) => (
-            <FontAwesomeIcon icon="user" color={color} />
-          ),
-        }}>
-        {() => <ProfileScreen />}
-      </Drawer.Screen>
       {user && hasManagementAccess(user.roles) && (
         <Drawer.Screen
           name="Time Record Approvals"
@@ -154,17 +145,6 @@ function SideDrawer({
           {() => <ApprovalScreen />}
         </Drawer.Screen>
       )}
-      <Drawer.Screen
-        name="Settings"
-        options={{
-          drawerIcon: ({color}) => (
-            <FontAwesomeIcon icon="gear" color={color} />
-          ),
-        }}>
-        {() => (
-          <SettingsScreen isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
-        )}
-      </Drawer.Screen>
       {user && hasManagementAccess(user.roles) && (
         <Drawer.Screen
           name="User Management"
@@ -187,6 +167,26 @@ function SideDrawer({
           }}
         />
       )}
+      <Drawer.Screen
+        name="Profile"
+        options={{
+          drawerIcon: ({color}) => (
+            <FontAwesomeIcon icon="user" color={color} />
+          ),
+        }}>
+        {() => <ProfileScreen />}
+      </Drawer.Screen>
+      <Drawer.Screen
+        name="Settings"
+        options={{
+          drawerIcon: ({color}) => (
+            <FontAwesomeIcon icon="gear" color={color} />
+          ),
+        }}>
+        {() => (
+          <SettingsScreen isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+        )}
+      </Drawer.Screen>
     </Drawer.Navigator>
   );
 }
