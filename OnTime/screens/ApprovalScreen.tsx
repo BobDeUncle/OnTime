@@ -11,6 +11,8 @@ import {
 import {useTheme} from '../theme/Colors';
 import styles from '../theme/Styles';
 import MyText from '../components/MyText';
+import { useFocusEffect } from '@react-navigation/native';
+
 import TimeRecord from '../models/TimeRecord';
 import TimeRecordAPI from '../api/TimeRecordAPI';
 import {useAPIClient} from '../api/APIClientContext';
@@ -68,11 +70,6 @@ function ApprovalScreen(): React.ReactElement {
     },
   });
 
-  useEffect(() => {
-    fetchTimeRecords();
-    getJobsites();
-  }, []);
-
   const fetchTimeRecords = useCallback(async () => {
     setLoading(true);
     try {
@@ -86,6 +83,13 @@ function ApprovalScreen(): React.ReactElement {
       setLoading(false);
     }
   }, [timeRecordAPI]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchTimeRecords();
+      getJobsites();
+    }, [])
+  );
 
   const getJobsites = async () => {
     setLoading(true);

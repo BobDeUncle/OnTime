@@ -3,6 +3,7 @@ import {ActivityIndicator, Animated, FlatList, ScrollView, StyleSheet, TextInput
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { storageEmitter } from '../components/storageEmitter';
 import MyText from '../components/MyText';
+import { useFocusEffect } from '@react-navigation/native';
 
 import NewTimeRecordButton from '../components/time-record/time-record-modal-button';
 
@@ -39,15 +40,9 @@ const TimesheetsScreen: React.FC = () => {
   const timeRecordAPI = new TimeRecordAPI(apiClient);
 
   useEffect(() => {
-    // Fetch data when the component mounts
-    fetchTimeRecords();
-
-    // Listen for the 'timeRecordsUpdated' event
     storageEmitter.on('timeRecordsUpdated', refreshList);
 
-    // Cleanup function
     return () => {
-      // Remove the event listener when the component unmounts
       storageEmitter.off('timeRecordsUpdated', refreshList);
     };
   }, []);
@@ -92,6 +87,12 @@ const TimesheetsScreen: React.FC = () => {
       setLoading(false);
     }
   }, [timeRecordAPI]);  
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchTimeRecords();
+    }, [])
+  );
 
   const handleApplyFilter = (selectedJobsite: string, selectedEmployee: string, selectedStatus: string, selectedStartDate: string, selectedEndDate: string, selectedSortOrder: string) => {
     const params = {
