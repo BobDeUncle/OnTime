@@ -219,7 +219,7 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
       <View style={styles.row}>
         <View style={styles.column}>
           <MyText style={styles.secondText}>
-            Total Hours: {timeRecord.recordTotalHours}
+            Total Hours: {timeRecord.recordTotalHours.toFixed(2)}
           </MyText>
         </View>
         <View style={styles.verticalLine} />

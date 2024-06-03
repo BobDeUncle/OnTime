@@ -210,7 +210,7 @@ const TimeRecordApprovalItem: React.FC<TimeRecordApprovalItemProps> = ({
           <View style={styles.row}>
             <View style={styles.column}>
               <MyText style={styles.secondText}>
-                Total Hours: {timeRecord.recordTotalHours}
+                Total Hours: {timeRecord.recordTotalHours.toFixed(2)}
               </MyText>
             </View>
           </View>
