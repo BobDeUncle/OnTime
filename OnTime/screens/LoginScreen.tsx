@@ -37,6 +37,7 @@ function LoginScreen(): React.ReactElement {
   const [isLoading, setIsLoading] = useState(false);
 
   const [isEmailValid, setIsEmailValid] = useState(true);
+  const confirmPasswordInputRef = useRef<TextInput>(null); // Reference for the confirm password input box
   const [isPasswordValid, setIsPasswordValid] = useState(true);
   const [isEmailPasswordValid, setIsEmailPasswordValid] = useState(true);
 
@@ -448,6 +449,7 @@ function LoginScreen(): React.ReactElement {
                     setNewPassword(text);
                     setIsNewPasswordValid(text !== '');
                   }}
+                  onSubmitEditing={() =>confirmPasswordInputRef.current?.focus()}
                 />
                 <Pressable
                   onPress={() => setIsNewPasswordVisible(!isNewPasswordVisible)}
@@ -463,6 +465,7 @@ function LoginScreen(): React.ReactElement {
               )}
               <View style={{...styles.passwordView, borderColor: isConfirmPasswordValid ? colors.border : colors.warning}}>
                 <TextInput
+                  ref={confirmPasswordInputRef}
                   style={{
                     ...styles.input,
                     ...styles.passwordInput,
