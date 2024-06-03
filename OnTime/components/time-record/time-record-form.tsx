@@ -131,6 +131,12 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
                 jobsite: selectedJobsite,
                 isApproved: false,
               });
+
+              Alert.alert(
+                'Success',
+                'Your timesheet was successfully submitted.',
+                [{ text: 'OK' }]
+              );
         
               saveTimeRecord();
               if (onClose) onClose();
