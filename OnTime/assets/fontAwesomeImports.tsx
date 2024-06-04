@@ -21,6 +21,7 @@ import {faEllipsisV} from '@fortawesome/free-solid-svg-icons/faEllipsisV';
 import {faPenToSquare} from '@fortawesome/free-solid-svg-icons/faPenToSquare';
 import {faFileExport} from '@fortawesome/free-solid-svg-icons/faFileExport';
 import {faHardHat} from '@fortawesome/free-solid-svg-icons/faHardHat';
+import {faKey} from '@fortawesome/free-solid-svg-icons/faKey';
 
 library.add(fab, 
     faHouse, 
@@ -43,5 +44,6 @@ library.add(fab,
     faEllipsisV,
     faPenToSquare,
     faFileExport,
-    faHardHat
+    faHardHat,
+    faKey
 );

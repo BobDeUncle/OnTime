@@ -20,6 +20,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import isEmail from 'validator/lib/isEmail';
 import { decodeToken } from '../utils/authUtils';
+import { validatePassword } from '../utils/passwordValidation';
 
 import MyText from '../components/MyText';
 
@@ -164,47 +165,15 @@ function LoginScreen(): React.ReactElement {
     setIsLoading(true);
 
     // Form Validation
-    if (newPassword !== '') {
-      setIsNewPasswordValid(true);
-    } else {
+    const validation = validatePassword(newPassword, confirmPassword);
+
+    if (!validation.isValid) {
       setIsNewPasswordValid(false);
+      setIsConfirmPasswordValid(false);
+      setConfirmPasswordMessage(validation.message);
       setIsLoading(false);
       return;
     }
-
-    if (confirmPassword == '') {
-      setConfirmPasswordMessage('Invalid Password');
-      setIsConfirmPasswordValid(false);
-      setIsLoading(false);
-      return;
-    } else if (confirmPassword !== newPassword) {
-      setConfirmPasswordMessage('Passwords must be the same');
-      setIsConfirmPasswordValid(false);
-      setIsLoading(false);
-      return;
-    } else if (newPassword.length < 6) {
-      setConfirmPasswordMessage('Password must be at least 6 characters long');
-      setIsConfirmPasswordValid(false);
-      setIsLoading(false);
-      return;
-    } else if (!/[A-Z]/.test(newPassword)) {
-      setConfirmPasswordMessage('Password must contain at least one uppercase letter');
-      setIsConfirmPasswordValid(false);
-      setIsLoading(false);
-      return;
-    } else if (!/[a-z]/.test(newPassword)) {
-      setConfirmPasswordMessage('Password must contain at least one lowercase letter');
-      setIsConfirmPasswordValid(false);
-      setIsLoading(false);
-      return;
-    } else if (!/\d/.test(newPassword)) {
-      setConfirmPasswordMessage('Password must contain at least one digit');
-      setIsConfirmPasswordValid(false);
-      setIsLoading(false);
-      return;
-    } else {
-      setIsConfirmPasswordValid(true);
-    };
 
     try {
       const RPData = await authAPI.resetPassword({
@@ -458,11 +427,6 @@ function LoginScreen(): React.ReactElement {
                   <FontAwesomeIcon icon={isNewPasswordVisible ? 'eye-slash' : 'eye'} color={colors.border} />
                 </Pressable>
               </View>
-              {!isNewPasswordValid && (
-                <MyText style={styles.invalidForm}>
-                  <FontAwesomeIcon icon='exclamation' style={styles.invalidFormIcon}/> Invalid Password
-                </MyText>
-              )}
               <View style={{...styles.passwordView, borderColor: isConfirmPasswordValid ? colors.border : colors.warning}}>
                 <TextInput
                   ref={confirmPasswordInputRef}

@@ -3,6 +3,7 @@ import { View, Modal, Pressable, StyleSheet, Alert } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useTheme } from '../../theme/Colors';
 import EditUserForm from './edit-user-form';
+import ChangePasswordForm from './change-password-form';
 import { useAPIClient } from '../../api/APIClientContext';
 import User from '../../models/User'; 
 import UserAPI from '../../api/UserAPI';
@@ -16,6 +17,7 @@ type EditUserButtonProps = {
 const EditUserButton: React.FC<EditUserButtonProps> = ({ user, onModalVisibleChange, refreshList }) => {
   const { colors } = useTheme();
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [changePasswordModalVisible, setChangePasswordModalVisible] = useState<boolean>(false);
 
   const { apiClient } = useAPIClient();
   const userAPI = new UserAPI(apiClient);
@@ -51,6 +53,7 @@ const EditUserButton: React.FC<EditUserButtonProps> = ({ user, onModalVisibleCha
     container: {
       flex: 1,
       padding: 16,
+      paddingRight: 0,
       backgroundColor: colors.background,
       alignItems: 'center',
       justifyContent: 'center',
@@ -58,7 +61,7 @@ const EditUserButton: React.FC<EditUserButtonProps> = ({ user, onModalVisibleCha
     iconContainer: {
       flexDirection: 'row',
       justifyContent: 'space-around',
-      width: 60,
+      width: 90,
     },
     welcome: {
       color: colors.opText,
@@ -99,6 +102,12 @@ const EditUserButton: React.FC<EditUserButtonProps> = ({ user, onModalVisibleCha
         <Pressable onPress={handleDeleteUser}>
           <FontAwesomeIcon icon='times' size={20} color={colors.opText} />
         </Pressable>
+        <Pressable onPress={() => {
+          setChangePasswordModalVisible(true);
+          onModalVisibleChange(true);
+        }}>
+          <FontAwesomeIcon icon='key' size={20} color={colors.opText} />
+        </Pressable>
       </View>
       <Modal
         animationType="slide"
@@ -112,6 +121,22 @@ const EditUserButton: React.FC<EditUserButtonProps> = ({ user, onModalVisibleCha
           <EditUserForm user={user} styles={styles} showCloseButton={true} onClose={() => {
             refreshList();
             setModalVisible(false);
+            onModalVisibleChange(false);
+          }}/>
+        </View>
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={changePasswordModalVisible}
+        onRequestClose={() => {
+          setChangePasswordModalVisible(false);
+          onModalVisibleChange(false);
+        }}>
+        <View style={styles.centeredView}>
+          <ChangePasswordForm user={user} styles={styles} showCloseButton={true} onClose={() => {
+            refreshList();
+            setChangePasswordModalVisible(false);
             onModalVisibleChange(false);
           }}/>
         </View>

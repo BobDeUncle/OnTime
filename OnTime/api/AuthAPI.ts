@@ -23,7 +23,13 @@ class AuthAPI {
   }
 
   public async resetPassword(auth: any): Promise<AuthData> {
+    console.log('/auth/resetpassword', auth);
     return await this.client.post('/auth/resetpassword', auth);
+  }
+
+  public async updatePassword(auth: any): Promise<AuthData> {
+    console.log('/auth/updatepassword', auth);
+    return await this.client.post('/auth/updatepassword', auth);
   }
 }
 
