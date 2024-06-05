@@ -136,6 +136,12 @@ function LoginScreen(): React.ReactElement {
     }
   };
 
+  const handleVeriCodeKeyPress = (e: any, index: number) => {
+    if (e.nativeEvent.key === 'Backspace' && veriCodeInputs[index] === '' && index > 0) {
+      veriCodeRefs[index - 1].current?.focus();
+    }
+  };
+
   const handleVeriCode = async () => {
     setIsLoading(true);
 
@@ -184,9 +190,32 @@ function LoginScreen(): React.ReactElement {
       });
       console.log(RPData);
       setResetStage('success');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error:', error);
-      setResetStage('veriCode');
+
+
+      const errorMessage = error.message || error.toString();
+      const statusMatch = errorMessage.match(/Status:\s(\d{3})/);
+
+      if (statusMatch) {
+        const statusCode = parseInt(statusMatch[1], 10);
+        if (statusCode === 400) {
+          setIsVeriCodeValid(false);
+          setResetStage('veriCode');
+        } else if (statusCode === 404) {
+          setConfirmPasswordMessage('Email not found');
+          setIsConfirmPasswordValid(false);
+          setResetStage('resetPassword');
+        } else {
+          setConfirmPasswordMessage('An error occurred. Please try again.');
+          setIsConfirmPasswordValid(false);
+          setResetStage('resetPassword');
+        }
+      } else {
+        setConfirmPasswordMessage('An error occurred. Please check your network and try again.');
+        setIsConfirmPasswordValid(false);
+        setResetStage('resetPassword');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -363,6 +392,7 @@ function LoginScreen(): React.ReactElement {
                       borderColor: isVeriCodeValid ? colors.secondary : colors.warning,
                     }}
                     value={input}
+                    onKeyPress={(e) => handleVeriCodeKeyPress(e, index)}
                     onChangeText={(text) => handleVeriCodeChange(text, index)}
                     keyboardType="number-pad"
                     returnKeyType={'done'}
