@@ -10,7 +10,7 @@ import NewTimeRecordButton from '../components/time-record/time-record-modal-but
 import {useTheme} from '../theme/Colors';
 import { useAPIClient } from '../api/APIClientContext';
 import TimeRecordAPI from '../api/TimeRecordAPI';
-import TimeRecord from '../models/TimeRecord';
+import TimeRecord, { RecordType } from '../models/TimeRecord';
 import TimeRecordItem from '../components/time-record/time-record';
 import TimeRecordFilter from '../components/time-record/time-record-filter';
 import TimeRecordExportButton from '../components/time-record/time-record-export-button';
@@ -32,7 +32,8 @@ const TimesheetsScreen: React.FC = () => {
     status: '',
     startDate: '',
     endDate: '',
-    sortOrder: ''
+    sortOrder: '',
+    recordType: ''
   });
 
   const isAdmin = user && user.roles.some(role => role.name === 'admin');
@@ -94,13 +95,14 @@ const TimesheetsScreen: React.FC = () => {
     }, [])
   );
 
-  const handleApplyFilter = (selectedJobsite: string, selectedEmployee: string, selectedStatus: string, selectedStartDate: string, selectedEndDate: string, selectedSortOrder: string) => {
+  const handleApplyFilter = (selectedJobsite: string, selectedEmployee: string, selectedStatus: string, selectedStartDate: string, selectedEndDate: string, selectedSortOrder: string, selectedRecordType: string) => {
     const params = {
       jobsites: [selectedJobsite],
       employees: [selectedEmployee],
       status: [selectedStatus],
       startDate: [selectedStartDate],
       endDate: [selectedEndDate],
+      recordType: [selectedRecordType],
       sortOrder: [selectedSortOrder]
     };
 
@@ -110,6 +112,7 @@ const TimesheetsScreen: React.FC = () => {
       status: selectedStatus,
       startDate: selectedStartDate,
       endDate: selectedEndDate,
+      recordType: selectedRecordType,
       sortOrder: selectedSortOrder
     });
   

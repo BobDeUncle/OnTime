@@ -11,6 +11,7 @@ import TimeRecord, {Status} from '../../models/TimeRecord';
 import {useAPIClient} from '../../api/APIClientContext';
 import TimeRecordAPI from '../../api/TimeRecordAPI';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import { formatCamelCase } from '../../utils/stringUtils';
 
 interface TimeRecordApprovalItemProps {
   timeRecord: TimeRecord;
@@ -173,7 +174,7 @@ const TimeRecordApprovalItem: React.FC<TimeRecordApprovalItemProps> = ({
               {backgroundColor: getApprovalColor(timeRecord.status)},
             ]}>
             <MyText style={styles.approvalText}>
-              Status: {timeRecord.status}
+              Status: {formatCamelCase(timeRecord.status)}
             </MyText>
           </View>
           {timeRecord.employee ? (

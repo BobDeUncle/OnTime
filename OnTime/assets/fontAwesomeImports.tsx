@@ -22,6 +22,8 @@ import {faPenToSquare} from '@fortawesome/free-solid-svg-icons/faPenToSquare';
 import {faFileExport} from '@fortawesome/free-solid-svg-icons/faFileExport';
 import {faHardHat} from '@fortawesome/free-solid-svg-icons/faHardHat';
 import {faKey} from '@fortawesome/free-solid-svg-icons/faKey';
+import {faChartBar} from '@fortawesome/free-solid-svg-icons/faChartBar';
+
 
 library.add(fab, 
     faHouse, 
@@ -45,5 +47,6 @@ library.add(fab,
     faPenToSquare,
     faFileExport,
     faHardHat,
-    faKey
+    faKey,
+    faChartBar
 );
