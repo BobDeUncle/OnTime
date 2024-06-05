@@ -176,9 +176,15 @@ const TimeRecordApprovalItem: React.FC<TimeRecordApprovalItemProps> = ({
               Status: {timeRecord.status}
             </MyText>
           </View>
-          <MyText style={styles.secondText}>
-            Name: {timeRecord.employee.firstName} {timeRecord.employee.lastName}
-          </MyText>
+          {timeRecord.employee ? (
+            <>
+              <MyText style={styles.secondText}>
+                Name: {timeRecord.employee.firstName} {timeRecord.employee.lastName}
+              </MyText>
+            </>
+          ) : (
+            <MyText style={styles.secondText}>Employee: N/A</MyText>
+          )}
           <MyText style={styles.secondText}>
             Date: {new Date(timeRecord.date.toString()).toLocaleDateString()}
           </MyText>

@@ -68,6 +68,16 @@ function ApprovalScreen(): React.ReactElement {
       width: '80%',
       maxWidth: 400,
     },
+    emptyMessageContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 20,
+    },
+    emptyMessageText: {
+      fontSize: 18,
+      color: colors.text,
+    },
   });
 
   const fetchTimeRecords = useCallback(async () => {
@@ -126,8 +136,14 @@ function ApprovalScreen(): React.ReactElement {
       style={styles.loadingContainer}></ActivityIndicator>
   ) : (
     <ScrollView style={{backgroundColor: colors.background}}>
-      {timeRecords.map((record, index) => {
-        return (
+      {timeRecords.length === 0 ? (
+        <View style={styles.emptyMessageContainer}>
+          <MyText style={styles.emptyMessageText}>
+            No time records available for approval.
+          </MyText>
+        </View>
+      ) : (
+        timeRecords.map((record, index) => (
           <TimeRecordApprovalItem
             refreshRecords={fetchTimeRecords}
             onEditSelect={_timeRecord => {
@@ -138,8 +154,8 @@ function ApprovalScreen(): React.ReactElement {
             timeRecord={record}
             key={index}
           />
-        );
-      })}
+        ))
+      )}
 
       <Modal
         style={styles.modalContainer}
