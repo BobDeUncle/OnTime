@@ -12,6 +12,8 @@ import TimeRecordAPI from '../../api/TimeRecordAPI';
 import JobsiteAPI from '../../api/JobsiteAPI';
 import Jobsite from '../../models/Jobsite';
 import { useAPIClient } from '../../api/APIClientContext';
+import { RecordType } from '../../models/TimeRecord';
+import { formatCamelCase } from '../../utils/stringUtils';
 
 interface TimesheetRecordFormProps {
   styles: any;
@@ -39,6 +41,9 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
     now.setSeconds(0);
     return now;
   });  
+  const [recordType, setRecordType] = useState<RecordType>(RecordType.hoursWorked);
+  const recordTypeItems = Object.values(RecordType).map(type => ({ label: formatCamelCase(type), value: type }));
+
   const [endTime, setEndTime] = useState(() => {
     const now = new Date();
     now.setHours(15);
@@ -119,6 +124,7 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
                 endTime: endTimeFormatted,
                 breakHours: Number(breakTime) / 60,
                 jobsite: selectedJobsite,
+                recordType: recordType,
                 isApproved: false,
               });
 
@@ -129,6 +135,7 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
                 endTime: endTimeFormatted,
                 breakHours: Number(breakTime) / 60,
                 jobsite: selectedJobsite,
+                recordType: recordType,
                 isApproved: false,
               });
 
@@ -279,6 +286,30 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
             color: jobsiteValid ? colors.border : colors.warning,
           },
         }}
+      />
+        <RNPickerSelect
+          onValueChange={value => setRecordType(value as RecordType)}
+          value={recordType}
+          items={recordTypeItems}
+          placeholder={{label: 'Select Record Type', value: null}}
+          Icon={() => {
+            return <FontAwesomeIcon icon='chevron-down' size={24} color={recordType ? colors.border : colors.warning} />;
+          }}
+          style={{
+            inputIOS: {
+              ...localStyles.dropdownInputIOS,
+              borderColor: recordType ? colors.border : colors.warning,
+            },
+            inputAndroid: {
+              ...localStyles.dropdownInputAndroid,
+              borderColor: recordType ? colors.border : colors.warning,
+            },
+            iconContainer: localStyles.dropdownIcon,
+            placeholder: {
+              ...localStyles.placeholderText,
+              color: recordType ? colors.border : colors.warning,
+            },
+          }}
       />
       <MyDatePicker
         date={date}

@@ -11,9 +11,11 @@ import JobsiteAPI from '../../api/JobsiteAPI';
 import Jobsite from '../../models/Jobsite';
 import UserAPI from '../../api/UserAPI';
 import User from '../../models/User'; 
+import { RecordType } from '../../models/TimeRecord';
+import { formatCamelCase } from '../../utils/stringUtils';
 
 type TimeRecordFilterProps = {
-  onApply: (selectedJobsite: string, selectedEmployee: string, selectedStatus: string, selectedStartDate: string, selectedEndDate: string, selectedSortOrder: string) => void;
+  onApply: (selectedJobsite: string, selectedEmployee: string, selectedStatus: string, selectedStartDate: string, selectedEndDate: string, selectedSortOrder: string, selectedRecordType: string) => void;
   onModalVisibleChange: (visible: boolean) => void;
 };
 
@@ -22,6 +24,8 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply, onModalVis
   const { user } = useAPIClient(); 
 
   const isManager = user ? user.roles.some(role => role.name === 'admin' || role.name === 'supervisor') : false;
+  const recordTypeItems = Object.values(RecordType).map(type => ({ label: formatCamelCase(type), value: type }));
+
 
   const [modalVisible, setModalVisible] = useState(false);
   const [jobsites, setJobsites] = useState<Jobsite[]>([]);
@@ -29,6 +33,7 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply, onModalVis
   const [selectedJobsite, setSelectedJobsite] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
+  const [selectedRecordType, setSelectedRecordType] = useState('');
   const [selectedStartDate, setSelectedStartDate] = useState(new Date().toISOString().split('T')[0]);
   const [selectedEndDate, setSelectedEndDate] = useState(new Date().toISOString().split('T')[0]);
   const [showStartPicker, setShowStartPicker] = useState(false);
@@ -82,7 +87,7 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply, onModalVis
     const selectedEmployeeTemp = selectedEmployee ?? '';
     const selectedStatusTemp = selectedStatus ?? '';
 
-    onApply(selectedJobsiteTemp, selectedEmployeeTemp, selectedStatusTemp, selectedStartDateTemp, selectedEndDateTemp, selectedSortOrder);
+    onApply(selectedJobsiteTemp, selectedEmployeeTemp, selectedStatusTemp, selectedStartDateTemp, selectedEndDateTemp, selectedSortOrder, selectedRecordType);
   };
 
   const styles = StyleSheet.create({
@@ -306,6 +311,21 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply, onModalVis
               }}
             />
 
+            <RNPickerSelect
+              value={selectedRecordType}
+              onValueChange={(value) => setSelectedRecordType(value)}
+              items={recordTypeItems}
+              placeholder={{label: 'Select Type', value: null}}
+              Icon={() => {
+                return <FontAwesomeIcon icon='chevron-down' size={24} color={colors.border} />;
+              }}
+              style={{
+                inputIOS: styles.dropdownInputIOS,
+                inputAndroid: styles.dropdownInputAndroid,
+                iconContainer: styles.dropdownIcon,
+                placeholder: styles.placeholderText,
+              }}
+            />
             <View style={styles.dateTimeInput}>
               <MyText style={styles.text}>Start Date: </MyText>
               {!showStartPicker && (

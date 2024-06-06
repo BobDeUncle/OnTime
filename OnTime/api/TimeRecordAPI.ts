@@ -1,4 +1,5 @@
 import TimeRecord from '../models/TimeRecord';
+import { StatsInitialViewModel } from '../screens/DashboardScreen';
 import APIClient from './APIClient';
 
 class TimeRecordAPI {
@@ -8,7 +9,7 @@ class TimeRecordAPI {
     this.client = client;
   }
 
-  public async getAllTimeRecords(params?: { startDate?: string, endDate?: string, employees?: string[], jobsites?: string[], status?: string, export?: boolean}): Promise<TimeRecord[]> {
+  public async getAllTimeRecords(params?: { startDate?: string, endDate?: string, employees?: string[], jobsites?: string[], status?: string, export?: boolean, recordType?: string}): Promise<TimeRecord[]> {
     console.log('GET', '/time-records', params);
     return await this.client.get('/time-records', params );
   }
@@ -27,6 +28,10 @@ class TimeRecordAPI {
 
   public async deleteTimeRecord(id: string) {
     return await this.client.delete(`/time-records/${id}`);
+  }
+
+  public async getDashboardStats(employeeId: string): Promise<StatsInitialViewModel> {
+    return await this.client.get(`/time-records/stats/employee/${employeeId}`);
   }
 }
 

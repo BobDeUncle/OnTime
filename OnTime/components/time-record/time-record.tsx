@@ -7,6 +7,7 @@ import TimeRecordAPI from '../../api/TimeRecordAPI';
 import { useAPIClient } from '../../api/APIClientContext';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import TimeRecordUserUpdateForm from '../../components/time-record/time-record-user-update-form';
+import { formatCamelCase } from '../../utils/stringUtils';
 
 interface TimeRecordProps {
   timeRecord: TimeRecord;
@@ -198,7 +199,8 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
           <MyText style={styles.text}>
             Time: {timeRecord.startTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', second: undefined, hour12: true })} - {timeRecord.endTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', second: undefined, hour12: true })}
           </MyText>
-          <MyText style={styles.text}>Break (mins): {timeRecord.breakHours * 60}</MyText>
+          <MyText style={styles.text}>Break (mins): {timeRecord.breakHours ? timeRecord.breakHours * 60 : 0}</MyText>
+          <MyText style={styles.text}>Type: {formatCamelCase(timeRecord.recordType)}</MyText>
         </View>
         <Pressable
           onPress={() => {
@@ -229,7 +231,7 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
           </MyText>
           <View style={[styles.statusBackground, {backgroundColor: getApprovalColor(timeRecord.status)}]}>
             <MyText style={styles.approvalText}>
-              {timeRecord.status}
+              {formatCamelCase(timeRecord.status)}
             </MyText>
           </View>
         </View>
