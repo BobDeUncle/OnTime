@@ -104,12 +104,12 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
     },
     line: {
       height: 1.3,
-      backgroundColor: 'black',
+      backgroundColor: colors.opText,
       padding: 0,
     },
     verticalLine: {
       width: 1.3,
-      backgroundColor: 'black',
+      backgroundColor: colors.opText,
     },
     row: {
       flexDirection: 'row',
@@ -124,6 +124,7 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
       paddingHorizontal: 12,
       paddingTop: 0,
       paddingBottom: 4,
+      color: colors.opText,
     },
     secondText: {
       fontSize: 14,
@@ -132,6 +133,7 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
       paddingTop: 4,
       paddingBottom: 5,
       textAlign: 'center',
+      color: colors.opText,
     },
     approvalText: {
       fontSize: 14,
@@ -140,20 +142,11 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
       paddingTop: 1,
       paddingBottom: 1,
       textAlign: 'center',
+      color: colors.opText,
     },
     statusBackground: {
       paddingHorizontal: 6,
       marginBottom: 10,
-    },
-    button: {
-      backgroundColor: 'red',
-      padding: 10,
-      borderRadius: 5,
-      alignItems: 'center',
-    },
-    buttonText: {
-      color: 'white',
-      fontWeight: 'bold',
     },
     editIcon: {
       position: 'absolute',
@@ -168,7 +161,7 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
       top: 25,
     },
     modalContainer: {
-      backgroundColor: 'white',
+      backgroundColor: colors.background,
       borderRadius: 10,
       padding: 20,
       width: '80%',

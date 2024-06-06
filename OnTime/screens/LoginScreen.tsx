@@ -517,14 +517,14 @@ function LoginScreen(): React.ReactElement {
   const styles = StyleSheet.create({
     mainContainer: {
       paddingTop: 0,
-      backgroundColor: colors.primary,
+      backgroundColor: '#031f46',
       flex: 1,
     },
     topContainer: {
       justifyContent: 'center',
       alignItems: 'center',
       paddingTop: 30,
-      backgroundColor: colors.primary,
+      backgroundColor: '#031f46',
       flex: 1,
     },
     bottomContainer: {
@@ -557,7 +557,7 @@ function LoginScreen(): React.ReactElement {
       paddingHorizontal: 30,
     },
     iconPlaceholder: {
-      width: 60,  // Ensure this is equal to the total width of the iconContainer including padding
+      width: 60,
     },
     flexContainer: {
       flex: 1,
@@ -566,6 +566,7 @@ function LoginScreen(): React.ReactElement {
       fontSize: 24,
       fontWeight: 'bold',
       textAlign: 'center',
+      color: colors.border,
     },
     greenLine: {
       height: 4,
@@ -598,6 +599,7 @@ function LoginScreen(): React.ReactElement {
     input: {
       height: 50,
       paddingHorizontal: 20,
+      color: colors.opText,
       borderColor: colors.primary,
       borderWidth: 1,
       borderRadius: 7,

@@ -81,11 +81,11 @@ const TimeRecordApprovalItem: React.FC<TimeRecordApprovalItemProps> = ({
       height: 1.3,
       width: 320,
       margin: 10,
-      backgroundColor: 'black',
+      backgroundColor: colors.opText,
     },
     verticalLine: {
       width: 1.3,
-      backgroundColor: 'black',
+      backgroundColor: colors.opText,
     },
     row: {
       flexDirection: 'row',
@@ -100,6 +100,7 @@ const TimeRecordApprovalItem: React.FC<TimeRecordApprovalItemProps> = ({
       paddingHorizontal: 12,
       paddingTop: 0,
       paddingBottom: 4,
+      color: colors.opText,
     },
     secondText: {
       fontSize: 14,
@@ -107,6 +108,7 @@ const TimeRecordApprovalItem: React.FC<TimeRecordApprovalItemProps> = ({
       paddingTop: 4,
       paddingBottom: 5,
       textAlign: 'center',
+      color: colors.opText,
     },
     approvalText: {
       fontSize: 14,
@@ -141,11 +143,11 @@ const TimeRecordApprovalItem: React.FC<TimeRecordApprovalItemProps> = ({
       padding: 10,
       borderRadius: 5,
       alignItems: 'center',
-      borderColor: 'black',
+      borderColor: colors.opText,
       borderWidth: 1,
     },
     denyButtonText: {
-      color: 'black',
+      color: colors.opText,
       fontWeight: 'bold',
     },
     editIcon: {
