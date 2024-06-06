@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, View, ActivityIndicator} from 'react-native';
 import { useAPIClient } from '../api/APIClientContext';
 import MyText from '../components/MyText';
 import TimeRecordForm from '../components/time-record/time-record-form'
@@ -27,19 +27,20 @@ function DashboardScreen({}): React.ReactElement {
   }
 
   const [stats, setStats] = useState(statsInitialViewModel);
-
+  const [loadingStats, setLoadingStats] = useState<boolean>(true);
 
   useEffect(() => {
     const getDashboardStats = async () => {
       if (user) {
+        setLoadingStats(true);
         const statsResult = await timeRecordAPI.getDashboardStats(user?._id);
+        console.log('statsResult', statsResult)
         setStats(statsResult);
+        setLoadingStats(false);
       }
     }
-
     getDashboardStats();
-
-  }, [])
+  }, [user])
 
   const styles = StyleSheet.create({
     container: {
@@ -78,10 +79,16 @@ function DashboardScreen({}): React.ReactElement {
       <TimeRecordForm styles={styles} showCloseButton={false}/>
       <View style={styles.section}>
         <MyText style={styles.sectionTitle}><FontAwesomeIcon icon='chart-bar' size={20} color={colors.border} /> Timesheet Totals</MyText>
-        <MyText style={styles.sectionText}>Today: {stats.day} hrs</MyText>
-        <MyText style={styles.sectionText}>This week: {stats.week} hrs </MyText>
-        <MyText style={styles.sectionText}>This month: {stats.month} hrs</MyText>
-        <MyText style={styles.sectionText}>All time: {stats.sinceInception} hrs</MyText>
+        {loadingStats ? (
+          <ActivityIndicator size="large" color={colors.text} />
+        ) : (
+          <>
+            <MyText style={styles.sectionText}>Today: {stats.day} hrs</MyText>
+            <MyText style={styles.sectionText}>This week: {stats.week} hrs </MyText>
+            <MyText style={styles.sectionText}>This month: {stats.month} hrs</MyText>
+            <MyText style={styles.sectionText}>All time: {stats.sinceInception} hrs</MyText>
+          </>
+        )}
       </View>
     </ScrollView>
   );
