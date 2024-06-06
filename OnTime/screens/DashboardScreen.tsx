@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {ScrollView, StyleSheet, View, ActivityIndicator} from 'react-native';
 import { useAPIClient } from '../api/APIClientContext';
 import MyText from '../components/MyText';
@@ -29,18 +29,19 @@ function DashboardScreen({}): React.ReactElement {
   const [stats, setStats] = useState(statsInitialViewModel);
   const [loadingStats, setLoadingStats] = useState<boolean>(true);
 
-  useEffect(() => {
-    const getDashboardStats = async () => {
-      if (user) {
-        setLoadingStats(true);
-        const statsResult = await timeRecordAPI.getDashboardStats(user?._id);
-        console.log('statsResult', statsResult)
-        setStats(statsResult);
-        setLoadingStats(false);
-      }
+  const getDashboardStats = useCallback(async () => {
+    if (user) {
+      setLoadingStats(true);
+      const statsResult = await timeRecordAPI.getDashboardStats(user?._id);
+      console.log('statsResult', statsResult);
+      setStats(statsResult);
+      setLoadingStats(false);
     }
+  }, [user]);
+
+  useEffect(() => {
     getDashboardStats();
-  }, [user])
+  }, [getDashboardStats]);
 
   const styles = StyleSheet.create({
     container: {
@@ -76,7 +77,7 @@ function DashboardScreen({}): React.ReactElement {
   return (
     <ScrollView style={styles.container}>
       <MyText style={styles.welcome}>Welcome{user ? ', ' + user.firstName : ''}</MyText>
-      <TimeRecordForm styles={styles} showCloseButton={false}/>
+      <TimeRecordForm styles={styles} showCloseButton={false} onRecordAdded={getDashboardStats} />
       <View style={styles.section}>
         <MyText style={styles.sectionTitle}><FontAwesomeIcon icon='chart-bar' size={20} color={colors.border} /> Timesheet Totals</MyText>
         {loadingStats ? (

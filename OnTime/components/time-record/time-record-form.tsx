@@ -19,9 +19,10 @@ interface TimesheetRecordFormProps {
   styles: any;
   showCloseButton: boolean,
   onClose?: () => void;
+  onRecordAdded?: () => void;
 }
 
-const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseButton, onClose }) => {  
+const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseButton, onClose, onRecordAdded }) => {  
   const {colors} = useTheme();
   const { user } = useAPIClient(); 
 
@@ -147,6 +148,7 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
         
               saveTimeRecord();
               if (onClose) onClose();
+              if (onRecordAdded) onRecordAdded();
             } catch (error) {
               console.error('Error creating time record:', error);
               Alert.alert(
