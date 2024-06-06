@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "1024.png",
+      "filename" : "Pacbuild-lge3-square.jpg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "1024 1.png",
+      "filename" : "Pacbuild-lge3-square 2.jpg",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "1024 2.png",
+      "filename" : "Pacbuild-lge3-square 1.jpg",
       "idiom" : "universal",
       "scale" : "3x"
     }
