@@ -275,6 +275,7 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
           inputIOS: {
             ...localStyles.dropdownInputIOS,
             borderColor: jobsiteValid ? colors.border : colors.warning,
+            marginBottom: 10,
           },
           inputAndroid: {
             ...localStyles.dropdownInputAndroid,
@@ -291,7 +292,7 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
           onValueChange={value => setRecordType(value as RecordType)}
           value={recordType}
           items={recordTypeItems}
-          placeholder={{label: 'Select Record Type', value: null}}
+          placeholder={{}}
           Icon={() => {
             return <FontAwesomeIcon icon='chevron-down' size={24} color={recordType ? colors.border : colors.warning} />;
           }}
@@ -305,10 +306,6 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
               borderColor: recordType ? colors.border : colors.warning,
             },
             iconContainer: localStyles.dropdownIcon,
-            placeholder: {
-              ...localStyles.placeholderText,
-              color: recordType ? colors.border : colors.warning,
-            },
           }}
       />
       <MyDatePicker
