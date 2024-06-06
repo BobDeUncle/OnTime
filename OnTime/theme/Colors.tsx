@@ -19,7 +19,7 @@ enum Colors {
   red = '#FF0000',
   white = '#FFFFFF',
 
-  pacBlue = '#031f46',
+  pacBlue = '#011B40',
   pacGreen = '#5db432',
 }
 

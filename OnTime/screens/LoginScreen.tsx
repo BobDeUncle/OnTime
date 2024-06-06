@@ -27,7 +27,7 @@ import MyText from '../components/MyText';
 function LoginScreen(): React.ReactElement {
   const { apiClient, setIsAuthenticated, setUser } = useAPIClient();
   const authAPI = new AuthAPI(apiClient);
-  const logo = require('../assets/pacbuild-square-blue.jpg');
+  const logo = require('../assets/Pacbuild-lge3-square.jpg');
   const {colors} = useTheme();
 
   const [resetStage, setResetStage] = useState('login'); // 'login', 'forgotPassword', 'veriCode', 'resetPassword', 'success'
@@ -517,14 +517,14 @@ function LoginScreen(): React.ReactElement {
   const styles = StyleSheet.create({
     mainContainer: {
       paddingTop: 0,
-      backgroundColor: '#031f46',
+      backgroundColor: '#011B40',
       flex: 1,
     },
     topContainer: {
       justifyContent: 'center',
       alignItems: 'center',
       paddingTop: 30,
-      backgroundColor: '#031f46',
+      backgroundColor: '#011B40',
       flex: 1,
     },
     bottomContainer: {
