@@ -72,16 +72,16 @@ const UserManagementScreen: React.FC = () => {
   const renderHeader = () => (
     <View style={styles.headerRow}>
       <MyText style={{...styles.headerText, flex: 3}}>Name</MyText>
-      <MyText style={{...styles.headerText, flex: 3}}>Email</MyText>
-      <MyText style={{ ...styles.headerText, flex: 1 }} children={undefined}></MyText>
+      <MyText style={{...styles.headerText, flex: 2}}>Email</MyText>
+      <MyText style={{...styles.headerText, flex: 2}} children={undefined}></MyText>
     </View>
   );
 
   const renderUser = ({ item }: { item: User }) => (
     <View style={styles.userRow}>
       <MyText style={{...styles.userText, flex: 3}}>{item.firstName} {item.lastName}</MyText>
-      <MyText style={{...styles.userText, flex: 3}}>{item.email}</MyText>
-      <View>
+      <MyText style={{...styles.userText, flex: 2}}>{item.email}</MyText>
+      <View style={{flex: 2}}>
         <EditUserButton user={item} onModalVisibleChange={setOverlayVisible} refreshList={refreshList} />
       </View>
     </View>

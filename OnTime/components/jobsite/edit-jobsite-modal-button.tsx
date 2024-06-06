@@ -3,12 +3,13 @@ import { View, Modal, Pressable, StyleSheet, Alert } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useTheme } from '../../theme/Colors';
 import EditJobsiteForm from './edit-jobsite-form';
+import EditSupervisorJobsiteForm from './edit-supervisor-jobsite-form';
 import { useAPIClient } from '../../api/APIClientContext';
-import Jobsite from '../../models/Jobsite'; 
+import JobsiteWithSupervisor from '../../models/JobsiteWithSupervisor'; 
 import JobsiteAPI from '../../api/JobsiteAPI';
 
 type EditJobsiteButtonProps = {
-  jobsite: Jobsite;
+  jobsite: JobsiteWithSupervisor;
   onModalVisibleChange: (visible: boolean) => void;
   refreshList: () => void;
 }
@@ -16,6 +17,7 @@ type EditJobsiteButtonProps = {
 const EditJobsiteButton: React.FC<EditJobsiteButtonProps> = ({ jobsite, onModalVisibleChange, refreshList }) => {
   const { colors } = useTheme();
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [editSupervisorsVisible, setEditSupervisorsVisible] = useState<boolean>(false);
 
   const { apiClient } = useAPIClient();
   const jobsiteAPI = new JobsiteAPI(apiClient);
@@ -34,7 +36,7 @@ const EditJobsiteButton: React.FC<EditJobsiteButtonProps> = ({ jobsite, onModalV
           style: "destructive",
           onPress: async () => {
             try {
-              await jobsiteAPI.deleteJobsite(jobsite._id);
+              await jobsiteAPI.deleteJobsite(jobsite.jobsite._id);
             } catch (error) {
               Alert.alert("Error", "Failed to delete jobsite. Please try again later.");
             } finally {
@@ -58,7 +60,7 @@ const EditJobsiteButton: React.FC<EditJobsiteButtonProps> = ({ jobsite, onModalV
     iconContainer: {
       flexDirection: 'row',
       justifyContent: 'space-around',
-      width: 60,
+      width: 90,
     },
     welcome: {
       color: colors.opText,
@@ -96,9 +98,15 @@ const EditJobsiteButton: React.FC<EditJobsiteButtonProps> = ({ jobsite, onModalV
         }}>
           <FontAwesomeIcon icon='ellipsis-v' size={20} color={colors.opText}/>
         </Pressable>
-        {/* <Pressable onPress={handleDeleteJobsite}>
+        <Pressable onPress={() => {
+          setEditSupervisorsVisible(true);
+          onModalVisibleChange(true);
+        }}>
+          <FontAwesomeIcon icon='user' size={20} color={colors.opText} />
+        </Pressable>
+        <Pressable onPress={handleDeleteJobsite}>
           <FontAwesomeIcon icon='times' size={20} color={colors.opText} />
-        </Pressable> */}
+        </Pressable>
       </View>
       <Modal
         animationType="slide"
@@ -114,6 +122,22 @@ const EditJobsiteButton: React.FC<EditJobsiteButtonProps> = ({ jobsite, onModalV
             setModalVisible(false);
             onModalVisibleChange(false);
           }}/>
+        </View>
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={editSupervisorsVisible}
+        onRequestClose={() => {
+          setEditSupervisorsVisible(false);
+          onModalVisibleChange(false);
+        }}>
+        <View style={styles.centeredView}>
+          <EditSupervisorJobsiteForm jobsite={jobsite} supervisors={jobsite.supervisors} styles={styles} showCloseButton={true} onClose={() => {
+            refreshList();
+            setEditSupervisorsVisible(false);
+            onModalVisibleChange(false);
+          }} />
         </View>
       </Modal>
     </View>

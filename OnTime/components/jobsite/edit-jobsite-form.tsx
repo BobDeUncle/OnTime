@@ -1,33 +1,33 @@
 import React, { useState, useRef } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert, Pressable, Switch } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Alert, Pressable } from 'react-native';
 import MyText from '../MyText';
 import { useTheme } from '../../theme/Colors';
 import { storageEmitter } from '../storageEmitter';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 
 import JobsiteAPI from '../../api/JobsiteAPI';
-import Jobsite from '../../models/Jobsite'; 
+import JobsiteWithSupervisor from '../../models/JobsiteWithSupervisor';
 import { useAPIClient } from '../../api/APIClientContext';
 
 interface JobsiteFormProps {
-  jobsite: Jobsite;
+  jobsite: JobsiteWithSupervisor;
   styles: any;
-  showCloseButton: boolean,
+  showCloseButton: boolean;
   onClose: () => void;
 }
 
-const EditJobsiteForm: React.FC<JobsiteFormProps> = ({ jobsite, styles, showCloseButton, onClose }) => {  
-  const {colors} = useTheme();
+const EditJobsiteForm: React.FC<JobsiteFormProps> = ({ jobsite, styles, showCloseButton, onClose }) => {
+  const { colors } = useTheme();
 
   const { apiClient } = useAPIClient();
   const jobsiteAPI = new JobsiteAPI(apiClient);
 
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const [name, setName] = useState(jobsite?.name || '');
-  const [city, setCity] = useState(jobsite?.city || '');
+  const [name, setName] = useState(jobsite?.jobsite.name || '');
+  const [city, setCity] = useState(jobsite?.jobsite.city || '');
   const cityRef = useRef<TextInput>(null);
-  
+
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [nameValid, setNameValid] = useState(true);
   const [cityValid, setCityValid] = useState(true);
@@ -51,8 +51,8 @@ const EditJobsiteForm: React.FC<JobsiteFormProps> = ({ jobsite, styles, showClos
 
     // Show a confirmation popup
     Alert.alert(
-      'Submit New Jobsite',
-      `Do you wish to create a new jobsite named ${name} located in ${city}?`,
+      'Update Jobsite',
+      `Do you wish to update the jobsite named ${name} located in ${city}?`,
       [
         {
           text: 'Cancel',
@@ -60,10 +60,10 @@ const EditJobsiteForm: React.FC<JobsiteFormProps> = ({ jobsite, styles, showClos
           style: 'cancel',
         },
         {
-          text: 'Submit',
+          text: 'Update',
           onPress: async () => {
             try {
-              await jobsiteAPI.addJobsite({
+              await jobsiteAPI.updateJobsite(jobsite.jobsite._id, {
                 name,
                 city,
               });
@@ -71,10 +71,10 @@ const EditJobsiteForm: React.FC<JobsiteFormProps> = ({ jobsite, styles, showClos
               saveJobsite();
               if (onClose) onClose();
             } catch (error) {
-              console.error('Error creating jobsite:', error);
+              console.error('Error updating jobsite:', error);
               Alert.alert(
                 'Error',
-                'Failed to create jobsite. Please try again later.',
+                'Failed to update jobsite. Please try again later.',
               );
             } finally {
               setLoading(false);
@@ -104,7 +104,7 @@ const EditJobsiteForm: React.FC<JobsiteFormProps> = ({ jobsite, styles, showClos
       justifyContent: 'space-between',
       alignItems: 'center',
     },
-    closeButton: { 
+    closeButton: {
       padding: 10,
       paddingTop: 0,
       paddingRight: 0,
@@ -112,35 +112,6 @@ const EditJobsiteForm: React.FC<JobsiteFormProps> = ({ jobsite, styles, showClos
     placeholderText: {
       color: colors.border,
       fontSize: 14,
-    },
-    dropdownInputIOS: {
-      color: colors.text,
-      paddingTop: 10,
-      paddingHorizontal: 10,
-      paddingBottom: 10,
-      borderWidth: 1,
-      borderRadius: 4,
-    },
-    dropdownInputAndroid: {
-      color: colors.text,
-      borderWidth: 1,
-      borderRadius: 4,
-    },
-    dropdownIcon: {
-      top: 6,
-      right: 10,
-    },
-    dateTimeInput: {
-      height: 40,
-      borderColor: colors.border,
-      borderWidth: 1,
-      borderRadius: 4,
-      marginTop: 8,
-      paddingLeft: 10,
-      color: colors.text,
-      flexDirection: 'row', 
-      alignItems: 'center', 
-      justifyContent: 'space-between'
     },
     textInput: {
       height: 40,
@@ -155,29 +126,6 @@ const EditJobsiteForm: React.FC<JobsiteFormProps> = ({ jobsite, styles, showClos
       color: colors.border,
       fontSize: 14,
     },
-    container: {
-      flex: 1,
-      paddingTop: 10
-    },
-    roleContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginTop: 10,
-      paddingVertical: 3,
-      paddingLeft: 10,
-      paddingRight: 5,
-      borderWidth: 1,
-      borderColor: colors.border,
-      borderRadius: 4,
-    },
-    roleText: {
-      color: colors.border,
-      fontSize: 14,
-    },
-    switch: {
-      transform: [{ scaleX: .8 }, { scaleY: .8 }]
-    },
   });
 
   return (
@@ -186,7 +134,7 @@ const EditJobsiteForm: React.FC<JobsiteFormProps> = ({ jobsite, styles, showClos
         <MyText style={styles.sectionTitle}>Edit Jobsite</MyText>
         {showCloseButton && (
           <Pressable onPress={onClose} style={localStyles.closeButton}>
-            <FontAwesomeIcon icon='times' size={26} color={colors.text}/>
+            <FontAwesomeIcon icon='times' size={26} color={colors.text} />
           </Pressable>
         )}
       </View>
@@ -208,7 +156,7 @@ const EditJobsiteForm: React.FC<JobsiteFormProps> = ({ jobsite, styles, showClos
       />
       {!nameValid && (
         <MyText style={localStyles.invalidForm}>
-          <FontAwesomeIcon icon='exclamation' style={localStyles.invalidFormIcon}/> Invalid Name
+          <FontAwesomeIcon icon='exclamation' style={localStyles.invalidFormIcon} /> Invalid Name
         </MyText>
       )}
       <TextInput
@@ -216,6 +164,7 @@ const EditJobsiteForm: React.FC<JobsiteFormProps> = ({ jobsite, styles, showClos
         style={{
           ...localStyles.textInput,
           borderColor: cityValid ? colors.border : colors.warning,
+          marginBottom: 10,
         }}
         placeholder="City"
         placeholderTextColor={localStyles.placeholderText.color}
@@ -228,7 +177,7 @@ const EditJobsiteForm: React.FC<JobsiteFormProps> = ({ jobsite, styles, showClos
       />
       {!cityValid && (
         <MyText style={localStyles.invalidForm}>
-          <FontAwesomeIcon icon='exclamation' style={localStyles.invalidFormIcon}/> Invalid City
+          <FontAwesomeIcon icon='exclamation' style={localStyles.invalidFormIcon} /> Invalid City
         </MyText>
       )}
       <Button title="Submit" onPress={handleSubmit} disabled={loading} />

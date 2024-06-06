@@ -7,7 +7,8 @@ import EditJobsiteButton from '../components/jobsite/edit-jobsite-modal-button';
 import JobsiteAPI from '../api/JobsiteAPI';
 import { useAPIClient } from '../api/APIClientContext';
 import { useTheme } from '../theme/Colors';
-import Jobsite from '../models/Jobsite'; 
+import Jobsite from '../models/Jobsite';
+import JobsiteWithSupervisor from '../models/JobsiteWithSupervisor';
 import { storageEmitter } from '../components/storageEmitter';
 
 const JobsiteManagementScreen: React.FC = () => {
@@ -15,37 +16,47 @@ const JobsiteManagementScreen: React.FC = () => {
   const { apiClient } = useAPIClient();
   const jobsiteAPI = new JobsiteAPI(apiClient);
 
-  const [jobsites, setJobsites] = useState<Jobsite[]>([]); 
+  const [jobsites, setJobsites] = useState<JobsiteWithSupervisor[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [overlayOpacity, setOverlayOpacity] = useState(new Animated.Value(0));
-
-  useEffect(() => {
-    fetchJobsites();
-    storageEmitter.on('jobsitesUpdated', refreshList);
-
-    return () => {
-      storageEmitter.off('jobsitesUpdated', refreshList);
-    };
-  }, []);
-
-  useEffect(() => {
-    fetchJobsites();
-  }, [searchQuery]);
 
   const fetchJobsites = useCallback(async (params: {[key: string]: any} = {}) => {
     setLoading(true);
     params.search = searchQuery;
     try {
       const fetchedJobsites = await jobsiteAPI.getAllJobsites(params);
-      setJobsites(fetchedJobsites);
+      const jobsitesWithSupervisors = await Promise.all(fetchedJobsites.map(async (jobsite: Jobsite) => {
+        const data = await jobsiteAPI.getJobsitesWithSupervisors(jobsite._id);
+        return data;
+      }));
+      setJobsites(jobsitesWithSupervisors);
     } catch (error) {
       console.error('Error fetching jobsites:', error);
     } finally {
       setLoading(false);
     }
-  }, [jobsiteAPI]);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    fetchJobsites();
+    storageEmitter.on('jobsitesUpdated', fetchJobsites);
+
+    return () => {
+      storageEmitter.off('jobsitesUpdated', fetchJobsites);
+    };
+  }, [fetchJobsites]);
+
+  useEffect(() => {
+    const searchTimerId = setTimeout(() => {
+      fetchJobsites();
+    }, 500);
+  
+    return () => {
+      clearTimeout(searchTimerId);
+    };
+  }, [searchQuery, fetchJobsites]);
 
   useEffect(() => {
     Animated.timing(overlayOpacity, {
@@ -55,34 +66,24 @@ const JobsiteManagementScreen: React.FC = () => {
     }).start();
   }, [overlayVisible]);
 
-  useEffect(() => {
-    const searchTimerId = setTimeout(() => {
-      refreshList();
-    }, 500);
-  
-    return () => {
-      clearTimeout(searchTimerId);
-    };
-  }, [searchQuery]);
-
-  const refreshList = () => {
-    fetchJobsites();
-  };
-
   const renderHeader = () => (
     <View style={styles.headerRow}>
-      <MyText style={{...styles.headerText, flex: 3}}>Name</MyText>
-      <MyText style={{...styles.headerText, flex: 3}}>City</MyText>
-      <MyText style={{ ...styles.headerText, flex: 1 }} children={undefined}></MyText>
+      <MyText style={{...styles.headerText, flex: 2}}>Name</MyText>
+      <MyText style={{...styles.headerText, flex: 2}}>City</MyText>
+      <MyText style={{...styles.headerText, flex: 2}}>Supervisors</MyText>
+      <MyText style={{ ...styles.headerText, flex: 2 }} children={undefined}></MyText>
     </View>
   );
 
-  const renderJobsite = ({ item }: { item: Jobsite }) => (
+  const renderJobsite = ({ item }: { item: JobsiteWithSupervisor }) => (
     <View style={styles.jobsiteRow}>
-      <MyText style={{...styles.jobsiteText, flex: 3}}>{item.name}</MyText>
-      <MyText style={{...styles.jobsiteText, flex: 3}}>{item.city}</MyText>
-      <View>
-        <EditJobsiteButton jobsite={item} onModalVisibleChange={setOverlayVisible} refreshList={refreshList} />
+      <MyText style={{...styles.jobsiteText, flex: 2}}>{item.jobsite.name}</MyText>
+      <MyText style={{...styles.jobsiteText, flex: 2}}>{item.jobsite.city}</MyText>
+      <MyText style={{...styles.jobsiteText, flex: 2}}>
+        {item.supervisors.map(supervisor => supervisor.firstName + ' ' + supervisor.lastName).join(', ')}
+      </MyText>
+      <View style={{flex: 2}}>
+        <EditJobsiteButton jobsite={item} onModalVisibleChange={setOverlayVisible} refreshList={fetchJobsites} />
       </View>
     </View>
   );
@@ -174,7 +175,7 @@ const JobsiteManagementScreen: React.FC = () => {
             ListHeaderComponent={renderHeader}
             data={jobsites}
             renderItem={renderJobsite}
-            keyExtractor={item => item._id}
+            keyExtractor={item => item.jobsite._id}
             ListEmptyComponent={<MyText style={styles.emptyListText}>No jobsites found.</MyText>}
           />
         )}

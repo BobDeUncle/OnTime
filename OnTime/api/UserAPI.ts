@@ -13,6 +13,10 @@ class UserAPI {
     return await this.client.get('/users', params);
   }
 
+  public async getSupervisors(): Promise<User[]> {
+    return await this.client.get('/users', { role: 'supervisor' });
+  }
+
   public async createUser(user: any): Promise<User[]> {
     return await this.client.post('/users', user);
   }

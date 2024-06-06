@@ -1,4 +1,5 @@
 import Jobsite from '../models/Jobsite';
+import JobsiteWithSupervisor from '../models/JobsiteWithSupervisor';
 import APIClient from './APIClient';
 
 class JobsiteAPI {
@@ -17,6 +18,10 @@ class JobsiteAPI {
     return await this.client.get(`/jobsites/${id}`);
   }
 
+  public async getJobsitesWithSupervisors(id: string): Promise<JobsiteWithSupervisor> {
+    return await this.client.get(`/jobsites/${id}/user`);
+  }
+
   public async addJobsite(jobsite: any) {
     return await this.client.post('/jobsites', jobsite);
   }
@@ -27,6 +32,14 @@ class JobsiteAPI {
 
   public async deleteJobsite(id: string) {
     return await this.client.delete(`/jobsites/${id}`);
+  }
+
+  public async addSupervisor(jobsiteId: string, userId: string) {
+    return await this.client.post(`/jobsites/${jobsiteId}/user/${userId}`, {});
+  }
+
+  public async removeSupervisor(jobsiteId: string, userId: string) {
+    return await this.client.delete(`/jobsites/${jobsiteId}/user/${userId}`);
   }
 }
 
