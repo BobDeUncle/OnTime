@@ -12,6 +12,7 @@ interface TimeRecord {
   recordTotalHours: number;
   status: Status;
   recordType: RecordType;
+  notes: string;
 }
 
 export enum Status {

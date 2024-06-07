@@ -71,6 +71,31 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
     }
   };
 
+  const resetForm = () => {
+    setJobsite(null);
+    setDate(new Date());
+    setStartTime(() => {
+      const now = new Date();
+      now.setHours(7);
+      now.setMinutes(0);
+      now.setSeconds(0);
+      return now;
+    });
+    setEndTime(() => {
+      const now = new Date();
+      now.setHours(15);
+      now.setMinutes(30);
+      now.setSeconds(0);
+      return now;
+    });
+    setBreakTime('');
+    setNotes('');
+    setRecordType(RecordType.hoursWorked);
+    setFormSubmitted(false);
+    setJobsiteValid(true);
+    setEndTimeValid(true);
+  };
+
   const handleSubmit = async () => {
     setLoading(true);
     setFormSubmitted(true);
@@ -127,6 +152,7 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
                 jobsite: selectedJobsite,
                 recordType: recordType,
                 isApproved: false,
+                notes: notes,
               });
 
               console.log({
@@ -138,6 +164,7 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
                 jobsite: selectedJobsite,
                 recordType: recordType,
                 isApproved: false,
+                notes: notes,
               });
 
               Alert.alert(
@@ -146,6 +173,7 @@ const TimeRecordForm: React.FC<TimesheetRecordFormProps> = ({ styles, showCloseB
                 [{ text: 'OK' }]
               );
         
+              resetForm();
               saveTimeRecord();
               if (onClose) onClose();
               if (onRecordAdded) onRecordAdded();

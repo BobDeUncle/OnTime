@@ -200,6 +200,9 @@ const TimeRecordItem: React.FC<TimeRecordProps> = ({
           </MyText>
           <MyText style={styles.text}>Break (mins): {timeRecord.breakHours ? timeRecord.breakHours * 60 : 0}</MyText>
           <MyText style={styles.text}>Type: {formatCamelCase(timeRecord.recordType)}</MyText>
+          {timeRecord.notes && (
+            <MyText style={styles.text}>Notes: {timeRecord.notes}</MyText>
+          )}
         </View>
         <Pressable
           onPress={() => {

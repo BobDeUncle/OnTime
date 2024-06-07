@@ -219,6 +219,10 @@ const TimeRecordApprovalItem: React.FC<TimeRecordApprovalItemProps> = ({
             Break Time (mins): {timeRecord.breakHours * 60}
           </MyText>
 
+          {timeRecord.notes && (
+            <MyText style={styles.text}>Notes: {timeRecord.notes}</MyText>
+          )}
+
           <View style={styles.line} />
           <View style={styles.row}>
             <View style={styles.column}>
