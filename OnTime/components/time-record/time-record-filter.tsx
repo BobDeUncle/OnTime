@@ -240,6 +240,7 @@ const TimeRecordFilter: React.FC<TimeRecordFilterProps> = ({ onApply, onModalVis
                   setSelectedJobsite('');
                   setSelectedEmployee('');
                   setSelectedStatus('');
+                  setSelectedRecordType('');
                   setSelectedStartDate(new Date().toISOString().split('T')[0]);
                   setSelectedEndDate(new Date().toISOString().split('T')[0]);
                   setShowStartPicker(false);

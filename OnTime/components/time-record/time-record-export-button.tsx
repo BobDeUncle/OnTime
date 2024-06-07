@@ -13,6 +13,7 @@ interface Props {
     startDate: string;
     endDate: string;
     sortOrder: string;
+    recordType: string;
   };
   onModalVisibleChange: (visible: boolean) => void;
 }
@@ -36,6 +37,7 @@ const TimeRecordExportButton: React.FC<Props> = ({ filters, onModalVisibleChange
         startDate: filters.startDate,
         endDate: filters.endDate,
         sortOrder: filters.sortOrder,
+        recordType: filters.recordType,
       };
 
       const response = await timeRecordAPI.getAllTimeRecords(params);
