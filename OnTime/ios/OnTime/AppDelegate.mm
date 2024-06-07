@@ -14,6 +14,7 @@
   
   [super application:application didFinishLaunchingWithOptions:launchOptions];
   
+  NSLog(@"Showing splash screen...");
   [RNSplashScreen show];
   
   return YES;
