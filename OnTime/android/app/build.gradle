@@ -74,13 +74,13 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.ontime"
+    namespace "com.ontime.pacbuild"
     defaultConfig {
-        applicationId "com.ontime"
+        applicationId "com.ontime.pacbuild"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0"
+        versionName "0.1"
     }
     signingConfigs {
         debug {

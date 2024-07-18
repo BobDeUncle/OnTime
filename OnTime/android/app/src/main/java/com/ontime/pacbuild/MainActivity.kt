@@ -1,4 +1,4 @@
-package com.ontime
+package com.ontime.pacbuild
 
 import android.os.Bundle;
 import com.facebook.react.ReactActivity
