@@ -79,7 +79,7 @@ android {
         applicationId "com.ontime.pacbuild"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        versionCode 5
         versionName "0.1"
     }
     signingConfigs {
