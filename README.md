@@ -5,7 +5,10 @@ A time tracker app built for PacBuild
 Create a user authentication and authorisation system that allows secure access to the app and manages user roles.
 Manages time tracking information which is customed for logging work hours and job sites.
 
-# Team Members
+# Continued Development Team
+Jesse Mansbridge, 0402 658 162, jessemansbridge@hotmail.com
+
+# Initial Development Team Members
 Jesse Mansbridge, 0402 658 162, jessemansbridge@hotmail.com
 Jessica Pacini, 0491 733 393, j.pacini.10@student.scu.edu.au
 Hannah McDonald, 0478 961 223, h.mcdonald.24@student.scu.edu.au
